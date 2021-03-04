@@ -8,7 +8,7 @@ readme = "README.md"
 repository = "https://github.com/ShipEngine/shipengine-python"
 
 [tool.poetry.dependencies]
-python = "3.9"
+python = "3.7"
 aiohttp = "^3.7.4"
 requests = "^2.25.1"
 tox = "^3.23.0"
@@ -24,7 +24,7 @@ target-verstion = ["py37"]
 verbose = true
 
 [tool.poetry.scripts]
-hello = "poetryScratch:start"
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
