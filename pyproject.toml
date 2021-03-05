@@ -8,10 +8,11 @@ readme = "README.md"
 repository = "https://github.com/ShipEngine/shipengine-python"
 
 [tool.poetry.dependencies]
-python = "3.7"
+python = "^3.7"
 aiohttp = "^3.7.4"
 requests = "^2.25.1"
 tox = "^3.23.0"
+python-dotenv = "^0.15.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^4.6"
