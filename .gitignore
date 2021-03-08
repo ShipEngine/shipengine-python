@@ -225,3 +225,6 @@ fabric.properties
 
 # Locals
 logs/
+baz.py
+Dockerfile
+docker-compose.yaml
