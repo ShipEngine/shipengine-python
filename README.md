@@ -1,4 +1,4 @@
-ShipEngine SDK - Python 
+ShipEngine SDK - Python
 =======================
 > ATTN: This project is under development and not ready for consumer use.
 
@@ -18,4 +18,23 @@ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poet
 - Once you have **Poetry** installed you need to install the projects dependencies with this command:
 ```bash
 poetry install
+```
+- After you have installed **Poetry**, you need to start the python environment managed by Poetry by running `poetry shell` in your terminal.
+
+Testing
+-------
+You can run the tests in the `tests/` directory using [Pytest]() in the **Poetry** environment like this:
+```bash
+poetry run pytest
+```
+OR via `Tox`:
+```bash
+poetry run tox
+```
+
+Linting
+-------
+You can run the `linting environment` in **Tox** using this command:
+```bash
+poetry tox -e linting
 ```
