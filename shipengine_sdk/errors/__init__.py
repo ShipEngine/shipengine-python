@@ -4,6 +4,14 @@
 class ShipEngineException(Exception):
     """Base exception class that all other client exceptions will inherit from."""
 
+    def __init__(self, request_id: str, message: str, source, error_type, error_code, url):
+        self.request_id = request_id
+        self.message = message
+        self.source = source
+        self.error_code = error_code
+        self.error_type = error_type
+        self.url = url
+
 
 class AccountStatusException(ShipEngineException):
     """An exception that indicates there is an issue with a given account's status."""
