@@ -1,3 +1,5 @@
+[![ShipEngine](https://shipengine.github.io/img/shipengine-logo-wide.png)](https://shipengine.com)
+
 ShipEngine SDK - Python
 =======================
 > ATTN: This project is under development and not ready for consumer use.
