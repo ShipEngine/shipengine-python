@@ -59,6 +59,7 @@ class ValidationException(ShipEngineException):
 class TimeoutException(ShipEngineException):
     """An exception that indicates the configured timeout has been reached for a given request."""
 
+    # TODO: retry_after needs to be of Type date/time
     def __init__(
         self,
         retry_after: int,
@@ -96,6 +97,7 @@ class InvalidFieldValueException(ShipEngineException):
 class RateLimitExceededException(ShipEngineException):
     """The amount of time (in SECONDS) to wait before retrying the request."""
 
+    # TODO: retry_after needs to be of Type date/time
     def __init__(
         self,
         retry_after: int,
