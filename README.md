@@ -12,24 +12,36 @@ Local Development
 
 This project uses [Poetry]() to manage project dependencies, build steps, and publishing to [PYPI]().
 
-You can use the following `curl` command to download **Poetry** from your terminal is you are on `osx / linux / bashonwindows`:
+You can use the following `curl` command to download **Poetry** from your terminal is you are
+on `osx / linux / bashonwindows`:
+
 ```bash
 curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
 ```
 
 - Once you have **Poetry** installed you need to install the projects dependencies with this command:
+
 ```bash
 poetry install
 ```
-- After you have installed **Poetry**, you need to start the python environment managed by Poetry by running `poetry shell` in your terminal.
+
+- After you have installed **Poetry**, you need to start the python environment managed by Poetry by
+  running `poetry shell` in your terminal.
+    - Next you will have to start the poetry environment:
+  ```bash
+  poetry shell
+  ```
 
 Testing
 -------
 You can run the tests in the `tests/` directory using [Pytest]() in the **Poetry** environment like this:
+
 ```bash
 poetry run pytest
 ```
+
 OR via `Tox`:
+
 ```bash
 poetry run tox
 ```
@@ -37,6 +49,7 @@ poetry run tox
 Linting
 -------
 You can run the `linting environment` in **Tox** using this command:
+
 ```bash
 poetry tox -e lint
 ```
