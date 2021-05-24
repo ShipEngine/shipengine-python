@@ -19,7 +19,7 @@ class ShipEngineError(Exception):
         error_type: Optional[str] = None,
         error_code: Optional[str] = None,
         url: Optional[str] = None,
-    ):
+    ) -> None:
         self.message = message
         self.request_id = request_id
         self.source = source
@@ -82,7 +82,7 @@ class ClientTimeoutError(ShipEngineError):
         retry_after: int,
         source: Optional[str] = None,
         request_id: Optional[str] = None,
-    ):
+    ) -> None:
         self.retry_after = retry_after
         self.source = source
         self.request_id = request_id
@@ -99,7 +99,7 @@ class ClientTimeoutError(ShipEngineError):
 class InvalidFieldValueError(ShipEngineError):
     """This error occurs when a field has been set to an invalid value."""
 
-    def __init__(self, field_name: str, reason: str, field_value):
+    def __init__(self, field_name: str, reason: str, field_value) -> None:
         self.field_name = field_name
         self.field_value = field_value
         super(InvalidFieldValueError, self).__init__(
@@ -119,7 +119,7 @@ class RateLimitExceededError(ShipEngineError):
         retry_after: int,
         source: Optional[str] = None,
         request_id: Optional[str] = None,
-    ):
+    ) -> None:
         self.retry_after = retry_after
         self.source = source
         self.request_id = request_id

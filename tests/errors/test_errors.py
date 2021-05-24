@@ -18,6 +18,37 @@ def shipengine_error():
         source="shipengine",
         error_type="validation",
         error_code="invalid_address",
+        url="https://google.com",
+    )
+
+
+def shipengine_error_with_bad_error_type():
+    raise ShipEngineError(
+        request_id="req_a523b1b19bd54054b7eb953f000e7f15",
+        message="The is a test exception",
+        source="shipengine",
+        error_type="tracking",
+        error_code="invalid_address",
+    )
+
+
+def shipengine_error_with_bad_error_source():
+    raise ShipEngineError(
+        request_id="req_a523b1b19bd54054b7eb953f000e7f15",
+        message="The is a test exception",
+        source="wayne_enterprises",
+        error_type="validation",
+        error_code="invalid_address",
+    )
+
+
+def shipengine_error_with_bad_error_code():
+    raise ShipEngineError(
+        request_id="req_a523b1b19bd54054b7eb953f000e7f15",
+        message="The is a test exception",
+        source="shipengine",
+        error_type="validation",
+        error_code="failure",
     )
 
 
@@ -49,41 +80,47 @@ def rate_limit_exceeded_error():
     raise RateLimitExceededError(300, "shipengine", "req_a523b1b19bd54054b7eb953f000e7f15")
 
 
-def test_shipengine_error():
-    with pytest.raises(ShipEngineError):
-        shipengine_error()
+class TestShipEngineErrors:
+    def test_shipengine_error(self) -> None:
+        with pytest.raises(ShipEngineError):
+            shipengine_error()
 
+    def test_shipengine_error_with_bad_error_type(self) -> None:
+        with pytest.raises(ValueError):
+            shipengine_error_with_bad_error_type()
 
-def test_account_status():
-    with pytest.raises(AccountStatusError):
-        account_status()
+    def test_shipengine_error_with_bad_error_source(self) -> None:
+        with pytest.raises(ValueError):
+            shipengine_error_with_bad_error_source()
 
+    def test_shipengine_error_with_bad_error_code(self) -> None:
+        with pytest.raises(ValueError):
+            shipengine_error_with_bad_error_code()
 
-def test_business_rule_error():
-    with pytest.raises(BusinessRuleError):
-        business_rule_error()
+    def test_account_status(self) -> None:
+        with pytest.raises(AccountStatusError):
+            account_status()
 
+    def test_business_rule_error(self) -> None:
+        with pytest.raises(BusinessRuleError):
+            business_rule_error()
 
-def test_security_error():
-    with pytest.raises(ClientSecurityError):
-        security_error()
+    def test_security_error(self) -> None:
+        with pytest.raises(ClientSecurityError):
+            security_error()
 
+    def test_validation_error(self) -> None:
+        with pytest.raises(ValidationError):
+            validation_error()
 
-def test_validation_error():
-    with pytest.raises(ValidationError):
-        validation_error()
+    def test_timeout_error(self) -> None:
+        with pytest.raises(ClientTimeoutError):
+            client_timeout_error()
 
+    def test_invalid_filed_value_error(self) -> None:
+        with pytest.raises(InvalidFieldValueError):
+            invalid_filed_value_error()
 
-def test_timeout_error():
-    with pytest.raises(ClientTimeoutError):
-        client_timeout_error()
-
-
-def test_invalid_filed_value_error():
-    with pytest.raises(InvalidFieldValueError):
-        invalid_filed_value_error()
-
-
-def test_rate_limit_exceeded_error():
-    with pytest.raises(RateLimitExceededError):
-        rate_limit_exceeded_error()
+    def test_rate_limit_exceeded_error(self) -> None:
+        with pytest.raises(RateLimitExceededError):
+            rate_limit_exceeded_error()
