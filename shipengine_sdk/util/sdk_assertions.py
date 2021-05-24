@@ -1,4 +1,4 @@
-"""Initial Docstring"""
+"""Assertion helper functions."""
 from shipengine_sdk.errors import InvalidFieldValueError
 from shipengine_sdk.errors import ValidationError
 from shipengine_sdk.models import ErrorCode
