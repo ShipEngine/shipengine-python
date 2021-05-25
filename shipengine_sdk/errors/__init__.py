@@ -2,9 +2,7 @@
 import json
 from typing import Optional
 
-from shipengine_sdk.models import ErrorCode
-from shipengine_sdk.models import ErrorSource
-from shipengine_sdk.models import ErrorType
+from shipengine_sdk.models import ErrorCode, ErrorSource, ErrorType
 
 
 class ShipEngineError(Exception):
