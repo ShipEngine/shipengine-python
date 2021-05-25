@@ -2,7 +2,7 @@
 from typing import Dict
 from typing import Union
 
-from shipengine_sdk import ShipEngineConfig
+from .shipengine_config import ShipEngineConfig
 
 
 class ShipEngine:
