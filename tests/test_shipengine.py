@@ -1,4 +1,4 @@
-"""Initial Docstring."""
+"""Testing the ShipEngine object."""
 from shipengine_sdk import __version__
 
 
