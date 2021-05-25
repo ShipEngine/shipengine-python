@@ -13,19 +13,13 @@ def config_with_no_api_key():
 
 
 class TestShipEngineConfig:
-    def test_no_api_key_error_type(self) -> None:
-        """
-        DX-1440 - No API Key at instantiation - only tests that
-        the correct type of error is thrown.
-        """
-        with pytest.raises(ValidationError):
-            config_with_no_api_key()
-
     def test_no_api_key(self):
         """DX-1440 - No API Key at instantiation"""
         try:
             config_with_no_api_key()
         except ValidationError as e:
+            with pytest.raises(ValidationError):
+                config_with_no_api_key()
             assert type(e) is ValidationError
             assert e.request_id is None
             assert e.error_type is ErrorType.VALIDATION.value
