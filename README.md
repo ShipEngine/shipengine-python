@@ -3,6 +3,7 @@
 ShipEngine SDK - Python
 =======================
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ShipEngine/shipengine-python/Python%20package?label=shipengine-python&logo=github&logoColor=white)
+[![Coverage Status](https://coveralls.io/repos/github/ShipEngine/shipengine-python/badge.svg?branch=main)](https://coveralls.io/github/ShipEngine/shipengine-python?branch=main)
 ![OS Compatibility](https://shipengine.github.io/img/badges/os-badges.svg)
 > ATTN: This project is under development and not ready for consumer use.
 
