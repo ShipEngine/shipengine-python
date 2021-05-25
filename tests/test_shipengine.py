@@ -18,19 +18,13 @@ class TestShipEngine:
         """Test the package version of the ShipEngine SDK."""
         assert __version__ == "0.0.1"
 
-    def test_no_api_key_provided_error_type(self):
-        """
-        DX-1440 - No API Key at instantiation - only tests that
-        the correct type of error is thrown.
-        """
-        with pytest.raises(ValidationError):
-            shipengine_no_api_key()
-
     def test_no_api_key_provided(self) -> None:
         """DX-1440 - No API Key at instantiation"""
         try:
             shipengine_no_api_key()
         except ValidationError as e:
+            with pytest.raises(ValidationError):
+                shipengine_no_api_key()
             assert type(e) is ValidationError
             assert e.request_id is None
             assert e.error_type is ErrorType.VALIDATION.value
