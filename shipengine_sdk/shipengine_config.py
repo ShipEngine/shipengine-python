@@ -7,11 +7,6 @@ from shipengine_sdk.util import is_retries_less_than_zero
 
 
 class ShipEngineConfig:
-    """
-    This is the configuration object for the ShipEngine object and it"s properties are
-    used throughout this SDK.
-    """
-
     DEFAULT_BASE_URI: str = Endpoints.SHIPENGINE_RPC_URL.value
     """A ShipEngine API Key, sandbox API Keys start with `TEST_`."""
 
@@ -25,6 +20,11 @@ class ShipEngineConfig:
     """Default timeout for the ShipEngineClient in seconds."""
 
     def __init__(self, config: dict) -> None:
+        """
+        This is the configuration object for the ShipEngine object and it"s properties are
+        used throughout this SDK.
+        """
+
         is_api_key_valid(config)
         self.api_key = config["api_key"]
 
@@ -51,7 +51,10 @@ class ShipEngineConfig:
         # TODO: add event listener to config object once it"s implemented.
 
     def merge(self, new_config: dict = None):
-        """The method allows the merging of a method-level configuration adjustment into the current configuration."""
+        """
+        The method allows the merging of a method-level configuration
+        adjustment into the current configuration.
+        """
 
         if new_config is None:
             return self

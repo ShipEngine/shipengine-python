@@ -1,16 +1,11 @@
 """Errors that will be raised through-out the ShipEngine SDK."""
 import json
 from typing import Optional
-from typing import Union
 
-from shipengine_sdk.models import ErrorCode
-from shipengine_sdk.models import ErrorSource
-from shipengine_sdk.models import ErrorType
+from shipengine_sdk.models import ErrorCode, ErrorSource, ErrorType
 
 
 class ShipEngineError(Exception):
-    """Base exception class that all other client errors will inherit from."""
-
     def __init__(
         self,
         message: str,
@@ -20,6 +15,7 @@ class ShipEngineError(Exception):
         error_code: Optional[str] = None,
         url: Optional[str] = None,
     ) -> None:
+        """Base exception class that all other client errors will inherit from."""
         self.message = message
         self.request_id = request_id
         self.source = source
@@ -75,14 +71,13 @@ class ValidationError(ShipEngineError):
 
 
 class ClientTimeoutError(ShipEngineError):
-    """An exception that indicates the configured timeout has been reached for a given request."""
-
     def __init__(
         self,
         retry_after: int,
         source: Optional[str] = None,
         request_id: Optional[str] = None,
     ) -> None:
+        """An exception that indicates the configured timeout has been reached for a given request."""
         self.retry_after = retry_after
         self.source = source
         self.request_id = request_id
@@ -97,9 +92,8 @@ class ClientTimeoutError(ShipEngineError):
 
 
 class InvalidFieldValueError(ShipEngineError):
-    """This error occurs when a field has been set to an invalid value."""
-
     def __init__(self, field_name: str, reason: str, field_value) -> None:
+        """This error occurs when a field has been set to an invalid value."""
         self.field_name = field_name
         self.field_value = field_value
         super(InvalidFieldValueError, self).__init__(
@@ -112,14 +106,13 @@ class InvalidFieldValueError(ShipEngineError):
 
 
 class RateLimitExceededError(ShipEngineError):
-    """The amount of time (in SECONDS) to wait before retrying the request."""
-
     def __init__(
         self,
         retry_after: int,
         source: Optional[str] = None,
         request_id: Optional[str] = None,
     ) -> None:
+        """The amount of time (in SECONDS) to wait before retrying the request."""
         self.retry_after = retry_after
         self.source = source
         self.request_id = request_id
