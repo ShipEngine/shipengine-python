@@ -92,14 +92,15 @@ class ClientTimeoutError(ShipEngineError):
 
 
 class InvalidFieldValueError(ShipEngineError):
-    def __init__(self, field_name: str, reason: str, field_value) -> None:
+    def __init__(self, field_name: str, reason: str, field_value, source: str = None) -> None:
         """This error occurs when a field has been set to an invalid value."""
         self.field_name = field_name
         self.field_value = field_value
+        self.source = source
         super(InvalidFieldValueError, self).__init__(
             request_id=None,
             message=f"{self.field_name} - {reason}",
-            source=None,
+            source=self.source,
             error_type=ErrorType.VALIDATION.value,
             error_code=ErrorCode.INVALID_FIELD_VALUE.value,
         )
