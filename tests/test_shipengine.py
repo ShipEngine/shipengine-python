@@ -1,8 +1,7 @@
 """Testing the ShipEngine object."""
 import pytest
 
-from shipengine_sdk import __version__
-from shipengine_sdk import ShipEngine
+from shipengine_sdk import ShipEngine, __version__
 from shipengine_sdk.errors import ValidationError
 from shipengine_sdk.util.sdk_assertions import api_key_validation_error_assertions
 
@@ -36,7 +35,7 @@ class TestShipEngine:
                 shipengine_no_api_key()
             api_key_validation_error_assertions(e)
 
-    def test_empty_api_key_provided(self):
+    def test_empty_api_key_provided(self) -> None:
         """DX-1441 - Empty API Key at instantiation."""
         try:
             shipengine_empty_api_key()
