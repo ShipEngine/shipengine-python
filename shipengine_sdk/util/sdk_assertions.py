@@ -21,14 +21,15 @@ def is_retries_less_than_zero(config: dict) -> None:
             field_name="retries",
             reason="Retries must be zero or greater.",
             field_value=config["retries"],
+            source=ErrorSource.SHIPENGINE.value
         )
 
 
-def api_key_validation_error_assertions(e: ValidationError):
+def api_key_validation_error_assertions(error):
     """Helper test function that has common assertions pertaining to ValidationErrors."""
-    assert type(e) is ValidationError
-    assert e.request_id is None
-    assert e.error_type is ErrorType.VALIDATION.value
-    assert e.error_code is ErrorCode.FIELD_VALUE_REQUIRED.value
-    assert e.source is ErrorSource.SHIPENGINE.value
-    assert e.message == "A ShipEngine API key must be specified."
+    assert type(error) is ValidationError
+    assert error.request_id is None
+    assert error.error_type is ErrorType.VALIDATION.value
+    assert error.error_code is ErrorCode.FIELD_VALUE_REQUIRED.value
+    assert error.source is ErrorSource.SHIPENGINE.value
+    assert error.message == "A ShipEngine API key must be specified."
