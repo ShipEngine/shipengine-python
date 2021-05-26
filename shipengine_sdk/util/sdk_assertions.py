@@ -14,14 +14,24 @@ def is_api_key_valid(config: dict) -> None:
         )
 
 
-def is_retries_less_than_zero(config: dict) -> None:
+def is_retries_valid(config: dict) -> None:
     """Checks that config.retries is less than zero."""
     if "retries" in config and config["retries"] < 0:
         raise InvalidFieldValueError(
             field_name="retries",
             reason="Retries must be zero or greater.",
             field_value=config["retries"],
-            source=ErrorSource.SHIPENGINE.value
+            source=ErrorSource.SHIPENGINE.value,
+        )
+
+
+def is_timeout_valid(config: dict) -> None:
+    if "timeout" in config and config["timeout"] < 0:
+        raise InvalidFieldValueError(
+            field_name="timeout",
+            reason="Timeout must be zero or greater.",
+            field_value=config["timeout"],
+            source=ErrorSource.SHIPENGINE.value,
         )
 
 

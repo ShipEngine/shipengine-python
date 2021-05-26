@@ -2,8 +2,8 @@
 import json
 
 from shipengine_sdk.models.enums import Endpoints
-from shipengine_sdk.util import is_api_key_valid
-from shipengine_sdk.util import is_retries_less_than_zero
+from shipengine_sdk.util import is_api_key_valid, is_retries_valid
+from shipengine_sdk.util.sdk_assertions import is_timeout_valid
 
 
 class ShipEngineConfig:
@@ -28,6 +28,7 @@ class ShipEngineConfig:
         is_api_key_valid(config)
         self.api_key = config["api_key"]
 
+        is_timeout_valid(config)
         if "timeout" in config:
             self.timeout = config["timeout"]
         else:
@@ -43,7 +44,7 @@ class ShipEngineConfig:
         else:
             self.page_size = self.DEFAULT_PAGE_SIZE
 
-        is_retries_less_than_zero(config)
+        is_retries_valid(config)
         if "retries" in config:
             self.retries = config["retries"]
         else:

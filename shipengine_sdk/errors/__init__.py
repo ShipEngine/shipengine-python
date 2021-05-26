@@ -99,7 +99,7 @@ class InvalidFieldValueError(ShipEngineError):
         self.source = source
         super(InvalidFieldValueError, self).__init__(
             request_id=None,
-            message=f"{self.field_name} - {reason}",
+            message=f"{self.field_name} - {reason} {self.field_value} was provided.",
             source=self.source,
             error_type=ErrorType.VALIDATION.value,
             error_code=ErrorCode.INVALID_FIELD_VALUE.value,
