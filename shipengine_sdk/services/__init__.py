@@ -1,1 +1,1 @@
-"""Initial Docstring."""
+"""ShipEngine SDK service objects."""

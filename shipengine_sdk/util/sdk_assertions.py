@@ -1,10 +1,26 @@
 """Assertion helper functions."""
-from shipengine_sdk.errors import InvalidFieldValueError, ValidationError
+import re
+
+from shipengine_sdk import ShipEngineConfig
+from shipengine_sdk.errors import (
+    ClientSystemError,
+    ClientTimeoutError,
+    InvalidFieldValueError,
+    RateLimitExceededError,
+    ValidationError,
+)
 from shipengine_sdk.models import ErrorCode, ErrorSource, ErrorType
 
 
 def is_api_key_valid(config: dict) -> None:
-    """Check if API Key is set and is not empty or whitespace."""
+    """
+    Check if API Key is set and is not empty or whitespace.
+
+    :param dict config: The config dictionary passed into `ShipEngineConfig`.
+    :returns: None, only raises exceptions.
+    :rtype: None
+    """
+    match = re.match(r"\s", config["timeout"])
     if "api_key" not in config or config["api_key"] == "":
         raise ValidationError(
             message="A ShipEngine API key must be specified.",
@@ -12,10 +28,24 @@ def is_api_key_valid(config: dict) -> None:
             error_type=ErrorType.VALIDATION.value,
             error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
         )
+    elif match:
+        raise ValidationError(
+            message="The API key provided contains whitespace and is invalid.",
+            source=ErrorSource.SHIPENGINE.value,
+            error_type=ErrorType.VALIDATION.value,
+            error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
+            url="https://www.shipengine.com/signup/",
+        )
 
 
 def is_retries_valid(config: dict) -> None:
-    """Checks that config.retries is less than zero."""
+    """
+    Checks that config.retries is a valid value.
+
+    :param dict config: The config dictionary passed into `ShipEngineConfig`.
+    :returns: None, only raises exceptions.
+    :rtype: None
+    """
     if "retries" in config and config["retries"] < 0:
         raise InvalidFieldValueError(
             field_name="retries",
@@ -26,6 +56,13 @@ def is_retries_valid(config: dict) -> None:
 
 
 def is_timeout_valid(config: dict) -> None:
+    """
+    Checks that config.timeout is valid value.
+
+    :param dict config: The config dictionary passed into `ShipEngineConfig`.
+    :returns: None, only raises exceptions.
+    :rtype: None
+    """
     if "timeout" in config and config["timeout"] < 0:
         raise InvalidFieldValueError(
             field_name="timeout",
@@ -35,11 +72,67 @@ def is_timeout_valid(config: dict) -> None:
         )
 
 
-def api_key_validation_error_assertions(error):
-    """Helper test function that has common assertions pertaining to ValidationErrors."""
+def api_key_validation_error_assertions(error) -> None:
+    """
+    Helper test function that has common assertions pertaining to ValidationErrors.
+
+    :param error: The error to execute assertions on.
+    :returns: None, only executes assertions.
+    :rtype: None
+    """
     assert type(error) is ValidationError
     assert error.request_id is None
     assert error.error_type is ErrorType.VALIDATION.value
     assert error.error_code is ErrorCode.FIELD_VALUE_REQUIRED.value
     assert error.source is ErrorSource.SHIPENGINE.value
     assert error.message == "A ShipEngine API key must be specified."
+
+
+def is_response_404(status_code: int, response_body: dict) -> None:
+    """Check if status_code is 404 and raises an error if so."""
+    if "error" in response_body:
+        error = response_body["error"]
+        error_data = error["data"]
+        if status_code == 404:
+            raise ClientSystemError(
+                message=error["message"],
+                request_id=response_body["id"],
+                source=error_data["source"],
+                error_type=error_data["type"],
+                error_code=error_data["code"],
+            )
+
+
+def is_response_429(status_code: int, response_body: dict, config: ShipEngineConfig) -> None:
+    """Check if status_code is 429 and raises an error if so."""
+    if "error" in response_body:
+        error = response_body["error"]
+        retry_after = error["data"]["retryAfter"]
+
+        if retry_after > config.timeout:
+            raise ClientTimeoutError(
+                retry_after=config.timeout,
+                source=ErrorSource.SHIPENGINE.value,
+                request_id=response_body["id"],
+            )
+
+        if status_code == 429:
+            raise RateLimitExceededError(
+                retry_after=retry_after,
+                source=ErrorSource.SHIPENGINE.value,
+                request_id=response_body["id"],
+            )
+
+
+def is_response_500(status_code: int, response_body: dict) -> None:
+    """Check if the status code is 500 and raises an error if so."""
+    if status_code == 500:
+        error = response_body["error"]
+        error_data = error["data"]
+        raise ClientSystemError(
+            message=error["message"],
+            request_id=response_body["id"],
+            source=error_data["source"],
+            error_type=error_data["type"],
+            error_code=error_data["code"],
+        )

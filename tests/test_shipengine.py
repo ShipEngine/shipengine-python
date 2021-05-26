@@ -6,17 +6,17 @@ from shipengine_sdk.errors import ValidationError
 from shipengine_sdk.util.sdk_assertions import api_key_validation_error_assertions
 
 
-def shipengine_no_api_key():
+def shipengine_no_api_key() -> ShipEngine:
     """Return an error from no API Key."""
     return ShipEngine(dict(retries=2))
 
 
-def shipengine_empty_api_key():
+def shipengine_empty_api_key() -> ShipEngine:
     """Return an error from empty API Key."""
     return ShipEngine(config="")
 
 
-def shipengine_whitespace_in_api_key():
+def shipengine_whitespace_in_api_key() -> ShipEngine:
     """Return an error from whitespace in API Key."""
     return ShipEngine(config=" ")
 

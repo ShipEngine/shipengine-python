@@ -85,5 +85,9 @@ class ShipEngineConfig:
 
             return ShipEngineConfig(config)
 
+    @staticmethod
+    def to_dict():
+        return lambda o: o.__dict__
+
     def to_json(self):
-        return json.dumps(self, default=lambda o: o.__dict__, indent=2)
+        return json.dumps(self, default=self.to_dict, indent=2)
