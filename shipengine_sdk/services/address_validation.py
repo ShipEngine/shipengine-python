@@ -1,8 +1,8 @@
 """Validate a single address or multiple addresses."""
-from shipengine_sdk import ShipEngineConfig
 from shipengine_sdk.jsonrpc import rpc_request
 from shipengine_sdk.models.address import Address, AddressValidateResult
 from shipengine_sdk.models.enums import RPCMethods
+from shipengine_sdk.shipengine_config import ShipEngineConfig
 
 
 def validate(address: Address, config: ShipEngineConfig) -> AddressValidateResult:
@@ -15,7 +15,9 @@ def validate(address: Address, config: ShipEngineConfig) -> AddressValidateResul
     validated and normalized address.
     """
     api_response = rpc_request(
-        method=RPCMethods.ADDRESS_VALIDATE.value, config=config, params=address.to_dict()
+        method=RPCMethods.ADDRESS_VALIDATE.value,
+        config=config,
+        params={"address": address.to_dict()},
     )
 
     return AddressValidateResult(api_response)

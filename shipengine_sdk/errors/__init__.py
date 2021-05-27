@@ -46,6 +46,9 @@ class ShipEngineError(Exception):
                 f"Error type must be a member of ErrorCode enum - [{self.error_code}] provided."
             )
 
+    def to_dict(self):
+        return (lambda o: o.__dict__)(self)
+
     def to_json(self):
         return json.dumps(self, default=lambda o: o.__dict__, indent=2)
 

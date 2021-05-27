@@ -1,8 +1,9 @@
 """The entrypoint to the ShipEngine API SDK."""
 from typing import Dict, Union
 
-from .models.address import Address, AddressValidateResult
-from .services.address_validation import validate
+from shipengine_sdk.models.address import Address, AddressValidateResult
+from shipengine_sdk.services.address_validation import validate
+
 from .shipengine_config import ShipEngineConfig
 
 

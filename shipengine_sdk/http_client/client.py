@@ -9,17 +9,11 @@ from requests.adapters import HTTPAdapter
 from requests.auth import AuthBase
 from requests.packages.urllib3.util.retry import Retry
 
-from shipengine_sdk import ShipEngineConfig, __version__
-from shipengine_sdk.errors import (
-    AccountStatusError,
-    BusinessRuleError,
-    ClientSecurityError,
-    ClientSystemError,
-    ShipEngineError,
-    ValidationError,
-)
-from shipengine_sdk.jsonrpc import wrap_request
+from shipengine_sdk import __version__
+from shipengine_sdk.errors import ShipEngineError
+from shipengine_sdk.jsonrpc.process_request import handle_response, wrap_request
 from shipengine_sdk.models import ErrorCode, ErrorSource, ErrorType
+from shipengine_sdk.shipengine_config import ShipEngineConfig
 from shipengine_sdk.util.sdk_assertions import (
     is_response_404,
     is_response_429,
@@ -95,7 +89,7 @@ class ShipEngineClient:
         is_response_429(status_code=status_code, response_body=resp_body, config=config)
         is_response_500(status_code=status_code, response_body=resp_body)
 
-        return self._handle_response(resp.json())
+        return handle_response(resp.json())
 
     def _request_retry_session(
         self, retries: int = 1, backoff_factor=1, status_force_list=(429, 500, 502, 503, 504)
@@ -112,64 +106,6 @@ class ShipEngineClient:
         self.session.mount("http://", adapter=adapter)
         self.session.mount("https://", adapter=adapter)
         return self.session
-
-    @staticmethod
-    def _handle_response(response_body: dict) -> dict:
-        """Handles the response from ShipEngine API."""
-        if "result" in response_body:
-            return response_body
-
-        error = response_body["error"]
-        error_data = error["data"]
-        error_type = error_data["type"]
-        if error_type is ErrorType.ACCOUNT_STATUS.value:
-            raise AccountStatusError(
-                message=error["message"],
-                request_id=response_body["id"],
-                source=error_data["source"],
-                error_type=error_data["type"],
-                error_code=error_data["code"],
-            )
-        elif error_type is ErrorType.SECURITY.value:
-            raise ClientSecurityError(
-                message=error["message"],
-                request_id=response_body["id"],
-                source=error_data["source"],
-                error_type=error_data["type"],
-                error_code=error_data["code"],
-            )
-        elif error_type is ErrorType.VALIDATION.value:
-            raise ValidationError(
-                message=error["message"],
-                request_id=response_body["id"],
-                source=error_data["source"],
-                error_type=error_data["type"],
-                error_code=error_data["code"],
-            )
-        elif error_type is ErrorType.BUSINESS_RULES.value:
-            raise BusinessRuleError(
-                message=error["message"],
-                request_id=response_body["id"],
-                source=error_data["source"],
-                error_type=error_data["type"],
-                error_code=error_data["code"],
-            )
-        elif error_type is ErrorType.SYSTEM.value:
-            raise ClientSystemError(
-                message=error["message"],
-                request_id=response_body["id"],
-                source=error_data["source"],
-                error_type=error_data["type"],
-                error_code=error_data["code"],
-            )
-        else:
-            raise ShipEngineError(
-                message=error["message"],
-                request_id=response_body["id"],
-                source=error_data["source"],
-                error_type=error_data["type"],
-                error_code=error_data["code"],
-            )
 
     @staticmethod
     def _derive_user_agent() -> str:

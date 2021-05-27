@@ -1,5 +1,4 @@
 """Assertion helper functions."""
-
 from shipengine_sdk.errors import (
     ClientSystemError,
     ClientTimeoutError,
