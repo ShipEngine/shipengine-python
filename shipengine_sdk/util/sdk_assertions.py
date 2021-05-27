@@ -1,7 +1,5 @@
 """Assertion helper functions."""
-import re
 
-from shipengine_sdk import ShipEngineConfig
 from shipengine_sdk.errors import (
     ClientSystemError,
     ClientTimeoutError,
@@ -20,21 +18,12 @@ def is_api_key_valid(config: dict) -> None:
     :returns: None, only raises exceptions.
     :rtype: None
     """
-    match = re.match(r"\s", config["timeout"])
     if "api_key" not in config or config["api_key"] == "":
         raise ValidationError(
             message="A ShipEngine API key must be specified.",
             source=ErrorSource.SHIPENGINE.value,
             error_type=ErrorType.VALIDATION.value,
             error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
-        )
-    elif match:
-        raise ValidationError(
-            message="The API key provided contains whitespace and is invalid.",
-            source=ErrorSource.SHIPENGINE.value,
-            error_type=ErrorType.VALIDATION.value,
-            error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
-            url="https://www.shipengine.com/signup/",
         )
 
 
@@ -103,7 +92,7 @@ def is_response_404(status_code: int, response_body: dict) -> None:
             )
 
 
-def is_response_429(status_code: int, response_body: dict, config: ShipEngineConfig) -> None:
+def is_response_429(status_code: int, response_body: dict, config) -> None:
     """Check if status_code is 429 and raises an error if so."""
     if "error" in response_body:
         error = response_body["error"]

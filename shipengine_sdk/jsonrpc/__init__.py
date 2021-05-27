@@ -2,9 +2,8 @@
 A collection of methods that provide `JSON-RPC 2.0` HTTP client
 functionality for sending HTTP requests from the ShipEngine SDK.
 """
-import os
 import time
-from typing import Dict, Optional, Union
+from typing import Dict, Optional
 from uuid import uuid4
 
 from shipengine_sdk import ShipEngineConfig

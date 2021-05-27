@@ -18,7 +18,7 @@ def shipengine_empty_api_key() -> ShipEngine:
 
 def shipengine_whitespace_in_api_key() -> ShipEngine:
     """Return an error from whitespace in API Key."""
-    return ShipEngine(config=" ")
+    return ShipEngine(config="  ")
 
 
 class TestShipEngine:

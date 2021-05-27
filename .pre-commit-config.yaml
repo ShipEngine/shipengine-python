@@ -3,7 +3,8 @@ repos:
     rev: 20.8b1
     hooks:
       - id: black
-        args: [ "--safe", "--diff", "--color"]
+        args: ["--diff", "--color"]
+        verbose: true
   - repo: https://github.com/psf/black
     rev: 20.8b1
     hooks:
