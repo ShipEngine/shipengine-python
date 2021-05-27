@@ -12,6 +12,7 @@ python = "^3.7"
 aiohttp = "^3.7.4"
 requests = "^2.25.1"
 python-dotenv = "^0.15.0"
+dataclasses-json = "^0.5.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^4.6"

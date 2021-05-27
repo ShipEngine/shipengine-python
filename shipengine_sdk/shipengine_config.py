@@ -1,5 +1,6 @@
 """The global configuration object for the ShipEngine SDK."""
 import json
+from typing import Dict, Optional
 
 from shipengine_sdk.models.enums import Endpoints
 from shipengine_sdk.util import is_api_key_valid, is_retries_valid
@@ -51,7 +52,7 @@ class ShipEngineConfig:
             self.retries = self.DEFAULT_RETRIES
         # TODO: add event listener to config object once it"s implemented.
 
-    def merge(self, new_config: dict = None):
+    def merge(self, new_config: Optional[Dict[str, any]] = None):
         """
         The method allows the merging of a method-level configuration
         adjustment into the current configuration.
@@ -85,9 +86,8 @@ class ShipEngineConfig:
 
             return ShipEngineConfig(config)
 
-    @staticmethod
-    def to_dict():
-        return lambda o: o.__dict__
+    def to_dict(self):
+        return (lambda o: o.__dict__)(self)
 
     def to_json(self):
-        return json.dumps(self, default=self.to_dict, indent=2)
+        return json.dumps(self, default=lambda o: o.__dict__, indent=2)

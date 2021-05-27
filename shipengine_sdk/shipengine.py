@@ -1,7 +1,8 @@
 """The entrypoint to the ShipEngine API SDK."""
-from typing import Dict
-from typing import Union
+from typing import Dict, Union
 
+from .models.address import Address, AddressValidateResult
+from .services.address_validation import validate
 from .shipengine_config import ShipEngineConfig
 
 
@@ -25,3 +26,17 @@ class ShipEngine:
             self.config = ShipEngineConfig({"api_key": config})
         elif type(config) is dict:
             self.config = ShipEngineConfig(config)
+
+    def validate_address(
+        self, address: Address, config: Union[Dict[str, any], ShipEngineConfig] = None
+    ) -> AddressValidateResult:
+        """
+        Validate an address in nearly any countryCode in the world.
+
+        :param Address address: The address to be validate.
+        :param ShipEngineConfig config: The global ShipEngine configuration object.
+        :returns: :class:`AddressValidateResult`: The response from ShipEngine API including the
+        validated and normalized address.
+        """
+        config = self.config.merge(new_config=config)
+        return validate(address, config)
