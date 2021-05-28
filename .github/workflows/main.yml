@@ -55,6 +55,5 @@ jobs:
     - name: Coveralls
       uses: coverallsapp/github-action@master
       with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        COVERALLS_FLAG_NAME: ${{ matrix.python-version }}
-        COVERALLS_PARALLEL: true
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        flag-name: ${{ matrix.python-version }}
