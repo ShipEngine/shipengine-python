@@ -1,4 +1,5 @@
 """A Python library for ShipEngine API."""
+import json
 import os
 import platform
 from typing import Dict, Optional, Union
@@ -66,7 +67,7 @@ class ShipEngineClient:
         req: Request = Request(
             method="POST",
             url=base_uri,
-            data=request_body,
+            data=json.dumps(request_body),
             headers=request_headers,
             auth=ShipEngineAuth(config.api_key),
         )

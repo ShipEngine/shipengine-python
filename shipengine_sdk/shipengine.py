@@ -15,7 +15,7 @@ class ShipEngine:
     unless specifically overridden when calling a method.
     """
 
-    def __init__(self, config: Union[str, Dict[str, any]]) -> None:
+    def __init__(self, config: Union[str, Dict[str, any], ShipEngineConfig]) -> None:
         """
         Exposes the functionality of the ShipEngine API.
 

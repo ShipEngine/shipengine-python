@@ -76,6 +76,15 @@ def api_key_validation_error_assertions(error) -> None:
     assert error.message == "A ShipEngine API key must be specified."
 
 
+def timeout_validation_error_assertions(error) -> None:
+    """Helper test function that has common assertions pertaining to InvalidFieldValueError."""
+    assert type(error) is InvalidFieldValueError
+    assert error.request_id is None
+    assert error.error_type is ErrorType.VALIDATION.value
+    assert error.error_code is ErrorCode.INVALID_FIELD_VALUE.value
+    assert error.source is ErrorSource.SHIPENGINE.value
+
+
 def is_response_404(status_code: int, response_body: dict) -> None:
     """Check if status_code is 404 and raises an error if so."""
     if "error" in response_body:

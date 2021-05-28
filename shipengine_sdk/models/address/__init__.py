@@ -14,7 +14,7 @@ class Address:
     state_province: str
     postal_code: str
     country_code: str
-    is_residential: Optional[bool] = None
+    is_residential: bool = False
     name: str = ""
     phone: str = ""
     company: str = ""
@@ -25,7 +25,8 @@ class Address:
 class AddressValidateResult:
     is_valid: Optional[bool]
     request_id: str
-    address: Address
-    info: List
-    warnings: List
-    errors: List
+    normalized_address: Optional[Address]
+    messages: List
+    # info: List
+    # warnings: List
+    # errors: List

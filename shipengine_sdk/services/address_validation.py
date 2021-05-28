@@ -14,10 +14,20 @@ def validate(address: Address, config: ShipEngineConfig) -> AddressValidateResul
     :returns: :class:`AddressValidateResult`: The response from ShipEngine API including the
     validated and normalized address.
     """
-    api_response = rpc_request(
+    api_response: dict = rpc_request(
         method=RPCMethods.ADDRESS_VALIDATE.value,
         config=config,
         params={"address": address.to_dict()},
     )
+    result = api_response["result"]
+    return AddressValidateResult(
+        is_valid=result["isValid"],
+        request_id=api_response["id"],
+        normalized_address=Address.from_dict(result["normalizedAddress"]),
+        messages=result["messages"],
+    )
 
-    return AddressValidateResult(api_response)
+
+def normalize(address: Address, config: ShipEngineConfig) -> Address:
+    validation_result = validate(address=address, config=config)
+    return validation_result.normalized_address
