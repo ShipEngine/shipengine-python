@@ -4,7 +4,6 @@ repos:
     hooks:
       - id: black
         args: [ "--safe", "--diff", "--color"]
-        verbose: true
   - repo: https://github.com/psf/black
     rev: 20.8b1
     hooks:
