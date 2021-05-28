@@ -181,3 +181,14 @@ class TestShipEngineConfig:
             assert (
                 e.message == f"retries - Retries must be zero or greater. {retries} was provided."
             )
+
+    def test_invalid_api_key_in_method_call(self):
+        """DX-1445 - Invalid api_key in method call configuration."""
+        api_key = "   "
+        try:
+            shipengine = ShipEngine(stub_config())
+            shipengine.validate_address(
+                address=valid_residential_address(), config=dict(api_key=api_key)
+            )
+        except Exception as e:
+            api_key_validation_error_assertions(e)
