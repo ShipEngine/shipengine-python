@@ -49,10 +49,6 @@ jobs:
     - name: Run linting environment and pre-commit hooks
       run: |
         tox -e lint
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        COVERALLS_FLAG_NAME: ${{ matrix.python-version }}
-        COVERALLS_PARALLEL: true
     - name: Test with pytest and coverage via Tox
       run: |
        tox
