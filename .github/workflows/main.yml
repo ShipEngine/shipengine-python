@@ -48,7 +48,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=100 --statistics
     - name: Run linting environment and pre-commit hooks
       run: |
-        tox -e linting
+        tox -e lint
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         COVERALLS_FLAG_NAME: ${{ matrix.python-version }}
