@@ -49,6 +49,10 @@ jobs:
     - name: Run linting environment and pre-commit hooks
       run: |
         tox -e linting
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Test with pytest and coverage via Tox
       run: |
        tox
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
