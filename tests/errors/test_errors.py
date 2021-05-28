@@ -1,14 +1,16 @@
 """Tests for the ShipEngine SDK Errors"""
 import pytest
 
-from shipengine_sdk.errors import AccountStatusError
-from shipengine_sdk.errors import BusinessRuleError
-from shipengine_sdk.errors import ClientSecurityError
-from shipengine_sdk.errors import ClientTimeoutError
-from shipengine_sdk.errors import InvalidFieldValueError
-from shipengine_sdk.errors import RateLimitExceededError
-from shipengine_sdk.errors import ShipEngineError
-from shipengine_sdk.errors import ValidationError
+from shipengine_sdk.errors import (
+    AccountStatusError,
+    BusinessRuleError,
+    ClientSecurityError,
+    ClientTimeoutError,
+    InvalidFieldValueError,
+    RateLimitExceededError,
+    ShipEngineError,
+    ValidationError,
+)
 
 
 def shipengine_error():
