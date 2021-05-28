@@ -12,8 +12,7 @@ on:
       - main
 
 jobs:
-  build:
-
+  lint-test-coverage:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -49,11 +48,34 @@ jobs:
     - name: Run linting environment and pre-commit hooks
       run: |
         tox -e lint
-    - name: Test with pytest and coverage via Tox
-      run: |
-       tox
-    - name: Coveralls
-      uses: coverallsapp/github-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        flag-name: ${{ matrix.python-version }}
+
+
+  tox-coveralls:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Tox testenv and coveralls
+        run: |
+          tox
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          flag-name: ${{ matrix.python-version }}
+          parallel: true
