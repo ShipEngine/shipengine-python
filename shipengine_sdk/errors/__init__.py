@@ -46,6 +46,9 @@ class ShipEngineError(Exception):
                 f"Error type must be a member of ErrorCode enum - [{self.error_code}] provided."
             )
 
+    def to_dict(self):
+        return (lambda o: o.__dict__)(self)
+
     def to_json(self):
         return json.dumps(self, default=lambda o: o.__dict__, indent=2)
 
@@ -92,14 +95,15 @@ class ClientTimeoutError(ShipEngineError):
 
 
 class InvalidFieldValueError(ShipEngineError):
-    def __init__(self, field_name: str, reason: str, field_value) -> None:
+    def __init__(self, field_name: str, reason: str, field_value, source: str = None) -> None:
         """This error occurs when a field has been set to an invalid value."""
         self.field_name = field_name
         self.field_value = field_value
+        self.source = source
         super(InvalidFieldValueError, self).__init__(
             request_id=None,
-            message=f"{self.field_name} - {reason}",
-            source=None,
+            message=f"{self.field_name} - {reason} {self.field_value} was provided.",
+            source=self.source,
             error_type=ErrorType.VALIDATION.value,
             error_code=ErrorCode.INVALID_FIELD_VALUE.value,
         )

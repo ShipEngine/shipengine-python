@@ -12,6 +12,7 @@ python = "^3.7"
 aiohttp = "^3.7.4"
 requests = "^2.25.1"
 python-dotenv = "^0.15.0"
+dataclasses-json = "^0.5.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^4.6"
@@ -23,18 +24,20 @@ coverage = "^5.5"
 pytest-cov = "^2.11.1"
 pre-commit = "^2.11.0"
 isort = "^5.8.0"
+responses = "^0.13.3"
+coveralls = "^3.1.0"
 
 [tool.black]
 line-length = 100
 target-verstion = ["py37"]
 safe = true
-quiet = true
-diff = true
-color = true
 
 [tool.isort]
 profile = "black"
 multi_line_output = 3
+
+[tool.coverage.run]
+relative_files = true
 
 [tool.poetry.scripts]
 

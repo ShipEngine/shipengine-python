@@ -1,9 +1,10 @@
 """The global configuration object for the ShipEngine SDK."""
 import json
+from typing import Dict, Optional
 
 from shipengine_sdk.models.enums import Endpoints
-from shipengine_sdk.util import is_api_key_valid
-from shipengine_sdk.util import is_retries_less_than_zero
+from shipengine_sdk.util import is_api_key_valid, is_retries_valid
+from shipengine_sdk.util.sdk_assertions import is_timeout_valid
 
 
 class ShipEngineConfig:
@@ -28,6 +29,7 @@ class ShipEngineConfig:
         is_api_key_valid(config)
         self.api_key = config["api_key"]
 
+        is_timeout_valid(config)
         if "timeout" in config:
             self.timeout = config["timeout"]
         else:
@@ -43,14 +45,14 @@ class ShipEngineConfig:
         else:
             self.page_size = self.DEFAULT_PAGE_SIZE
 
-        is_retries_less_than_zero(config)
+        is_retries_valid(config)
         if "retries" in config:
             self.retries = config["retries"]
         else:
             self.retries = self.DEFAULT_RETRIES
         # TODO: add event listener to config object once it"s implemented.
 
-    def merge(self, new_config: dict = None):
+    def merge(self, new_config: Optional[Dict[str, any]] = None):
         """
         The method allows the merging of a method-level configuration
         adjustment into the current configuration.
@@ -83,6 +85,9 @@ class ShipEngineConfig:
             # TODO: added merge rule for event_listener once it is implemented.
 
             return ShipEngineConfig(config)
+
+    def to_dict(self):
+        return (lambda o: o.__dict__)(self)
 
     def to_json(self):
         return json.dumps(self, default=lambda o: o.__dict__, indent=2)
