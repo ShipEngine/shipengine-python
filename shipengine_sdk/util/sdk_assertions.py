@@ -1,4 +1,6 @@
 """Assertion helper functions."""
+import re
+
 from shipengine_sdk.errors import (
     ClientSystemError,
     ClientTimeoutError,
@@ -17,9 +19,18 @@ def is_api_key_valid(config: dict) -> None:
     :returns: None, only raises exceptions.
     :rtype: None
     """
+    message = "A ShipEngine API key must be specified."
     if "api_key" not in config or config["api_key"] == "":
         raise ValidationError(
-            message="A ShipEngine API key must be specified.",
+            message=message,
+            source=ErrorSource.SHIPENGINE.value,
+            error_type=ErrorType.VALIDATION.value,
+            error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
+        )
+
+    if re.match(r"\s", config["api_key"]):
+        raise ValidationError(
+            message=message,
             source=ErrorSource.SHIPENGINE.value,
             error_type=ErrorType.VALIDATION.value,
             error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
