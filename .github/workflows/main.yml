@@ -86,7 +86,6 @@ jobs:
         with:
           parallel: true
           flag-name: Python Test Suite
-
   coveralls_finish:
     needs: tox-coveralls
     runs-on: ubuntu-latest
