@@ -113,18 +113,16 @@ def is_response_404(status_code: int, response_body: dict) -> None:
 
 def is_response_429(status_code: int, response_body: dict, config) -> None:
     """Check if status_code is 429 and raises an error if so."""
-    if "error" in response_body:
+    if "error" in response_body and status_code == 429:
         error = response_body["error"]
         retry_after = error["data"]["retryAfter"]
-
         if retry_after > config.timeout:
             raise ClientTimeoutError(
                 retry_after=config.timeout,
                 source=ErrorSource.SHIPENGINE.value,
                 request_id=response_body["id"],
             )
-
-        if status_code == 429:
+        else:
             raise RateLimitExceededError(
                 retry_after=retry_after,
                 source=ErrorSource.SHIPENGINE.value,

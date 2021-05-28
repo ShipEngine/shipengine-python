@@ -24,6 +24,8 @@ coverage = "^5.5"
 pytest-cov = "^2.11.1"
 pre-commit = "^2.11.0"
 isort = "^5.8.0"
+responses = "^0.13.3"
+coveralls = "^3.1.0"
 
 [tool.black]
 line-length = 100
