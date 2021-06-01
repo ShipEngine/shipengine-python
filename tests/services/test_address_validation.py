@@ -1,4 +1,6 @@
 """Initial Docstring"""
+import re
+
 from shipengine_sdk import ShipEngine
 from shipengine_sdk.models.address import Address, AddressValidateResult
 from shipengine_sdk.models.enums import Endpoints
@@ -143,3 +145,12 @@ class TestValidateAddress:
             .upper()
         )
         assert address.street[1] == valid_multi_line_address.street[2].upper()
+
+    def test_numeric_postal_code(self) -> None:
+        """DX-1028 - Validate numeric postal code."""
+        residential_address = valid_residential_address()
+        validated_address = validate_an_address(residential_address)
+        us_valid_residential_address_assertions(
+            original_address=residential_address, validated_address=validated_address
+        )
+        assert re.match(r"\d", validated_address.normalized_address.postal_code)
