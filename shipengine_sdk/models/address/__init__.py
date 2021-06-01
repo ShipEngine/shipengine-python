@@ -5,6 +5,8 @@ from typing import List, Optional
 
 from dataclasses_json import LetterCase, dataclass_json
 
+from shipengine_sdk.util.sdk_assertions import is_street_valid
+
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
@@ -18,6 +20,9 @@ class Address:
     name: str = ""
     phone: str = ""
     company: str = ""
+
+    def __post_init__(self):
+        is_street_valid(self.street)
 
 
 @dataclass_json(letter_case=LetterCase.CAMEL)

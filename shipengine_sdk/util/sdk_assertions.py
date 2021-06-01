@@ -1,5 +1,6 @@
 """Assertion helper functions."""
 import re
+from typing import List
 
 from shipengine_sdk.errors import (
     ClientSystemError,
@@ -9,6 +10,23 @@ from shipengine_sdk.errors import (
     ValidationError,
 )
 from shipengine_sdk.models import ErrorCode, ErrorSource, ErrorType
+
+
+def is_street_valid(street: List) -> None:
+    if len(street) == 0:
+        raise ValidationError(
+            message="Invalid address. At least one address line is required.",
+            source=ErrorSource.SHIPENGINE.value,
+            error_type=ErrorType.VALIDATION.value,
+            error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
+        )
+    elif len(street) > 3:
+        raise ValidationError(
+            message="Invalid address. No more than 3 street lines are allowed.",
+            source=ErrorSource.SHIPENGINE.value,
+            error_type=ErrorType.VALIDATION.value,
+            error_code=ErrorCode.INVALID_FIELD_VALUE.value,
+        )
 
 
 def is_api_key_valid(config: dict) -> None:
