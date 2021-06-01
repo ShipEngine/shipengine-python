@@ -143,6 +143,8 @@ class ErrorCode(Enum):
     """The ShipEngine API endpoint that was requested does not exist."""
     NOT_FOUND = "not_found"
 
+    PARTIALLY_VERIFIED_TO_PREMISE_LEVEL = "partially_verified_to_premise_level"
+
     """
     You have exceeded a rate limit. Check the the error_source field to determine
     whether the rate limit was imposed by ShipEngine or by a third-party, such
