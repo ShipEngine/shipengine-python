@@ -63,7 +63,7 @@ def valid_canadian_address() -> Address:
 def multi_line_address() -> Address:
     """Returns a valid multiline address."""
     return Address(
-        street=["4 Jersey St", "ste 200", "1st FLoor"],
+        street=["4 Jersey St", "ste 200", "1st Floor"],
         city_locality="Boston",
         state_province="MA",
         postal_code="02215",
@@ -72,6 +72,10 @@ def multi_line_address() -> Address:
 
 
 def unknown_address() -> Address:
+    """
+    Return an address that will make the server respond with an
+    address with an unknown residential flag.
+    """
     return Address(
         street=["4 Unknown St"],
         city_locality="Toronto",
@@ -82,6 +86,11 @@ def unknown_address() -> Address:
 
 
 def validate_an_address(address: Address) -> AddressValidateResult:
+    """
+    Helper function that passes a config dictionary into the ShipEngine object to instantiate
+    it and calls the `validate_address` method, providing it the `address` that is passed into
+    this function.
+    """
     return stub_shipengine_instance().validate_address(address=address)
 
 
