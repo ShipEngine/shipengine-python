@@ -17,7 +17,19 @@ def empty_address_lines() -> Address:
     )
 
 
+def address_with_too_many_lines() -> Address:
+    """Return an address with too many address lines in the street list."""
+    return Address(
+        street=["4 Jersey St", "ste 200", "1st Floor", "Room B"],
+        city_locality="Boston",
+        state_province="MA",
+        postal_code="02215",
+        country_code="US",
+    )
+
+
 def address_line_assertions(err: ValidationError, variant: str) -> None:
+    """"""
     assert type(err) is ValidationError
     assert err.request_id is None
     assert err.source is ErrorSource.SHIPENGINE.value
@@ -33,10 +45,17 @@ def address_line_assertions(err: ValidationError, variant: str) -> None:
 
 class TestAddress:
     def test_no_address_lines(self):
-        """DX-1033 - Too many address lines in the street list."""
+        """DX-1034 - Too many address lines in the street list."""
         try:
             empty_address_lines()
         except ValidationError as err:
             address_line_assertions(err, "empty_address_lines")
             with pytest.raises(ValidationError):
                 empty_address_lines()
+
+    def test_address_with_too_many_lines(self):
+        """DX-1034 - Too many address lines."""
+        try:
+            address_with_too_many_lines()
+        except ValidationError as err:
+            address_line_assertions(err, "too_many_address_lines")
