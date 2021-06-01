@@ -2,6 +2,7 @@
 import re
 
 from shipengine_sdk import ShipEngine
+from shipengine_sdk.models import ErrorCode
 from shipengine_sdk.models.address import Address, AddressValidateResult
 from shipengine_sdk.models.enums import Endpoints
 
@@ -46,6 +47,17 @@ def valid_commercial_address() -> Address:
         state_province="MA",
         postal_code="02215",
         country_code="US",
+    )
+
+
+def address_with_warnings() -> Address:
+    """Return a test Address object that will cause the server to return warning messages."""
+    return Address(
+        street=["170 Warning Blvd", "Apartment 32-B"],
+        city_locality="Toronto",
+        state_province="ON",
+        postal_code="M6K 3C3",
+        country_code="CA",
     )
 
 
@@ -115,7 +127,9 @@ def us_valid_address_assertions(
     assert type(validated_address) is AddressValidateResult
     assert validated_address.is_valid is True
     assert type(address) is Address
-    assert len(validated_address.messages) == 0
+    assert len(validated_address.info) == 0
+    assert len(validated_address.warnings) == 0
+    assert len(validated_address.errors) == 0
     assert address is not None
     assert address.city_locality == original_address.city_locality.upper()
     assert address.state_province == original_address.state_province.upper()
@@ -134,7 +148,9 @@ def canada_valid_address_assertions(
     assert type(validated_address) is AddressValidateResult
     assert validated_address.is_valid is True
     assert type(address) is Address
-    assert len(validated_address.messages) == 0
+    assert len(validated_address.info) == 0
+    assert len(validated_address.warnings) == 0
+    assert len(validated_address.errors) == 0
     assert address is not None
     assert address.city_locality == original_address.city_locality
     assert address.state_province == original_address.state_province.title()
@@ -237,7 +253,8 @@ class TestValidateAddress:
         address = validated_address.normalized_address
 
         assert validated_address.is_valid is True
-        assert validated_address.normalized_address is not None
+        assert address is not None
+        assert type(address) is Address
         assert address.street[0] == "68 Kamitobatsunodacho"
         assert address.city_locality == "Kyoto-Shi Minami-Ku"
         assert address.state_province == "Kyoto"
@@ -245,3 +262,30 @@ class TestValidateAddress:
         assert address.country_code == non_latin.country_code
         assert address.is_residential is False
         assert len(address.street) == 1
+
+    def test_address_with_warnings(self):
+        """DX-1031 - validate with warnings."""
+        warnings_address = address_with_warnings()
+        validated_address = validate_an_address(warnings_address)
+        address = validated_address.normalized_address
+
+        assert type(validated_address) is AddressValidateResult
+        assert validated_address.is_valid is True
+        assert type(address) is Address
+        assert len(validated_address.info) == 0
+        assert len(validated_address.warnings) != 0
+        assert (
+            validated_address.warnings[0]["code"]
+            == ErrorCode.PARTIALLY_VERIFIED_TO_PREMISE_LEVEL.value
+        )
+        assert (
+            validated_address.warnings[0]["message"]
+            == "This address has been verified down to the house/building level (highest possible accuracy with the provided data)"  # noqa
+        )
+        assert len(validated_address.errors) == 0
+        assert address is not None
+        assert address.city_locality == validated_address.normalized_address.city_locality
+        assert address.state_province == validated_address.normalized_address.state_province.title()
+        assert address.postal_code == "M6K 3C3"
+        assert address.country_code == validated_address.normalized_address.country_code.upper()
+        assert address.is_residential is True
