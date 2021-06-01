@@ -45,7 +45,7 @@ def address_line_assertions(err: ValidationError, variant: str) -> None:
 
 class TestAddress:
     def test_no_address_lines(self):
-        """DX-1034 - Too many address lines in the street list."""
+        """DX-1033 - Too many address lines in the street list."""
         try:
             empty_address_lines()
         except ValidationError as err:
