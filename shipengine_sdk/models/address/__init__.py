@@ -16,7 +16,7 @@ class Address:
     state_province: str
     postal_code: str
     country_code: str
-    is_residential: bool = False
+    is_residential: Optional[bool] = None
     name: str = ""
     phone: str = ""
     company: str = ""

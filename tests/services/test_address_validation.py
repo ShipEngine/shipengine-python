@@ -71,29 +71,24 @@ def multi_line_address() -> Address:
     )
 
 
+def unknown_address() -> Address:
+    return Address(
+        street=["4 Unknown St"],
+        city_locality="Toronto",
+        state_province="ON",
+        postal_code="M6K 3C3",
+        country_code="CA",
+    )
+
+
 def validate_an_address(address: Address) -> AddressValidateResult:
     return stub_shipengine_instance().validate_address(address=address)
 
 
-def us_valid_residential_address_assertions(
-    original_address: Address, validated_address: AddressValidateResult
-) -> None:
-    """A set of common assertions that are regularly made on the residential US address used for testing."""
-    address = validated_address.normalized_address
-    assert type(validated_address) is AddressValidateResult
-    assert validated_address.is_valid is True
-    assert type(address) is Address
-    assert len(validated_address.messages) == 0
-    assert address is not None
-    assert address.city_locality == original_address.city_locality.upper()
-    assert address.state_province == original_address.state_province.upper()
-    assert address.postal_code == original_address.postal_code
-    assert address.country_code == original_address.country_code.upper()
-    assert address.is_residential is True
-
-
-def us_valid_commercial_address_assertions(
-    original_address: Address, validated_address: AddressValidateResult
+def us_valid_address_assertions(
+    original_address: Address,
+    validated_address: AddressValidateResult,
+    expected_residential_indicator,
 ) -> None:
     """A set of common assertions that are regularly made on the commercial US address used for testing."""
     address = validated_address.normalized_address
@@ -106,11 +101,13 @@ def us_valid_commercial_address_assertions(
     assert address.state_province == original_address.state_province.upper()
     assert address.postal_code == original_address.postal_code
     assert address.country_code == original_address.country_code.upper()
-    assert address.is_residential is False
+    assert address.is_residential is expected_residential_indicator
 
 
-def canada_valid_commercial_address_assertions(
-    original_address: Address, validated_address: AddressValidateResult
+def canada_valid_address_assertions(
+    original_address: Address,
+    validated_address: AddressValidateResult,
+    expected_residential_indicator,
 ) -> None:
     """A set of common assertions that are regularly made on the canadian_address used for testing."""
     address = validated_address.normalized_address
@@ -123,7 +120,7 @@ def canada_valid_commercial_address_assertions(
     assert address.state_province == original_address.state_province.title()
     assert address.postal_code == "M6 K 3 C3"
     assert address.country_code == original_address.country_code.upper()
-    assert address.is_residential is False
+    assert address.is_residential is expected_residential_indicator
 
 
 class TestValidateAddress:
@@ -133,8 +130,10 @@ class TestValidateAddress:
         validated_address = validate_an_address(residential_address)
         address = validated_address.normalized_address
 
-        us_valid_residential_address_assertions(
-            original_address=residential_address, validated_address=validated_address
+        us_valid_address_assertions(
+            original_address=residential_address,
+            validated_address=validated_address,
+            expected_residential_indicator=True,
         )
         assert (
             address.street[0]
@@ -149,8 +148,10 @@ class TestValidateAddress:
         validated_address = validate_an_address(commercial_address)
         address = validated_address.normalized_address
 
-        us_valid_commercial_address_assertions(
-            original_address=commercial_address, validated_address=validated_address
+        us_valid_address_assertions(
+            original_address=commercial_address,
+            validated_address=validated_address,
+            expected_residential_indicator=False,
         )
         assert (
             address.street[0]
@@ -165,8 +166,10 @@ class TestValidateAddress:
         validated_address = validate_an_address(valid_multi_line_address)
         address = validated_address.normalized_address
 
-        us_valid_commercial_address_assertions(
-            original_address=valid_multi_line_address, validated_address=validated_address
+        us_valid_address_assertions(
+            original_address=valid_multi_line_address,
+            validated_address=validated_address,
+            expected_residential_indicator=False,
         )
         assert (
             address.street[0]
@@ -180,8 +183,10 @@ class TestValidateAddress:
         """DX-1028 - Validate numeric postal code."""
         residential_address = valid_residential_address()
         validated_address = validate_an_address(residential_address)
-        us_valid_residential_address_assertions(
-            original_address=residential_address, validated_address=validated_address
+        us_valid_address_assertions(
+            original_address=residential_address,
+            validated_address=validated_address,
+            expected_residential_indicator=True,
         )
         assert re.match(r"\d", validated_address.normalized_address.postal_code)
 
@@ -189,7 +194,18 @@ class TestValidateAddress:
         """DX-1029 - Alpha postal code."""
         canadian_address = valid_canadian_address()
         validated_address = validate_an_address(canadian_address)
-        canada_valid_commercial_address_assertions(
+        canada_valid_address_assertions(
             original_address=canadian_address,
             validated_address=validated_address,
+            expected_residential_indicator=False,
+        )
+
+    def test_unknown_address(self):
+        """DX-1026 - Validate address of unknown address."""
+        address = unknown_address()
+        validated_address = validate_an_address(address)
+        canada_valid_address_assertions(
+            original_address=address,
+            validated_address=validated_address,
+            expected_residential_indicator=None,
         )
