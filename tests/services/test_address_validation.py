@@ -71,6 +71,17 @@ def multi_line_address() -> Address:
     )
 
 
+def non_latin_address() -> Address:
+    """Return an address with non-latin characters."""
+    return Address(
+        street=["上鳥羽角田町６８"],
+        city_locality="南区",
+        state_province="京都",
+        postal_code="601-8104",
+        country_code="JP",
+    )
+
+
 def unknown_address() -> Address:
     """
     Return an address that will make the server respond with an
@@ -218,3 +229,19 @@ class TestValidateAddress:
             validated_address=validated_address,
             expected_residential_indicator=None,
         )
+
+    def test_address_with_non_latin_chars(self):
+        """DX-1030 - non-latin characters."""
+        non_latin = non_latin_address()
+        validated_address = validate_an_address(non_latin)
+        address = validated_address.normalized_address
+
+        assert validated_address.is_valid is True
+        assert validated_address.normalized_address is not None
+        assert address.street[0] == "68 Kamitobatsunodacho"
+        assert address.city_locality == "Kyoto-Shi Minami-Ku"
+        assert address.state_province == "Kyoto"
+        assert address.postal_code == non_latin.postal_code
+        assert address.country_code == non_latin.country_code
+        assert address.is_residential is False
+        assert len(address.street) == 1
