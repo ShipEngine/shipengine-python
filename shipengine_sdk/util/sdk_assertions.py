@@ -13,6 +13,7 @@ from shipengine_sdk.models import ErrorCode, ErrorSource, ErrorType
 
 
 def is_street_valid(street: List) -> None:
+    """Checks that street is not empty and that it is not too many address lines."""
     if len(street) == 0:
         raise ValidationError(
             message="Invalid address. At least one address line is required.",
@@ -26,6 +27,16 @@ def is_street_valid(street: List) -> None:
             source=ErrorSource.SHIPENGINE.value,
             error_type=ErrorType.VALIDATION.value,
             error_code=ErrorCode.INVALID_FIELD_VALUE.value,
+        )
+
+
+def is_postal_code_valid(postal_code: str) -> None:
+    """Checks that the given postal code is alpha-numeric. A match would be '78756-123', '02215' or 'M6K 3C3'"""
+    pattern = re.compile(r"^[a-zA-Z0-9\s-]*$")
+
+    if not pattern.match(postal_code) or postal_code == "":
+        raise ValidationError(
+            message="Invalid address. Either the postal code or the city/locality and state/province must be specified."  # noqa
         )
 
 

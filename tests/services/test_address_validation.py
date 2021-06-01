@@ -49,6 +49,17 @@ def valid_commercial_address() -> Address:
     )
 
 
+def valid_canadian_address() -> Address:
+    """Return an Address object with a valid canadian address."""
+    return Address(
+        street=["170 Princes Blvd", "Ste 200"],
+        city_locality="Toronto",
+        state_province="ON",
+        postal_code="M6K 3C3",
+        country_code="CA",
+    )
+
+
 def multi_line_address() -> Address:
     """Returns a valid multiline address."""
     return Address(
@@ -67,6 +78,7 @@ def validate_an_address(address: Address) -> AddressValidateResult:
 def us_valid_residential_address_assertions(
     original_address: Address, validated_address: AddressValidateResult
 ) -> None:
+    """A set of common assertions that are regularly made on the residential US address used for testing."""
     address = validated_address.normalized_address
     assert type(validated_address) is AddressValidateResult
     assert validated_address.is_valid is True
@@ -83,6 +95,7 @@ def us_valid_residential_address_assertions(
 def us_valid_commercial_address_assertions(
     original_address: Address, validated_address: AddressValidateResult
 ) -> None:
+    """A set of common assertions that are regularly made on the commercial US address used for testing."""
     address = validated_address.normalized_address
     assert type(validated_address) is AddressValidateResult
     assert validated_address.is_valid is True
@@ -92,6 +105,23 @@ def us_valid_commercial_address_assertions(
     assert address.city_locality == original_address.city_locality.upper()
     assert address.state_province == original_address.state_province.upper()
     assert address.postal_code == original_address.postal_code
+    assert address.country_code == original_address.country_code.upper()
+    assert address.is_residential is False
+
+
+def canada_valid_commercial_address_assertions(
+    original_address: Address, validated_address: AddressValidateResult
+) -> None:
+    """A set of common assertions that are regularly made on the canadian_address used for testing."""
+    address = validated_address.normalized_address
+    assert type(validated_address) is AddressValidateResult
+    assert validated_address.is_valid is True
+    assert type(address) is Address
+    assert len(validated_address.messages) == 0
+    assert address is not None
+    assert address.city_locality == original_address.city_locality
+    assert address.state_province == original_address.state_province.title()
+    assert address.postal_code == "M6 K 3 C3"
     assert address.country_code == original_address.country_code.upper()
     assert address.is_residential is False
 
@@ -154,3 +184,12 @@ class TestValidateAddress:
             original_address=residential_address, validated_address=validated_address
         )
         assert re.match(r"\d", validated_address.normalized_address.postal_code)
+
+    def test_alpha_postal_code(self):
+        """DX-1029 - Alpha postal code."""
+        canadian_address = valid_canadian_address()
+        validated_address = validate_an_address(canadian_address)
+        canada_valid_commercial_address_assertions(
+            original_address=canadian_address,
+            validated_address=validated_address,
+        )
