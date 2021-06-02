@@ -2,7 +2,7 @@
 import re
 
 from shipengine_sdk import ShipEngine
-from shipengine_sdk.errors import ValidationError
+from shipengine_sdk.errors import ClientSystemError, ValidationError
 from shipengine_sdk.models import ErrorCode, ErrorSource, ErrorType
 from shipengine_sdk.models.address import Address, AddressValidateResult
 from shipengine_sdk.models.enums import Endpoints
@@ -150,6 +150,17 @@ def address_with_invalid_country() -> Address:
         state_province="MA",
         postal_code="02215",
         country_code="RZ",
+    )
+
+
+def get_server_side_error() -> Address:
+    """Return an address that will cause the server to return a 500 server error."""
+    return Address(
+        street=["500 Server Error"],
+        city_locality="Boston",
+        state_province="MA",
+        postal_code="02215",
+        country_code="US",
     )
 
 
@@ -364,8 +375,8 @@ class TestValidateAddress:
             assert err.error_code is ErrorCode.FIELD_VALUE_REQUIRED.value
             assert (
                 err.message
-                == "Invalid address. Either the postal code or the city/locality and state/province must be specified."
-            )  # noqa
+                == "Invalid address. Either the postal code or the city/locality and state/province must be specified."  # noqa
+            )
 
     def test_invalid_country_code(self):
         """DX-1037 - Invalid country code."""
@@ -377,3 +388,14 @@ class TestValidateAddress:
             assert err.error_type is ErrorType.VALIDATION.value
             assert err.error_code is ErrorCode.FIELD_VALUE_REQUIRED.value
             assert err.message == "Invalid address: [RZ] is not a valid country code."
+
+    def test_server_side_error(self):
+        """DX-1038 - Server-side error."""
+        try:
+            get_server_side_error()
+        except ClientSystemError as err:
+            assert err.request_id is not None
+            assert err.request_id.startswith("req_")
+            assert err.source is ErrorSource.SHIPENGINE.value
+            assert err.error_type is ErrorType.SYSTEM.value
+            assert err.error_code is ErrorCode.UNSPECIFIED.value
