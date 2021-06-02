@@ -10,6 +10,7 @@ from shipengine_sdk.errors import (
     ValidationError,
 )
 from shipengine_sdk.models import ErrorCode, ErrorSource, ErrorType
+from shipengine_sdk.models.address import Address, AddressValidateResult
 from shipengine_sdk.models.enums import Country
 
 validation_message = "Invalid address. Either the postal code or the city/locality and state/province must be specified."  # noqa
@@ -220,3 +221,45 @@ def is_response_500(status_code: int, response_body: dict) -> None:
             error_type=error_data["type"],
             error_code=error_data["code"],
         )
+
+
+def us_valid_address_assertions(
+    original_address: Address,
+    validated_address: AddressValidateResult,
+    expected_residential_indicator,
+) -> None:
+    """A set of common assertions that are regularly made on the commercial US address used for testing."""
+    address = validated_address.normalized_address
+    assert type(validated_address) is AddressValidateResult
+    assert validated_address.is_valid is True
+    assert type(address) is Address
+    assert len(validated_address.info) == 0
+    assert len(validated_address.warnings) == 0
+    assert len(validated_address.errors) == 0
+    assert address is not None
+    assert address.city_locality == original_address.city_locality.upper()
+    assert address.state_province == original_address.state_province.upper()
+    assert address.postal_code == original_address.postal_code
+    assert address.country_code == original_address.country_code.upper()
+    assert address.is_residential is expected_residential_indicator
+
+
+def canada_valid_address_assertions(
+    original_address: Address,
+    validated_address: AddressValidateResult,
+    expected_residential_indicator,
+) -> None:
+    """A set of common assertions that are regularly made on the canadian_address used for testing."""
+    address = validated_address.normalized_address
+    assert type(validated_address) is AddressValidateResult
+    assert validated_address.is_valid is True
+    assert type(address) is Address
+    assert len(validated_address.info) == 0
+    assert len(validated_address.warnings) == 0
+    assert len(validated_address.errors) == 0
+    assert address is not None
+    assert address.city_locality == original_address.city_locality
+    assert address.state_province == original_address.state_province.title()
+    assert address.postal_code == "M6 K 3 C3"
+    assert address.country_code == original_address.country_code.upper()
+    assert address.is_residential is expected_residential_indicator
