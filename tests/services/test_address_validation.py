@@ -131,6 +131,17 @@ def address_missing_required_fields() -> Address:
     )
 
 
+def address_missing_country() -> Address:
+    """Return an address that is only missing the country_code."""
+    return Address(
+        street=["4 Jersey St", "Apt. 2b"],
+        city_locality="Boston",
+        state_province="MA",
+        postal_code="02215",
+        country_code="",
+    )
+
+
 def validate_an_address(address: Address) -> AddressValidateResult:
     """
     Helper function that passes a config dictionary into the ShipEngine object to instantiate
@@ -332,7 +343,7 @@ class TestValidateAddress:
         assert validated_address.errors[1]["message"] == "Insufficient or Incorrect Address Data"
 
     def test_missing_city_state_and_postal_code(self):
-        """DX-1035 - Missing city, state, and postal code."""
+        """DX-1035 & DX-1036 - Missing city, state, and postal code."""
         try:
             address_missing_required_fields()
         except ValidationError as err:
