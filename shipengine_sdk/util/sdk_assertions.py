@@ -10,6 +10,7 @@ from shipengine_sdk.errors import (
     ValidationError,
 )
 from shipengine_sdk.models import ErrorCode, ErrorSource, ErrorType
+from shipengine_sdk.models.enums import Country
 
 validation_message = "Invalid address. Either the postal code or the city/locality and state/province must be specified."  # noqa
 
@@ -34,25 +35,33 @@ def is_street_valid(street: List) -> None:
 
 def is_city_valid(city: str) -> None:
     """Asserts that city in not an empty string and contains valid characters."""
-    pattern = re.compile(r"^[a-zA-Z0-9\s\W]*$")
-    if not pattern.match(city) or city == "":
+    latin_pattern = re.compile(r"^[a-zA-Z0-9\s\W]*$")
+    non_latin_pattern = re.compile(r"[\u4e00-\u9fff]+")
+
+    if non_latin_pattern.match(city):
+        return
+    elif not latin_pattern.match(city) or city == "":
         raise ValidationError(
             message=validation_message,
             source=ErrorSource.SHIPENGINE.value,
             error_type=ErrorType.VALIDATION.value,
-            error_code=ErrorCode.FIELD_VALUE.value,
+            error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
         )
 
 
 def is_state_valid(state: str) -> None:
     """Asserts that state is 2 capitalized letters and that it is not an empty string."""
-    pattern = re.compile(r"^[A-Z\W]{2}$")
-    if not pattern.match(state) or state == "":
+    latin_pattern = re.compile(r"^[a-zA-Z\W]*$")
+    non_latin_pattern = re.compile(r"[\u4e00-\u9fff]+")
+
+    if non_latin_pattern.match(state):
+        return
+    elif not latin_pattern.match(state) or state == "":
         raise ValidationError(
             message=validation_message,
             source=ErrorSource.SHIPENGINE.value,
             error_type=ErrorType.VALIDATION.value,
-            error_code=ErrorCode.FIELD_VALUE.value,
+            error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
         )
 
 
@@ -65,7 +74,18 @@ def is_postal_code_valid(postal_code: str) -> None:
             message=validation_message,
             source=ErrorSource.SHIPENGINE.value,
             error_type=ErrorType.VALIDATION.value,
-            error_code=ErrorCode.FIELD_VALUE.value,
+            error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
+        )
+
+
+def is_country_code_valid(country: str) -> None:
+    """Check if the given country code is valid."""
+    if country not in (member.value for member in Country):
+        raise ValidationError(
+            message=f"The country code provided was not valid: [{country}] - Must be a member of the Country enum.",
+            source=ErrorSource.SHIPENGINE.value,
+            error_type=ErrorType.VALIDATION.value,
+            error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
         )
 
 

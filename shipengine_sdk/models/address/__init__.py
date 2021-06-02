@@ -5,7 +5,13 @@ from typing import List, Optional
 
 from dataclasses_json import LetterCase, dataclass_json
 
-from shipengine_sdk.util import is_city_valid, is_postal_code_valid, is_street_valid
+from shipengine_sdk.util import (
+    is_city_valid,
+    is_country_code_valid,
+    is_postal_code_valid,
+    is_state_valid,
+    is_street_valid,
+)
 
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
@@ -23,14 +29,19 @@ class Address:
 
     def __post_init__(self):
         is_street_valid(self.street)
-        is_city_valid(self.city)
+        is_city_valid(self.city_locality)
+        is_state_valid(self.state_province)
         is_postal_code_valid(self.postal_code)
+        is_country_code_valid(self.country_code)
 
 
 class AddressValidateResult:
     is_valid: Optional[bool]
     request_id: str
     normalized_address: Optional[Address]
+    info: Optional[List]
+    warnings: Optional[List]
+    errors: Optional[List]
 
     def __init__(
         self,

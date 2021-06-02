@@ -1,6 +1,7 @@
 """ShipEngine SDK Enumerations"""
 from enum import Enum
 
+from .country import Country
 from .error_code import ErrorCode
 from .error_source import ErrorSource
 from .error_type import ErrorType
