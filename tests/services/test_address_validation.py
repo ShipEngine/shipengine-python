@@ -61,6 +61,17 @@ def address_with_warnings() -> Address:
     )
 
 
+def address_with_errors() -> Address:
+    """Return a test Address object that will cause the server to return an error message."""
+    return Address(
+        street=["4 Invalid St"],
+        city_locality="Boston",
+        state_province="MA",
+        postal_code="02215",
+        country_code="US",
+    )
+
+
 def valid_canadian_address() -> Address:
     """Return an Address object with a valid canadian address."""
     return Address(
@@ -289,3 +300,21 @@ class TestValidateAddress:
         assert address.postal_code == "M6K 3C3"
         assert address.country_code == validated_address.normalized_address.country_code.upper()
         assert address.is_residential is True
+
+    def test_address_with_errors(self):
+        """DX-1032 - Validate with error messages."""
+        error_address = address_with_errors()
+        validated_address = validate_an_address(error_address)
+        address = validated_address.normalized_address
+
+        assert type(validated_address) is AddressValidateResult
+        assert validated_address.is_valid is False
+        assert address is None
+        assert len(validated_address.info) == 0
+        assert len(validated_address.warnings) != 0
+        assert validated_address.warnings[0]["message"] == "Address not found"
+        assert len(validated_address.errors) != 0
+        assert validated_address.errors[0]["code"] == ErrorCode.ADDRESS_NOT_FOUND.value
+        assert validated_address.errors[0]["message"] == "Invalid City, State, or Zip"
+        assert validated_address.errors[1]["code"] == ErrorCode.ADDRESS_NOT_FOUND.value
+        assert validated_address.errors[1]["message"] == "Insufficient or Incorrect Address Data"

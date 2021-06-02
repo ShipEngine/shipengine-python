@@ -5,6 +5,9 @@ from enum import Enum
 class ErrorCode(Enum):
     """ErrorCode enumeration that provides members used for Error Codes."""
 
+    ADDRESS_NOT_FOUND = "address_not_found"
+    """Full or partial failure to validate address with the given address information."""
+
     AUTO_FUND_NOT_SUPPORTED = "auto_fund_not_supported"
     """
         Only certain carriers support pre-paid balances. So you can only add funds
@@ -139,6 +142,9 @@ class ErrorCode(Enum):
         This error indicates a problem with your FedEx account. Please contact
         FedEx to resolve the issue.
     """
+
+    MINIMUM_POSTAL_CODE_VERIFICATION_FAILED = "minimum_postal_code_verification_failed"
+    """Insufficient or inaccurate postal code."""
 
     NOT_FOUND = "not_found"
     """The ShipEngine API endpoint that was requested does not exist."""

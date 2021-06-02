@@ -11,6 +11,8 @@ from shipengine_sdk.errors import (
 )
 from shipengine_sdk.models import ErrorCode, ErrorSource, ErrorType
 
+validation_message = "Invalid address. Either the postal code or the city/locality and state/province must be specified."  # noqa
+
 
 def is_street_valid(street: List) -> None:
     """Checks that street is not empty and that it is not too many address lines."""
@@ -30,13 +32,40 @@ def is_street_valid(street: List) -> None:
         )
 
 
+def is_city_valid(city: str) -> None:
+    """Asserts that city in not an empty string and contains valid characters."""
+    pattern = re.compile(r"^[a-zA-Z0-9\s\W]*$")
+    if not pattern.match(city) or city == "":
+        raise ValidationError(
+            message=validation_message,
+            source=ErrorSource.SHIPENGINE.value,
+            error_type=ErrorType.VALIDATION.value,
+            error_code=ErrorCode.FIELD_VALUE.value,
+        )
+
+
+def is_state_valid(state: str) -> None:
+    """Asserts that state is 2 capitalized letters and that it is not an empty string."""
+    pattern = re.compile(r"^[A-Z\W]{2}$")
+    if not pattern.match(state) or state == "":
+        raise ValidationError(
+            message=validation_message,
+            source=ErrorSource.SHIPENGINE.value,
+            error_type=ErrorType.VALIDATION.value,
+            error_code=ErrorCode.FIELD_VALUE.value,
+        )
+
+
 def is_postal_code_valid(postal_code: str) -> None:
     """Checks that the given postal code is alpha-numeric. A match would be '78756-123', '02215' or 'M6K 3C3'"""
     pattern = re.compile(r"^[a-zA-Z0-9\s-]*$")
 
     if not pattern.match(postal_code) or postal_code == "":
         raise ValidationError(
-            message="Invalid address. Either the postal code or the city/locality and state/province must be specified."  # noqa
+            message=validation_message,
+            source=ErrorSource.SHIPENGINE.value,
+            error_type=ErrorType.VALIDATION.value,
+            error_code=ErrorCode.FIELD_VALUE.value,
         )
 
 

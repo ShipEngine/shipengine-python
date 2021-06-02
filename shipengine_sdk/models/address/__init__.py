@@ -5,7 +5,7 @@ from typing import List, Optional
 
 from dataclasses_json import LetterCase, dataclass_json
 
-from shipengine_sdk.util.sdk_assertions import is_postal_code_valid, is_street_valid
+from shipengine_sdk.util import is_city_valid, is_postal_code_valid, is_street_valid
 
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
@@ -23,6 +23,7 @@ class Address:
 
     def __post_init__(self):
         is_street_valid(self.street)
+        is_city_valid(self.city)
         is_postal_code_valid(self.postal_code)
 
 
@@ -47,9 +48,9 @@ class AddressValidateResult:
         self.info = list() if info is None else info
         self.warnings = list() if warnings is None else warnings
         self.errors = list() if errors is None else errors
-        self.extract_messages(messages)
+        self.__extract_messages(messages)
 
-    def extract_messages(self, messages):
+    def __extract_messages(self, messages):
         for message in messages:
             if "type" in message:
                 if message["type"] == "error":
