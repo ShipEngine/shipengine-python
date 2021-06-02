@@ -142,6 +142,17 @@ def address_missing_country() -> Address:
     )
 
 
+def address_with_invalid_country() -> Address:
+    """Return an address that has an invalid country_code specified."""
+    return Address(
+        street=["4 Jersey St", "Apt. 2b"],
+        city_locality="Boston",
+        state_province="MA",
+        postal_code="02215",
+        country_code="RZ",
+    )
+
+
 def validate_an_address(address: Address) -> AddressValidateResult:
     """
     Helper function that passes a config dictionary into the ShipEngine object to instantiate
@@ -355,3 +366,14 @@ class TestValidateAddress:
                 err.message
                 == "Invalid address. Either the postal code or the city/locality and state/province must be specified."
             )  # noqa
+
+    def test_invalid_country_code(self):
+        """DX-1037 - Invalid country code."""
+        try:
+            address_with_invalid_country()
+        except ValidationError as err:
+            assert err.request_id is None
+            assert err.source is ErrorSource.SHIPENGINE.value
+            assert err.error_type is ErrorType.VALIDATION.value
+            assert err.error_code is ErrorCode.FIELD_VALUE_REQUIRED.value
+            assert err.message == "Invalid address: [RZ] is not a valid country code."

@@ -82,7 +82,7 @@ def is_country_code_valid(country: str) -> None:
     """Check if the given country code is valid."""
     if country not in (member.value for member in Country):
         raise ValidationError(
-            message=f"The country code provided was not valid: [{country}] - Must be a member of the Country enum.",
+            message=f"Invalid address: [{country}] is not a valid country code.",
             source=ErrorSource.SHIPENGINE.value,
             error_type=ErrorType.VALIDATION.value,
             error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
