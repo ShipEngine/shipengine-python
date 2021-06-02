@@ -395,7 +395,7 @@ class TestValidateAddress:
             get_server_side_error()
         except ClientSystemError as err:
             assert err.request_id is not None
-            assert err.request_id.startswith("req_")
+            assert err.request_id.startswith("req_") is True
             assert err.source is ErrorSource.SHIPENGINE.value
             assert err.error_type is ErrorType.SYSTEM.value
             assert err.error_code is ErrorCode.UNSPECIFIED.value
