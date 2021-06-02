@@ -2,7 +2,8 @@
 import re
 
 from shipengine_sdk import ShipEngine
-from shipengine_sdk.models import ErrorCode
+from shipengine_sdk.errors import ValidationError
+from shipengine_sdk.models import ErrorCode, ErrorSource, ErrorType
 from shipengine_sdk.models.address import Address, AddressValidateResult
 from shipengine_sdk.models.enums import Endpoints
 
@@ -116,6 +117,17 @@ def unknown_address() -> Address:
         state_province="ON",
         postal_code="M6K 3C3",
         country_code="CA",
+    )
+
+
+def address_missing_required_fields() -> Address:
+    """Return an address that is missing a state, city, and postal_code to return a ValidationError.."""
+    return Address(
+        street=["4 Jersey St"],
+        city_locality="",
+        state_province="",
+        postal_code="",
+        country_code="US",
     )
 
 
@@ -318,3 +330,17 @@ class TestValidateAddress:
         assert validated_address.errors[0]["message"] == "Invalid City, State, or Zip"
         assert validated_address.errors[1]["code"] == ErrorCode.ADDRESS_NOT_FOUND.value
         assert validated_address.errors[1]["message"] == "Insufficient or Incorrect Address Data"
+
+    def test_missing_city_state_and_postal_code(self):
+        """DX-1035 - Missing city, state, and postal code."""
+        try:
+            address_missing_required_fields()
+        except ValidationError as err:
+            assert err.request_id is None
+            assert err.source is ErrorSource.SHIPENGINE.value
+            assert err.error_type is ErrorType.VALIDATION.value
+            assert err.error_code is ErrorCode.FIELD_VALUE_REQUIRED.value
+            assert (
+                err.message
+                == "Invalid address. Either the postal code or the city/locality and state/province must be specified."
+            )  # noqa
