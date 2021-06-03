@@ -44,3 +44,6 @@ class ErrorType(Enum):
         persistent system errors, then please contact our support or check our API
         status page to see if there's a known issue.
     """
+
+    AUTHORIZATION = "authorization"
+    """General authorization error type."""

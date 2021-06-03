@@ -13,6 +13,10 @@ from shipengine_sdk.errors import (
 )
 
 
+def shipengine_error_defaults() -> ShipEngineError:
+    raise ShipEngineError(message="Testing the defaults for this error.")
+
+
 def shipengine_error():
     raise ShipEngineError(
         request_id="req_a523b1b19bd54054b7eb953f000e7f15",
@@ -126,3 +130,24 @@ class TestShipEngineErrors:
     def test_rate_limit_exceeded_error(self) -> None:
         with pytest.raises(RateLimitExceededError):
             rate_limit_exceeded_error()
+
+    def test_error_defaults(self) -> None:
+        """Test the error class default values."""
+        with pytest.raises(ShipEngineError):
+            shipengine_error_defaults()
+
+    def test_to_dict_method(self) -> None:
+        """Test the to_dict convenience method."""
+        try:
+            shipengine_error()
+        except ShipEngineError as err:
+            d = err.to_dict()
+            assert type(d) is dict
+
+    def test_to_json_method(self) -> None:
+        """Test the to_json convenience method."""
+        try:
+            shipengine_error()
+        except ShipEngineError as err:
+            j = err.to_json()
+            assert type(j) is str

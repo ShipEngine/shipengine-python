@@ -1,13 +1,20 @@
 """Initial Docstring"""
 import re
+from typing import Dict
 
 from shipengine_sdk import ShipEngine
 from shipengine_sdk.errors import ClientSystemError, ValidationError
-from shipengine_sdk.models import Endpoints, ErrorCode, ErrorSource, ErrorType
-from shipengine_sdk.models.address import Address, AddressValidateResult
+from shipengine_sdk.models import (
+    Address,
+    AddressValidateResult,
+    Endpoints,
+    ErrorCode,
+    ErrorSource,
+    ErrorType,
+)
 
 
-def stub_config() -> dict:
+def stub_config() -> Dict[str, any]:
     """
     Return a test configuration dictionary to be used
     when instantiating the ShipEngine object.

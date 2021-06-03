@@ -2,7 +2,7 @@
 from typing import Dict, Optional
 from uuid import uuid4
 
-from shipengine_sdk.errors import (
+from ..errors import (
     AccountStatusError,
     BusinessRuleError,
     ClientSecurityError,
@@ -10,10 +10,10 @@ from shipengine_sdk.errors import (
     ShipEngineError,
     ValidationError,
 )
-from shipengine_sdk.models import ErrorType
+from ..models import ErrorType
 
 
-def wrap_request(method: str, params: Optional[Dict[str, any]]) -> dict:
+def wrap_request(method: str, params: Optional[Dict[str, any]]) -> Dict[str, any]:
     """
     Wrap request per `JSON-RPC 2.0` spec.
 
@@ -31,14 +31,14 @@ def wrap_request(method: str, params: Optional[Dict[str, any]]) -> dict:
         )
 
 
-def handle_response(response_body: dict) -> dict:
+def handle_response(response_body: Dict[str, any]) -> Dict[str, any]:
     """Handles the response from ShipEngine API."""
     if "result" in response_body:
         return response_body
 
-    error = response_body["error"]
-    error_data = error["data"]
-    error_type = error_data["type"]
+    error: Dict[str, any] = response_body["error"]
+    error_data: Dict[str, any] = error["data"]
+    error_type: str = error_data["type"]
     if error_type is ErrorType.ACCOUNT_STATUS.value:
         raise AccountStatusError(
             message=error["message"],

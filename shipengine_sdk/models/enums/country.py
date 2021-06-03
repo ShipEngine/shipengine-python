@@ -1,5 +1,4 @@
 """An enumeration of valid/supported countries."""
-
 from enum import Enum
 
 

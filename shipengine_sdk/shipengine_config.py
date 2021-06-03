@@ -20,36 +20,35 @@ class ShipEngineConfig:
     DEFAULT_TIMEOUT: int = 5
     """Default timeout for the ShipEngineClient in seconds."""
 
-    def __init__(self, config: dict) -> None:
+    def __init__(self, config: Dict[str, any]) -> None:
         """
         This is the configuration object for the ShipEngine object and it"s properties are
         used throughout this SDK.
         """
-
         is_api_key_valid(config)
-        self.api_key = config["api_key"]
+        self.api_key: str = config["api_key"]
 
         is_timeout_valid(config)
         if "timeout" in config:
-            self.timeout = config["timeout"]
+            self.timeout: int = config["timeout"]
         else:
-            self.timeout = self.DEFAULT_TIMEOUT
+            self.timeout: int = self.DEFAULT_TIMEOUT
 
         if "base_uri" in config:
-            self.base_uri = config["base_uri"]
+            self.base_uri: str = config["base_uri"]
         else:
-            self.base_uri = self.DEFAULT_BASE_URI
+            self.base_uri: str = self.DEFAULT_BASE_URI
 
         if "page_size" in config:
-            self.page_size = config["page_size"]
+            self.page_size: int = config["page_size"]
         else:
-            self.page_size = self.DEFAULT_PAGE_SIZE
+            self.page_size: int = self.DEFAULT_PAGE_SIZE
 
         is_retries_valid(config)
         if "retries" in config:
-            self.retries = config["retries"]
+            self.retries: int = config["retries"]
         else:
-            self.retries = self.DEFAULT_RETRIES
+            self.retries: int = self.DEFAULT_RETRIES
         # TODO: add event listener to config object once it"s implemented.
 
     def merge(self, new_config: Optional[Dict[str, any]] = None):
@@ -57,7 +56,6 @@ class ShipEngineConfig:
         The method allows the merging of a method-level configuration
         adjustment into the current configuration.
         """
-
         if new_config is None:
             return self
         else:

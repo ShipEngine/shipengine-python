@@ -1,20 +1,20 @@
 """Assertion helper functions."""
 import re
-from typing import List
+from typing import Dict, List
 
-from shipengine_sdk.errors import (
+from ..errors import (
     ClientSystemError,
     ClientTimeoutError,
     InvalidFieldValueError,
     RateLimitExceededError,
     ValidationError,
 )
-from shipengine_sdk.models import Country, ErrorCode, ErrorSource, ErrorType
+from ..models.enums import Country, ErrorCode, ErrorSource, ErrorType
 
 validation_message = "Invalid address. Either the postal code or the city/locality and state/province must be specified."  # noqa
 
 
-def is_street_valid(street: List) -> None:
+def is_street_valid(street: List[str]) -> None:
     """Checks that street is not empty and that it is not too many address lines."""
     if len(street) == 0:
         raise ValidationError(
@@ -88,7 +88,7 @@ def is_country_code_valid(country: str) -> None:
         )
 
 
-def is_api_key_valid(config: dict) -> None:
+def is_api_key_valid(config: Dict[str, any]) -> None:
     """
     Check if API Key is set and is not empty or whitespace.
 
@@ -114,7 +114,7 @@ def is_api_key_valid(config: dict) -> None:
         )
 
 
-def is_retries_valid(config: dict) -> None:
+def is_retries_valid(config: Dict[str, any]) -> None:
     """
     Checks that config.retries is a valid value.
 
@@ -131,7 +131,7 @@ def is_retries_valid(config: dict) -> None:
         )
 
 
-def is_timeout_valid(config: dict) -> None:
+def is_timeout_valid(config: Dict[str, any]) -> None:
     """
     Checks that config.timeout is valid value.
 
@@ -173,7 +173,7 @@ def timeout_validation_error_assertions(error) -> None:
     assert error.source is ErrorSource.SHIPENGINE.value
 
 
-def is_response_404(status_code: int, response_body: dict) -> None:
+def is_response_404(status_code: int, response_body: Dict[str, any]) -> None:
     """Check if status_code is 404 and raises an error if so."""
     if "error" in response_body:
         error = response_body["error"]
@@ -188,7 +188,7 @@ def is_response_404(status_code: int, response_body: dict) -> None:
             )
 
 
-def is_response_429(status_code: int, response_body: dict, config) -> None:
+def is_response_429(status_code: int, response_body: Dict[str, any], config) -> None:
     """Check if status_code is 429 and raises an error if so."""
     if "error" in response_body and status_code == 429:
         error = response_body["error"]
@@ -207,7 +207,7 @@ def is_response_429(status_code: int, response_body: dict, config) -> None:
             )
 
 
-def is_response_500(status_code: int, response_body: dict) -> None:
+def is_response_500(status_code: int, response_body: Dict[str, any]) -> None:
     """Check if the status code is 500 and raises an error if so."""
     if status_code == 500:
         error = response_body["error"]

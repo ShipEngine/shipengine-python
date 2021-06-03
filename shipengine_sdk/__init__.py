@@ -1,9 +1,10 @@
 """ShipEngine SDK."""
-
 __version__ = "0.0.1"
 
 import logging
 from logging import NullHandler
+
+from .models import *  # noqa
 
 # SDK imports here
 from .shipengine import ShipEngine
