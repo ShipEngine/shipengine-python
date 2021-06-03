@@ -5,7 +5,7 @@ from typing import List, Optional
 
 from dataclasses_json import LetterCase, dataclass_json
 
-from shipengine_sdk.util import (
+from ...util import (
     is_city_valid,
     is_country_code_valid,
     is_postal_code_valid,
@@ -63,16 +63,15 @@ class AddressValidateResult:
 
     def __extract_messages(self, messages):
         for message in messages:
-            if "type" in message:
-                if message["type"] == "error":
-                    del message["type"]
-                    self.errors.append(message)
-                elif message["type"] == "info":
-                    del message["type"]
-                    self.info.append(message)
-                elif message["type"] == "warning":
-                    del message["type"]
-                    self.warnings.append(message)
+            if message["type"] == "error":
+                del message["type"]
+                self.errors.append(message)
+            elif message["type"] == "info":
+                del message["type"]
+                self.info.append(message)
+            elif message["type"] == "warning":
+                del message["type"]
+                self.warnings.append(message)
 
     def to_dict(self):
         return (lambda o: o.__dict__)(self)
