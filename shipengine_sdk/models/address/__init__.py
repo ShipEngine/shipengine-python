@@ -1,4 +1,4 @@
-"""Initial Docstring"""
+"""Models to be used throughout the ShipEngine SDK."""
 import json
 from dataclasses import dataclass
 from typing import List, Optional
