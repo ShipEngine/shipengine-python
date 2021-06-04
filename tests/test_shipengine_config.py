@@ -192,3 +192,24 @@ class TestShipEngineConfig:
             )
         except Exception as e:
             api_key_validation_error_assertions(e)
+
+    def test_config_defaults(self) -> None:
+        """Test default retries."""
+        config = ShipEngineConfig(dict(api_key="baz"))
+
+        assert config.retries == 1
+        assert config.page_size == 50
+        assert config.timeout == 5
+        assert config.base_uri is Endpoints.SHIPENGINE_RPC_URL.value
+
+    def test_to_dict_method(self) -> None:
+        """Test the to_dict convenience method."""
+        config = ShipEngineConfig(stub_config())
+        d = config.to_dict()
+        assert type(d) is dict
+
+    def test_to_json_method(self) -> None:
+        """Test the to_json convenience method."""
+        config = ShipEngineConfig(stub_config())
+        j = config.to_json()
+        assert type(j) is str

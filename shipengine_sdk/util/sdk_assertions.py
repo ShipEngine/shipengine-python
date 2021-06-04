@@ -1,17 +1,94 @@
 """Assertion helper functions."""
 import re
+from typing import Dict, List
 
-from shipengine_sdk.errors import (
+from ..errors import (
     ClientSystemError,
     ClientTimeoutError,
     InvalidFieldValueError,
     RateLimitExceededError,
     ValidationError,
 )
-from shipengine_sdk.models import ErrorCode, ErrorSource, ErrorType
+from ..models.enums import Country, ErrorCode, ErrorSource, ErrorType
+
+validation_message = "Invalid address. Either the postal code or the city/locality and state/province must be specified."  # noqa
 
 
-def is_api_key_valid(config: dict) -> None:
+def is_street_valid(street: List[str]) -> None:
+    """Checks that street is not empty and that it is not too many address lines."""
+    if len(street) == 0:
+        raise ValidationError(
+            message="Invalid address. At least one address line is required.",
+            source=ErrorSource.SHIPENGINE.value,
+            error_type=ErrorType.VALIDATION.value,
+            error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
+        )
+    elif len(street) > 3:
+        raise ValidationError(
+            message="Invalid address. No more than 3 street lines are allowed.",
+            source=ErrorSource.SHIPENGINE.value,
+            error_type=ErrorType.VALIDATION.value,
+            error_code=ErrorCode.INVALID_FIELD_VALUE.value,
+        )
+
+
+def is_city_valid(city: str) -> None:
+    """Asserts that city in not an empty string and contains valid characters."""
+    latin_pattern = re.compile(r"^[a-zA-Z0-9\s\W]*$")
+    non_latin_pattern = re.compile(r"[\u4e00-\u9fff]+")
+
+    if non_latin_pattern.match(city):
+        return
+    elif not latin_pattern.match(city) or city == "":
+        raise ValidationError(
+            message=validation_message,
+            source=ErrorSource.SHIPENGINE.value,
+            error_type=ErrorType.VALIDATION.value,
+            error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
+        )
+
+
+def is_state_valid(state: str) -> None:
+    """Asserts that state is 2 capitalized letters and that it is not an empty string."""
+    latin_pattern = re.compile(r"^[a-zA-Z\W]*$")
+    non_latin_pattern = re.compile(r"[\u4e00-\u9fff]+")
+
+    if non_latin_pattern.match(state):
+        return
+    elif not latin_pattern.match(state) or state == "":
+        raise ValidationError(
+            message=validation_message,
+            source=ErrorSource.SHIPENGINE.value,
+            error_type=ErrorType.VALIDATION.value,
+            error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
+        )
+
+
+def is_postal_code_valid(postal_code: str) -> None:
+    """Checks that the given postal code is alpha-numeric. A match would be '78756-123', '02215' or 'M6K 3C3'"""
+    pattern = re.compile(r"^[a-zA-Z0-9\s-]*$")
+
+    if not pattern.match(postal_code) or postal_code == "":
+        raise ValidationError(
+            message=validation_message,
+            source=ErrorSource.SHIPENGINE.value,
+            error_type=ErrorType.VALIDATION.value,
+            error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
+        )
+
+
+def is_country_code_valid(country: str) -> None:
+    """Check if the given country code is valid."""
+    if country not in (member.value for member in Country):
+        raise ValidationError(
+            message=f"Invalid address: [{country}] is not a valid country code.",
+            source=ErrorSource.SHIPENGINE.value,
+            error_type=ErrorType.VALIDATION.value,
+            error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
+        )
+
+
+def is_api_key_valid(config: Dict[str, any]) -> None:
     """
     Check if API Key is set and is not empty or whitespace.
 
@@ -37,7 +114,7 @@ def is_api_key_valid(config: dict) -> None:
         )
 
 
-def is_retries_valid(config: dict) -> None:
+def is_retries_valid(config: Dict[str, any]) -> None:
     """
     Checks that config.retries is a valid value.
 
@@ -54,7 +131,7 @@ def is_retries_valid(config: dict) -> None:
         )
 
 
-def is_timeout_valid(config: dict) -> None:
+def is_timeout_valid(config: Dict[str, any]) -> None:
     """
     Checks that config.timeout is valid value.
 
@@ -96,7 +173,7 @@ def timeout_validation_error_assertions(error) -> None:
     assert error.source is ErrorSource.SHIPENGINE.value
 
 
-def is_response_404(status_code: int, response_body: dict) -> None:
+def is_response_404(status_code: int, response_body: Dict[str, any]) -> None:
     """Check if status_code is 404 and raises an error if so."""
     if "error" in response_body:
         error = response_body["error"]
@@ -111,7 +188,7 @@ def is_response_404(status_code: int, response_body: dict) -> None:
             )
 
 
-def is_response_429(status_code: int, response_body: dict, config) -> None:
+def is_response_429(status_code: int, response_body: Dict[str, any], config) -> None:
     """Check if status_code is 429 and raises an error if so."""
     if "error" in response_body and status_code == 429:
         error = response_body["error"]
@@ -130,7 +207,7 @@ def is_response_429(status_code: int, response_body: dict, config) -> None:
             )
 
 
-def is_response_500(status_code: int, response_body: dict) -> None:
+def is_response_500(status_code: int, response_body: Dict[str, any]) -> None:
     """Check if the status code is 500 and raises an error if so."""
     if status_code == 500:
         error = response_body["error"]
