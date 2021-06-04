@@ -92,7 +92,7 @@ jobs:
           flag-name: Python Test Suite
 
   coveralls_finish:
-    needs: publish-tox-coverage
+    needs: tox-coveralls
     runs-on: ubuntu-latest
     steps:
       - name: Coveralls Finished
