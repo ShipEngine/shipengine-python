@@ -12,7 +12,7 @@ on:
       - main
 
 jobs:
-  lint-test-coverage:
+  linting:
     runs-on: ubuntu-latest
     strategy:
       matrix:
