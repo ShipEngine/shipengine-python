@@ -83,7 +83,7 @@ class ShipEngineClient:
         resp_body: Dict[str, any] = resp.json()
         status_code: int = resp.status_code
 
-        is_response_404(status_code=status_code, response_body=resp_body)
+        is_response_404(status_code=status_code, response_body=resp_body, config=config)
         is_response_429(status_code=status_code, response_body=resp_body, config=config)
         is_response_500(status_code=status_code, response_body=resp_body)
 
