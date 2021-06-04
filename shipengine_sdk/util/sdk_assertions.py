@@ -226,3 +226,40 @@ def is_response_500(status_code: int, response_body: Dict[str, any]) -> None:
             error_type=error_data["type"],
             error_code=error_data["code"],
         )
+
+
+def does_normalized_address_have_errors(result) -> None:
+    """
+    Assertions to check if the returned normalized address has any errors. If errors
+    are present an exception is thrown.
+
+    :param AddressValidateResult result: The address validation response from ShipEngine API.
+    """
+    if len(result.errors) > 1:
+        error_list = list()
+        map(lambda msg: error_list.append(msg), result.errors)
+        str_errors = "\n".join(error_list)
+
+        raise ShipEngineError(
+            message=f"Invalid address.\n {str_errors}",
+            request_id=result.request_id,
+            source=ErrorSource.SHIPENGINE.value,
+            error_type=ErrorType.ERROR.value,
+            error_code=ErrorCode.INVALID_ADDRESS.value,
+        )
+    elif len(result.errors) == 1:
+        raise ShipEngineError(
+            message=f"Invalid address.\n {result.errors[0]['message']}",
+            request_id=result.request_id,
+            source=ErrorSource.SHIPENGINE.value,
+            error_type=ErrorType.ERROR.value,
+            error_code=result.errors[0]["code"],
+        )
+    elif result.is_valid is False:
+        raise ShipEngineError(
+            message="Invalid address - The address provided could not be normalized.",
+            request_id=result.request_id,
+            source=ErrorSource.SHIPENGINE.value,
+            error_type=ErrorType.ERROR.value,
+            error_code=ErrorCode.INVALID_ADDRESS.value,
+        )
