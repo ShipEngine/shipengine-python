@@ -82,10 +82,10 @@ poetry install
 
 - After you have installed **Poetry**, you need to start the python environment managed by Poetry by
   running `poetry shell` in your terminal.
-    - Next you will have to start the poetry environment:
-  ```bash
-  poetry shell
-  ```
+
+```bash
+poetry shell
+ ```
 
 Testing
 -------
