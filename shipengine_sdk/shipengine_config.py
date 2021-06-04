@@ -2,9 +2,8 @@
 import json
 from typing import Dict, Optional
 
-from shipengine_sdk.models.enums import Endpoints
-from shipengine_sdk.util import is_api_key_valid, is_retries_valid
-from shipengine_sdk.util.sdk_assertions import is_timeout_valid
+from .models import Endpoints
+from .util import is_api_key_valid, is_retries_valid, is_timeout_valid
 
 
 class ShipEngineConfig:
