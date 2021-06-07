@@ -188,8 +188,7 @@ class TestValidateAddress:
             assert err.error_code is ErrorCode.FIELD_VALUE_REQUIRED.value
             assert (
                 err.message
-                == "Invalid address. Either the postal code or the city/locality and state/province must be specified."
-                # noqa
+                == "Invalid address. Either the postal code or the city/locality and state/province must be specified."  # noqa
             )
 
     def test_invalid_country_code(self):
