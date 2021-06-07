@@ -199,7 +199,7 @@ def valid_address_assertions(
         returned_address.normalized_address
         if type(returned_address) is AddressValidateResult
         else returned_address
-    )
+    )  # noqa
     if locale == "domestic":
         if test_method == "validate":
             assert type(returned_address) is AddressValidateResult

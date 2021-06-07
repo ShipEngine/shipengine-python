@@ -109,9 +109,11 @@ class TestValidateAddress:
         """DX-1029 - Alpha postal code."""
         canadian_address = valid_canadian_address()
         validated_address = validate_an_address(canadian_address)
-        canada_valid_avs_assertions(
+        valid_address_assertions(
+            test_method=self.TEST_METHOD,
+            locale="international",
             original_address=canadian_address,
-            validated_address=validated_address,
+            returned_address=validated_address,
             expected_residential_indicator=False,
         )
 
