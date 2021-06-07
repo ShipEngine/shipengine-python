@@ -15,57 +15,17 @@ from ..util.test_data import (
     address_with_errors,
     address_with_invalid_country,
     address_with_warnings,
+    canada_valid_avs_assertions,
     get_server_side_error,
     multi_line_address,
     non_latin_address,
     unknown_address,
+    us_valid_avs_assertions,
     valid_canadian_address,
     valid_commercial_address,
     valid_residential_address,
     validate_an_address,
 )
-
-
-def us_valid_address_assertions(
-    original_address: Address,
-    validated_address: AddressValidateResult,
-    expected_residential_indicator,
-) -> None:
-    """A set of common assertions that are regularly made on the commercial US address used for testing."""
-    address = validated_address.normalized_address
-    assert type(validated_address) is AddressValidateResult
-    assert validated_address.is_valid is True
-    assert type(address) is Address
-    assert len(validated_address.info) == 0
-    assert len(validated_address.warnings) == 0
-    assert len(validated_address.errors) == 0
-    assert address is not None
-    assert address.city_locality == original_address.city_locality.upper()
-    assert address.state_province == original_address.state_province.upper()
-    assert address.postal_code == original_address.postal_code
-    assert address.country_code == original_address.country_code.upper()
-    assert address.is_residential is expected_residential_indicator
-
-
-def canada_valid_address_assertions(
-    original_address: Address,
-    validated_address: AddressValidateResult,
-    expected_residential_indicator,
-) -> None:
-    """A set of common assertions that are regularly made on the canadian_address used for testing."""
-    address = validated_address.normalized_address
-    assert type(validated_address) is AddressValidateResult
-    assert validated_address.is_valid is True
-    assert type(address) is Address
-    assert len(validated_address.info) == 0
-    assert len(validated_address.warnings) == 0
-    assert len(validated_address.errors) == 0
-    assert address is not None
-    assert address.city_locality == original_address.city_locality
-    assert address.state_province == original_address.state_province.title()
-    assert address.postal_code == "M6 K 3 C3"
-    assert address.country_code == original_address.country_code.upper()
-    assert address.is_residential is expected_residential_indicator
 
 
 class TestValidateAddress:
@@ -75,7 +35,7 @@ class TestValidateAddress:
         validated_address = validate_an_address(residential_address)
         address = validated_address.normalized_address
 
-        us_valid_address_assertions(
+        us_valid_avs_assertions(
             original_address=residential_address,
             validated_address=validated_address,
             expected_residential_indicator=True,
@@ -93,7 +53,7 @@ class TestValidateAddress:
         validated_address = validate_an_address(commercial_address)
         address = validated_address.normalized_address
 
-        us_valid_address_assertions(
+        us_valid_avs_assertions(
             original_address=commercial_address,
             validated_address=validated_address,
             expected_residential_indicator=False,
@@ -111,7 +71,7 @@ class TestValidateAddress:
         validated_address = validate_an_address(valid_multi_line_address)
         address = validated_address.normalized_address
 
-        us_valid_address_assertions(
+        us_valid_avs_assertions(
             original_address=valid_multi_line_address,
             validated_address=validated_address,
             expected_residential_indicator=False,
@@ -128,7 +88,7 @@ class TestValidateAddress:
         """DX-1028 - Validate numeric postal code."""
         residential_address = valid_residential_address()
         validated_address = validate_an_address(residential_address)
-        us_valid_address_assertions(
+        us_valid_avs_assertions(
             original_address=residential_address,
             validated_address=validated_address,
             expected_residential_indicator=True,
@@ -139,7 +99,7 @@ class TestValidateAddress:
         """DX-1029 - Alpha postal code."""
         canadian_address = valid_canadian_address()
         validated_address = validate_an_address(canadian_address)
-        canada_valid_address_assertions(
+        canada_valid_avs_assertions(
             original_address=canadian_address,
             validated_address=validated_address,
             expected_residential_indicator=False,
@@ -149,7 +109,7 @@ class TestValidateAddress:
         """DX-1026 - Validate address of unknown address."""
         address = unknown_address()
         validated_address = validate_an_address(address)
-        canada_valid_address_assertions(
+        canada_valid_avs_assertions(
             original_address=address,
             validated_address=validated_address,
             expected_residential_indicator=None,
@@ -228,7 +188,8 @@ class TestValidateAddress:
             assert err.error_code is ErrorCode.FIELD_VALUE_REQUIRED.value
             assert (
                 err.message
-                == "Invalid address. Either the postal code or the city/locality and state/province must be specified."  # noqa
+                == "Invalid address. Either the postal code or the city/locality and state/province must be specified."
+                # noqa
             )
 
     def test_invalid_country_code(self):
