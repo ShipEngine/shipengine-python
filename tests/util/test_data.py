@@ -1,5 +1,5 @@
 """Test data as functions."""
-from typing import Dict
+from typing import Dict, Union
 
 from shipengine_sdk import ShipEngine
 from shipengine_sdk.models import Address, AddressValidateResult, Endpoints
@@ -182,28 +182,66 @@ def normalize_an_address(address: Address) -> Address:
 # Assertion helper functions
 
 
-def us_valid_avs_assertions(
+def valid_address_assertions(
+    test_method: str,
+    locale: str,
     original_address: Address,
-    validated_address: AddressValidateResult,
+    returned_address: Union[Address, AddressValidateResult],
     expected_residential_indicator,
 ) -> None:
     """
     A set of common assertions that are regularly made on the commercial US address
-    used for testing `validate_address`.
+    used for testing the `validate_address` or `normalize_address` methods, based on
+    the `test_method` that is passed in. It also makes different sets of assertions
+    depending on what `locale` is passed in.
     """
-    address = validated_address.normalized_address
-    assert type(validated_address) is AddressValidateResult
-    assert validated_address.is_valid is True
-    assert type(address) is Address
-    assert len(validated_address.info) == 0
-    assert len(validated_address.warnings) == 0
-    assert len(validated_address.errors) == 0
-    assert address is not None
-    assert address.city_locality == original_address.city_locality.upper()
-    assert address.state_province == original_address.state_province.upper()
-    assert address.postal_code == original_address.postal_code
-    assert address.country_code == original_address.country_code.upper()
-    assert address.is_residential is expected_residential_indicator
+    address = (
+        returned_address.normalized_address
+        if type(returned_address) is AddressValidateResult
+        else returned_address
+    )
+    if locale == "domestic":
+        if test_method == "validate":
+            assert type(returned_address) is AddressValidateResult
+            assert returned_address.is_valid is True
+            assert type(address) is Address
+            assert len(returned_address.info) == 0
+            assert len(returned_address.warnings) == 0
+            assert len(returned_address.errors) == 0
+            assert address is not None
+            assert address.city_locality == original_address.city_locality.upper()
+            assert address.state_province == original_address.state_province.upper()
+            assert address.postal_code == original_address.postal_code
+            assert address.country_code == original_address.country_code.upper()
+            assert address.is_residential is expected_residential_indicator
+        elif test_method == "normalize":
+            assert type(returned_address) is Address
+            assert returned_address.city_locality == original_address.city_locality.upper()
+            assert returned_address.state_province == original_address.state_province.upper()
+            assert returned_address.postal_code == original_address.postal_code
+            assert returned_address.country_code == original_address.country_code.upper()
+            assert returned_address.is_residential is expected_residential_indicator
+    elif locale == "international":
+        if test_method == "validate":
+            assert type(returned_address) is AddressValidateResult
+            assert returned_address.is_valid is True
+            assert type(address) is Address
+            assert len(returned_address.info) == 0
+            assert len(returned_address.warnings) == 0
+            assert len(returned_address.errors) == 0
+            assert address is not None
+            assert address.city_locality == original_address.city_locality
+            assert address.state_province == original_address.state_province.title()
+            assert address.postal_code == "M6 K 3 C3"
+            assert address.country_code == original_address.country_code.upper()
+            assert address.is_residential is expected_residential_indicator
+        if test_method == "normalize":
+            assert type(returned_address) is Address
+            assert returned_address.city_locality == original_address.city_locality
+            assert returned_address.state_province == original_address.state_province.title()
+            assert returned_address.postal_code == "M6 K 3 C3"
+            assert returned_address.country_code == original_address.country_code.upper()
+            assert returned_address.is_residential is expected_residential_indicator
 
 
 def canada_valid_avs_assertions(
@@ -243,5 +281,22 @@ def us_valid_normalize_assertions(
     assert normalized_address.city_locality == original_address.city_locality.upper()
     assert normalized_address.state_province == original_address.state_province.upper()
     assert normalized_address.postal_code == original_address.postal_code
+    assert normalized_address.country_code == original_address.country_code.upper()
+    assert normalized_address.is_residential is expected_residential_indicator
+
+
+def canada_valid_normalize_assertions(
+    original_address: Address,
+    normalized_address: Address,
+    expected_residential_indicator,
+) -> None:
+    """
+    A set of common assertions that are regularly made on the canadian_address
+    used for testing `validate_address`.
+    """
+    assert type(normalized_address) is Address
+    assert normalized_address.city_locality == original_address.city_locality
+    assert normalized_address.state_province == original_address.state_province.title()
+    assert normalized_address.postal_code == "M6 K 3 C3"
     assert normalized_address.country_code == original_address.country_code.upper()
     assert normalized_address.is_residential is expected_residential_indicator

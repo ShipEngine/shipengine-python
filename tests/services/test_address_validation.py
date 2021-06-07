@@ -20,7 +20,7 @@ from ..util.test_data import (
     multi_line_address,
     non_latin_address,
     unknown_address,
-    us_valid_avs_assertions,
+    valid_address_assertions,
     valid_canadian_address,
     valid_commercial_address,
     valid_residential_address,
@@ -29,15 +29,19 @@ from ..util.test_data import (
 
 
 class TestValidateAddress:
+    TEST_METHOD: str = "validate"
+
     def test_valid_residential_address(self) -> None:
         """DX-1024 - Valid residential address."""
         residential_address = valid_residential_address()
         validated_address = validate_an_address(residential_address)
         address = validated_address.normalized_address
 
-        us_valid_avs_assertions(
+        valid_address_assertions(
+            test_method=self.TEST_METHOD,
+            locale="domestic",
             original_address=residential_address,
-            validated_address=validated_address,
+            returned_address=validated_address,
             expected_residential_indicator=True,
         )
         assert (
@@ -53,9 +57,11 @@ class TestValidateAddress:
         validated_address = validate_an_address(commercial_address)
         address = validated_address.normalized_address
 
-        us_valid_avs_assertions(
+        valid_address_assertions(
+            test_method=self.TEST_METHOD,
+            locale="domestic",
             original_address=commercial_address,
-            validated_address=validated_address,
+            returned_address=validated_address,
             expected_residential_indicator=False,
         )
         assert (
@@ -71,9 +77,11 @@ class TestValidateAddress:
         validated_address = validate_an_address(valid_multi_line_address)
         address = validated_address.normalized_address
 
-        us_valid_avs_assertions(
+        valid_address_assertions(
+            test_method=self.TEST_METHOD,
+            locale="domestic",
             original_address=valid_multi_line_address,
-            validated_address=validated_address,
+            returned_address=validated_address,
             expected_residential_indicator=False,
         )
         assert (
@@ -88,9 +96,11 @@ class TestValidateAddress:
         """DX-1028 - Validate numeric postal code."""
         residential_address = valid_residential_address()
         validated_address = validate_an_address(residential_address)
-        us_valid_avs_assertions(
+        valid_address_assertions(
+            test_method=self.TEST_METHOD,
+            locale="domestic",
             original_address=residential_address,
-            validated_address=validated_address,
+            returned_address=validated_address,
             expected_residential_indicator=True,
         )
         assert re.match(r"\d", validated_address.normalized_address.postal_code)
