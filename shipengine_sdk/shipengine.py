@@ -2,7 +2,7 @@
 from typing import Dict, Union
 
 from .models.address import Address, AddressValidateResult
-from .services.address_validation import validate
+from .services.address_validation import normalize, validate
 from .shipengine_config import ShipEngineConfig
 
 
@@ -40,3 +40,10 @@ class ShipEngine:
         """
         config: ShipEngineConfig = self.config.merge(new_config=config)
         return validate(address, config)
+
+    def normalize_address(
+        self, address: Address, config: Union[Dict[str, any], ShipEngineConfig] = None
+    ) -> Address:
+        """Normalize a given address into a standardized format used by carriers."""
+        config: ShipEngineConfig = self.config.merge(new_config=config)
+        return normalize(address=address, config=config)
