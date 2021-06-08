@@ -1,4 +1,4 @@
-"""Test data as functions."""
+"""Test data as functions and common assertion helper functions."""
 from typing import Dict, Union
 
 from shipengine_sdk import ShipEngine

@@ -3,7 +3,7 @@ import re
 
 from shipengine_sdk.models import Address
 
-from ..util.test_data import (
+from ..util.test_helpers import (
     address_with_warnings,
     multi_line_address,
     non_latin_address,
@@ -58,7 +58,7 @@ class TestNormalizeAddress:
             expected_residential_indicator=None,
         )
 
-    def test_normalize_multi_line_address(self):
+    def test_normalize_multi_line_address(self) -> None:
         """DX-1044 - Normalize multi-line address."""
         multi_line = multi_line_address()
         normalized = normalize_an_address(multi_line)
