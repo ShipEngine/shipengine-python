@@ -223,25 +223,17 @@ def valid_address_assertions(
             assert returned_address.is_residential is expected_residential_indicator
     elif locale == "international":
         if test_method == "validate":
-            assert type(returned_address) is AddressValidateResult
-            assert returned_address.is_valid is True
-            assert type(address) is Address
-            assert len(returned_address.info) == 0
-            assert len(returned_address.warnings) == 0
-            assert len(returned_address.errors) == 0
-            assert address is not None
-            assert address.city_locality == original_address.city_locality
-            assert address.state_province == original_address.state_province.title()
-            assert address.postal_code == "M6 K 3 C3"
-            assert address.country_code == original_address.country_code.upper()
-            assert address.is_residential is expected_residential_indicator
+            canada_valid_avs_assertions(
+                original_address=original_address,
+                validated_address=returned_address,
+                expected_residential_indicator=expected_residential_indicator,
+            )
         if test_method == "normalize":
-            assert type(returned_address) is Address
-            assert returned_address.city_locality == original_address.city_locality
-            assert returned_address.state_province == original_address.state_province.title()
-            assert returned_address.postal_code == "M6 K 3 C3"
-            assert returned_address.country_code == original_address.country_code.upper()
-            assert returned_address.is_residential is expected_residential_indicator
+            canada_valid_normalize_assertions(
+                original_address=original_address,
+                normalized_address=returned_address,
+                expected_residential_indicator=expected_residential_indicator,
+            )
 
 
 def canada_valid_avs_assertions(

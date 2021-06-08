@@ -1,5 +1,6 @@
 """Test the normalize address method of the ShipEngine SDK."""
 from ..util.test_data import (
+    multi_line_address,
     normalize_an_address,
     unknown_address,
     valid_address_assertions,
@@ -49,3 +50,21 @@ class TestNormalizeAddress:
             returned_address=normalized,
             expected_residential_indicator=None,
         )
+
+    def test_normalize_multi_line_address(self):
+        """DX-1044 - Normalize multi-line address."""
+        multi_line = multi_line_address()
+        normalized = normalize_an_address(multi_line)
+
+        valid_address_assertions(
+            test_method=self.TEST_METHOD,
+            locale="domestic",
+            original_address=multi_line,
+            returned_address=normalized,
+            expected_residential_indicator=False,
+        )
+        assert (
+            normalized.street[0]
+            == (multi_line.street[0] + " " + multi_line.street[1]).replace(".", "").upper()
+        )
+        assert normalized.street[1] == multi_line.street[2].upper()
