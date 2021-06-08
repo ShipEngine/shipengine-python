@@ -32,7 +32,7 @@ class TestAddress:
                 empty_address_lines()
 
     def test_address_with_too_many_lines(self):
-        """DX-1034 - Too many address lines."""
+        """DX-1034/DX-1052 - Too many address lines."""
         try:
             address_with_too_many_lines()
         except ValidationError as err:
