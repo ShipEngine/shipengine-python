@@ -249,7 +249,7 @@ def does_normalized_address_have_errors(result) -> None:
         )
     elif len(result.errors) == 1:
         raise ShipEngineError(
-            message=f"Invalid address.\n {result.errors[0]['message']}",
+            message=f"Invalid address. {result.errors[0]['message']}",
             request_id=result.request_id,
             source=ErrorSource.SHIPENGINE.value,
             error_type=ErrorType.ERROR.value,

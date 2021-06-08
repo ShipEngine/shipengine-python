@@ -1,9 +1,11 @@
 """Test the normalize address method of the ShipEngine SDK."""
 import re
 
-from shipengine_sdk.models import Address
+from shipengine_sdk.errors import ShipEngineError
+from shipengine_sdk.models import Address, ErrorCode, ErrorSource, ErrorType
 
 from ..util.test_helpers import (
+    address_with_single_error,
     address_with_warnings,
     multi_line_address,
     non_latin_address,
@@ -129,3 +131,16 @@ class TestNormalizeAddress:
         assert normalized.postal_code == "M6K 3C3"
         assert normalized.country_code == warning_address.country_code.upper()
         assert normalized.is_residential is True
+
+    def test_normalize_with_single_error_message(self) -> None:
+        """DX-1049 - Normalize address with single error message."""
+        single_error = address_with_single_error()
+        try:
+            normalize_an_address(single_error)
+        except ShipEngineError as err:
+            assert err.request_id is not None
+            assert err.request_id.startswith("req_") is True
+            assert err.source is ErrorSource.SHIPENGINE.value
+            assert err.error_type is ErrorType.ERROR.value
+            assert err.error_code == ErrorCode.MINIMUM_POSTAL_CODE_VERIFICATION_FAILED.value
+            assert err.message == "Invalid address. Insufficient or inaccurate postal code"

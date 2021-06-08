@@ -59,6 +59,17 @@ def address_with_warnings() -> Address:
     )
 
 
+def address_with_single_error() -> Address:
+    """Return a test Address object that will cause the server to return a single error message."""
+    return Address(
+        street=["170 Error Blvd"],
+        city_locality="Boston",
+        state_province="MA",
+        postal_code="02215",
+        country_code="US",
+    )
+
+
 def address_with_errors() -> Address:
     """Return a test Address object that will cause the server to return an error message."""
     return Address(
