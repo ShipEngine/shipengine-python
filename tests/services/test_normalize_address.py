@@ -1,8 +1,11 @@
 """Test the normalize address method of the ShipEngine SDK."""
 import re
 
+from shipengine_sdk.models import Address
+
 from ..util.test_data import (
     multi_line_address,
+    non_latin_address,
     normalize_an_address,
     unknown_address,
     valid_address_assertions,
@@ -98,3 +101,17 @@ class TestNormalizeAddress:
             returned_address=normalized,
             expected_residential_indicator=False,
         )
+
+    def test_normalize_non_latin_chars(self) -> None:
+        """DX-1047 - Normalize address with non-latin characters."""
+        non_latin = non_latin_address()
+        normalized = normalize_an_address(non_latin)
+
+        assert type(normalized) is Address
+        assert normalized.street[0] == "68 Kamitobatsunodacho"
+        assert normalized.city_locality == "Kyoto-Shi Minami-Ku"
+        assert normalized.state_province == "Kyoto"
+        assert normalized.postal_code == non_latin.postal_code
+        assert normalized.country_code == non_latin.country_code
+        assert normalized.is_residential is False
+        assert len(normalized.street) == 1
