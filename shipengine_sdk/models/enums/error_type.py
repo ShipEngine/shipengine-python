@@ -47,3 +47,6 @@ class ErrorType(Enum):
 
     AUTHORIZATION = "authorization"
     """General authorization error type."""
+
+    ERROR = "error"
+    """Generic error."""

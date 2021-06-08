@@ -5,6 +5,7 @@ from ..jsonrpc import rpc_request
 from ..models.address import Address, AddressValidateResult
 from ..models.enums import RPCMethods
 from ..shipengine_config import ShipEngineConfig
+from ..util import does_normalized_address_have_errors
 
 
 def validate(address: Address, config: ShipEngineConfig) -> AddressValidateResult:
@@ -33,5 +34,13 @@ def validate(address: Address, config: ShipEngineConfig) -> AddressValidateResul
 
 
 def normalize(address: Address, config: ShipEngineConfig) -> Address:
+    """
+    Normalize a given address into a standardized format.
+
+    :param Address address: The address to be validate.
+    :param ShipEngineConfig config: The global ShipEngine configuration object.
+    :returns: :class:`Address`: The normalized address returned from ShipEngine API.
+    """
     validation_result: AddressValidateResult = validate(address=address, config=config)
+    does_normalized_address_have_errors(result=validation_result)
     return validation_result.normalized_address

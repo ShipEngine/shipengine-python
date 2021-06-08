@@ -1,7 +1,6 @@
 """Testing the process request and response functions."""
 import pytest
 
-from shipengine_sdk import ErrorCode, ErrorSource, ErrorType, RPCMethods
 from shipengine_sdk.errors import (
     AccountStatusError,
     BusinessRuleError,
@@ -11,6 +10,7 @@ from shipengine_sdk.errors import (
     ValidationError,
 )
 from shipengine_sdk.jsonrpc import handle_response, wrap_request
+from shipengine_sdk.models import ErrorCode, ErrorSource, ErrorType, RPCMethods
 
 
 def handle_response_errors(error_source: str, error_code: str, error_type: str):
