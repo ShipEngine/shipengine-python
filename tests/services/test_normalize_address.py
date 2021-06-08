@@ -160,4 +160,4 @@ class TestNormalizeAddress:
             assert (
                 err.message
                 == "Invalid address.\nInvalid City, State, or Zip\nInsufficient or Incorrect Address Data"
-            )  # noqa
+            )
