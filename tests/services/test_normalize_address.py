@@ -4,6 +4,7 @@ import re
 from shipengine_sdk.models import Address
 
 from ..util.test_data import (
+    address_with_warnings,
     multi_line_address,
     non_latin_address,
     normalize_an_address,
@@ -115,3 +116,16 @@ class TestNormalizeAddress:
         assert normalized.country_code == non_latin.country_code
         assert normalized.is_residential is False
         assert len(normalized.street) == 1
+
+    def test_normalize_with_warnings(self) -> None:
+        """DX-1048 - Normalize address with warnings."""
+        warning_address = address_with_warnings()
+        normalized = normalize_an_address(warning_address)
+
+        assert type(normalized) is Address
+        assert normalized is not None
+        assert normalized.city_locality == warning_address.city_locality
+        assert normalized.state_province == warning_address.state_province.title()
+        assert normalized.postal_code == "M6K 3C3"
+        assert normalized.country_code == warning_address.country_code.upper()
+        assert normalized.is_residential is True
