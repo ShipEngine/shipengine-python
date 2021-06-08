@@ -5,6 +5,7 @@ from shipengine_sdk.errors import ShipEngineError
 from shipengine_sdk.models import Address, ErrorCode, ErrorSource, ErrorType
 
 from ..util.test_helpers import (
+    address_with_errors,
     address_with_single_error,
     address_with_warnings,
     multi_line_address,
@@ -144,3 +145,19 @@ class TestNormalizeAddress:
             assert err.error_type is ErrorType.ERROR.value
             assert err.error_code == ErrorCode.MINIMUM_POSTAL_CODE_VERIFICATION_FAILED.value
             assert err.message == "Invalid address. Insufficient or inaccurate postal code"
+
+    def test_normalize_with_multiple_errors(self) -> None:
+        """DX-1050 - Normalize address with multiple error messages."""
+        errors_address = address_with_errors()
+        try:
+            normalize_an_address(errors_address)
+        except ShipEngineError as err:
+            assert err.request_id is not None
+            assert err.request_id.startswith("req_") is True
+            assert err.source is ErrorSource.SHIPENGINE.value
+            assert err.error_type is ErrorType.ERROR.value
+            assert err.error_code is ErrorCode.INVALID_ADDRESS.value
+            assert (
+                err.message
+                == "Invalid address.\nInvalid City, State, or Zip\nInsufficient or Incorrect Address Data"
+            )  # noqa

@@ -237,11 +237,13 @@ def does_normalized_address_have_errors(result) -> None:
     """
     if len(result.errors) > 1:
         error_list = list()
-        map(lambda msg: error_list.append(msg), result.errors)
+        for err in result.errors:
+            error_list.append(err["message"])
+
         str_errors = "\n".join(error_list)
 
         raise ShipEngineError(
-            message=f"Invalid address.\n {str_errors}",
+            message=f"Invalid address.\n{str_errors}",
             request_id=result.request_id,
             source=ErrorSource.SHIPENGINE.value,
             error_type=ErrorType.ERROR.value,
