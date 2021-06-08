@@ -6,6 +6,7 @@ from ..util.test_data import (
     normalize_an_address,
     unknown_address,
     valid_address_assertions,
+    valid_canadian_address,
     valid_commercial_address,
     valid_residential_address,
 )
@@ -84,3 +85,16 @@ class TestNormalizeAddress:
             expected_residential_indicator=True,
         )
         assert re.match(r"\d", normalized.postal_code)
+
+    def test_normalize_alpha_postal_code(self) -> None:
+        """DX-1046 - Normalize address with alpha-numeric postal code."""
+        address = valid_canadian_address()
+        normalized = normalize_an_address(address)
+
+        valid_address_assertions(
+            test_method=self.TEST_METHOD,
+            locale="international",
+            original_address=address,
+            returned_address=normalized,
+            expected_residential_indicator=False,
+        )
