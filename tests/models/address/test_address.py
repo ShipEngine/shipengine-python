@@ -3,29 +3,7 @@ import pytest
 
 from shipengine_sdk.errors import ValidationError
 from shipengine_sdk.models import ErrorCode, ErrorSource, ErrorType
-from shipengine_sdk.models.address import Address
-
-
-def empty_address_lines() -> Address:
-    """Returns an invalid address with empty street list."""
-    return Address(
-        street=list(),
-        city_locality="Boston",
-        state_province="MA",
-        postal_code="02215",
-        country_code="US",
-    )
-
-
-def address_with_too_many_lines() -> Address:
-    """Return an address with too many address lines in the street list."""
-    return Address(
-        street=["4 Jersey St", "ste 200", "1st Floor", "Room B"],
-        city_locality="Boston",
-        state_province="MA",
-        postal_code="02215",
-        country_code="US",
-    )
+from tests.util.test_helpers import address_with_too_many_lines, empty_address_lines
 
 
 def address_line_assertions(err: ValidationError, variant: str) -> None:
@@ -45,7 +23,7 @@ def address_line_assertions(err: ValidationError, variant: str) -> None:
 
 class TestAddress:
     def test_no_address_lines(self):
-        """DX-1033 - Too many address lines in the street list."""
+        """DX-1033/DX-1051 - No address lines in the street list."""
         try:
             empty_address_lines()
         except ValidationError as err:
