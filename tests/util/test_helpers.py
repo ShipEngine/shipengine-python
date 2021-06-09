@@ -92,6 +92,28 @@ def valid_canadian_address() -> Address:
     )
 
 
+def empty_address_lines() -> Address:
+    """Returns an invalid address with empty street list."""
+    return Address(
+        street=list(),
+        city_locality="Boston",
+        state_province="MA",
+        postal_code="02215",
+        country_code="US",
+    )
+
+
+def address_with_too_many_lines() -> Address:
+    """Return an address with too many address lines in the street list."""
+    return Address(
+        street=["4 Jersey St", "ste 200", "1st Floor", "Room B"],
+        city_locality="Boston",
+        state_province="MA",
+        postal_code="02215",
+        country_code="US",
+    )
+
+
 def multi_line_address() -> Address:
     """Returns a valid multiline address."""
     return Address(
