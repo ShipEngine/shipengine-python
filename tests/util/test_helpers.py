@@ -1,5 +1,5 @@
 """Test data as functions and common assertion helper functions."""
-from typing import Dict, Union
+from typing import Dict, Optional, Union
 
 from shipengine_sdk import ShipEngine
 from shipengine_sdk.models import Address, AddressValidateResult, Endpoints
@@ -210,6 +210,11 @@ def normalize_an_address(address: Address) -> Address:
     this function.
     """
     return stub_shipengine_instance().normalize_address(address)
+
+
+def stub_get_carrier_accounts(carrier_code: Optional[str] = None):
+    """Helper function that passes the `get_carrier_accounts` method a given carrier_code or None."""
+    return stub_shipengine_instance().get_carrier_accounts(carrier_code=carrier_code)
 
 
 # Assertion helper functions
