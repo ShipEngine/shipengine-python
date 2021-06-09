@@ -1,13 +1,15 @@
 """Test the normalize address method of the ShipEngine SDK."""
 import re
 
-from shipengine_sdk.errors import ShipEngineError
+from shipengine_sdk.errors import ClientSystemError, ShipEngineError, ValidationError
 from shipengine_sdk.models import Address, ErrorCode, ErrorSource, ErrorType
 
 from ..util.test_helpers import (
+    address_missing_required_fields,
     address_with_errors,
     address_with_single_error,
     address_with_warnings,
+    get_server_side_error,
     multi_line_address,
     non_latin_address,
     normalize_an_address,
@@ -161,3 +163,28 @@ class TestNormalizeAddress:
                 err.message
                 == "Invalid address.\nInvalid City, State, or Zip\nInsufficient or Incorrect Address Data"
             )
+
+    def test_normalize_missing_city_state_and_postal_code(self) -> None:
+        """DX-1053 & DX-1054 - Missing city, state, and postal code."""
+        try:
+            address_missing_required_fields()
+        except ValidationError as err:
+            assert err.request_id is None
+            assert err.source is ErrorSource.SHIPENGINE.value
+            assert err.error_type is ErrorType.VALIDATION.value
+            assert err.error_code is ErrorCode.FIELD_VALUE_REQUIRED.value
+            assert (
+                err.message
+                == "Invalid address. Either the postal code or the city/locality and state/province must be specified."  # noqa
+            )
+
+    def test_normalize_server_side_error(self) -> None:
+        """DX-1056 - Server-side error."""
+        try:
+            get_server_side_error()
+        except ClientSystemError as err:
+            assert err.request_id is not None
+            assert err.request_id.startswith("req_") is True
+            assert err.source is ErrorSource.SHIPENGINE.value
+            assert err.error_type is ErrorType.SYSTEM.value
+            assert err.error_code is ErrorCode.UNSPECIFIED.value
