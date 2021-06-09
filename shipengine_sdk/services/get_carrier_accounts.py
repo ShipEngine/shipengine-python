@@ -2,11 +2,11 @@
 Fetch the carrier account connected to a given ShipEngine Account
 based on the API Key passed into the ShipEngine SDK.
 """
-from typing import List, Optional
+from typing import Dict, List, Optional
 
-from .. import ShipEngineConfig
 from ..jsonrpc import rpc_request
 from ..models import CarrierAccount, RPCMethods
+from ..shipengine_config import ShipEngineConfig
 
 
 class GetCarrierAccounts:
@@ -14,7 +14,7 @@ class GetCarrierAccounts:
 
     def fetch_carrier_accounts(
         self, config: ShipEngineConfig, carrier_code: Optional[str] = None
-    ) -> List[CarrierAccount]:
+    ) -> List[Dict[str, any]]:
         if carrier_code is not None:
             api_response = rpc_request(
                 method=RPCMethods.LIST_CARRIERS.value,
@@ -30,14 +30,14 @@ class GetCarrierAccounts:
         accounts = api_response["result"]["carrierAccounts"]
         self.cached_accounts = list()
         for account in accounts:
-            carrier_account = CarrierAccount(account)
+            carrier_account = CarrierAccount(account).to_dict()
             self.cached_accounts.append(carrier_account)
 
         return self.cached_accounts
 
     def fetch_cached_carrier_accounts(
         self, config: ShipEngineConfig, carrier_code: Optional[str]
-    ) -> List[CarrierAccount]:
+    ) -> List[Dict[str, any]]:
         accounts = self.cached_accounts
         return (
             accounts

@@ -61,8 +61,8 @@ class CarrierAccount:
 
     def _set_carrier(self, carrier: str) -> None:
         if does_member_value_exist(carrier, Carriers):
-            self.carrier = Carrier(code=carrier)
-            self.name = self.carrier.name
+            self.carrier = Carrier(code=carrier).to_dict()
+            self.name = self.carrier["name"]
         else:
             InvalidFieldValueError(
                 field_name="carrier",
