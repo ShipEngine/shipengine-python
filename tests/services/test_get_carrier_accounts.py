@@ -1,4 +1,5 @@
 """Tests for the GetCarrierAccounts service in the ShipEngine SDK."""
+
 from shipengine_sdk.models import Carriers
 
 from ..util.test_helpers import stub_get_carrier_accounts
@@ -20,3 +21,10 @@ class TestGetCarrierAccounts:
         for account in accounts:
             assert account["account_id"].startswith("car_")
             assert account["name"] is not None
+
+    def test_no_accounts_setup(self) -> None:
+        """DX-1075 - No accounts setup yet."""
+        accounts = stub_get_carrier_accounts(carrier_code="sendle")
+
+        assert type(accounts) is list
+        assert len(accounts) == 0
