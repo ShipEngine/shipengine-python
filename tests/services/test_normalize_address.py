@@ -179,7 +179,7 @@ class TestNormalizeAddress:
             )
 
     def test_normalize_server_side_error(self) -> None:
-        """DX-1056 - Server-side error."""
+        """DX-1055 - Server-side error."""
         try:
             get_server_side_error()
         except ClientSystemError as err:
