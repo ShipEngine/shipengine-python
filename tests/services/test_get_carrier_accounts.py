@@ -1,6 +1,6 @@
 """Tests for the GetCarrierAccounts service in the ShipEngine SDK."""
-
-from shipengine_sdk.models import Carriers
+from shipengine_sdk.errors import ClientSystemError
+from shipengine_sdk.models import Carriers, ErrorCode, ErrorSource, ErrorType
 
 from ..util.test_helpers import stub_get_carrier_accounts
 
@@ -49,3 +49,14 @@ class TestGetCarrierAccounts:
         for account in accounts:
             assert account["account_id"].startswith("car_")
             assert account["name"] is not None
+
+    def test_server_side_error(self) -> None:
+        """DX-1078 - Get carrier accounts server-side error."""
+        try:
+            stub_get_carrier_accounts("access_worldwide")
+        except ClientSystemError as err:
+            assert err.request_id is not None
+            assert err.request_id.startswith("req_") is True
+            assert err.source == ErrorSource.SHIPENGINE.value
+            assert err.error_type == ErrorType.SYSTEM.value
+            assert err.error_code == ErrorCode.UNSPECIFIED.value
