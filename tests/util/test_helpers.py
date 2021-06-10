@@ -20,6 +20,20 @@ def stub_shipengine_instance() -> ShipEngine:
     return ShipEngine(stub_config())
 
 
+def address_with_all_fields() -> Address:
+    """Return an address with all fields populated."""
+    return Address(
+        name="ShipEngine",
+        company="Auctane",
+        phone="123456789",
+        street=["4 Jersey St", "Apt. 2b"],
+        city_locality="Boston",
+        state_province="MA",
+        postal_code="02215",
+        country_code="US",
+    )
+
+
 def valid_residential_address() -> Address:
     """
     Return a test Address object with valid residential
@@ -237,7 +251,7 @@ def valid_address_assertions(
         returned_address.normalized_address
         if type(returned_address) is AddressValidateResult
         else returned_address
-    )  # noqa
+    )
     if locale == "domestic":
         if test_method == "validate":
             assert type(returned_address) is AddressValidateResult

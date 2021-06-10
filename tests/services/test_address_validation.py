@@ -12,6 +12,7 @@ from shipengine_sdk.models import (
 
 from ..util.test_helpers import (
     address_missing_required_fields,
+    address_with_all_fields,
     address_with_errors,
     address_with_invalid_country,
     address_with_warnings,
@@ -223,3 +224,16 @@ class TestValidateAddress:
             assert err.source is ErrorSource.SHIPENGINE.value
             assert err.error_type is ErrorType.SYSTEM.value
             assert err.error_code is ErrorCode.UNSPECIFIED.value
+
+    def test_address_with_name_company_phone(self) -> None:
+        """DX-1393 - Validate address with name, company, and phone."""
+        address = address_with_all_fields()
+        validated_address = validate_an_address(address=address)
+
+        valid_address_assertions(
+            test_method=self.TEST_METHOD,
+            locale="domestic",
+            original_address=address,
+            returned_address=validated_address,
+            expected_residential_indicator=True,
+        )
