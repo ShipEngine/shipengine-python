@@ -5,34 +5,6 @@ from typing import Dict
 from ...errors import InvalidFieldValueError, ShipEngineError
 from ..enums import Carriers, does_member_value_exist, get_carrier_name_value
 
-# @dataclass_json(letter_case=LetterCase.CAMEL)
-# @dataclass(frozen=True)
-# class Carrier:
-#     """This immutable class object represents a given Carrier provider e.g. `FedEx`, `UPS`, `USPS`."""
-#     name: str
-#     code: str
-#
-#     def __post_init__(self) -> None:
-#         """An immutable Carrier object. e.g. `FedEx`, `UPS`, `USPS`."""
-#         if not does_member_value_exist(self.name, CarrierNames):
-#             raise ShipEngineError(f"Carrier [{self.name}] not currently supported.")
-#
-#         if not does_member_value_exist(self.code, Carriers):
-#             raise ShipEngineError(f"Carrier [{self.code}] not currently supported.")
-#
-#
-# @dataclass_json(letter_case=LetterCase.CAMEL)
-# @dataclass(frozen=True)
-# class CarrierAccount:
-#     """This class represents a given account with a Carrier provider e.g. `FedEx`, `UPS`, `USPS`."""
-#     carrier: Union[str, Carrier]
-#     account_id: str
-#     account_number: str
-#     name: str
-#
-#     def __post_init__(self) -> None:
-#         if not does_member_value_exist()
-
 
 class Carrier:
     def __init__(self, code: str) -> None:

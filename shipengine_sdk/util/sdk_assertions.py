@@ -265,3 +265,11 @@ def does_normalized_address_have_errors(result) -> None:
             error_type=ErrorType.ERROR.value,
             error_code=ErrorCode.INVALID_ADDRESS.value,
         )
+
+
+def is_package_id_valid(package_id: str) -> None:
+    """Checks that package_id is valid."""
+    pattern = re.compile(r"^pkg_[1-9a-zA-Z]+$")
+
+    if not pattern.match(package_id):
+        raise ValidationError(message=f"[{package_id}] is not a valid package ID.")

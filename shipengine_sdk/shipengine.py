@@ -1,10 +1,11 @@
 """The entrypoint to the ShipEngine API SDK."""
 from typing import Dict, List, Optional, Union
 
-from .models import CarrierAccount
+from .models import TrackingQuery, TrackPackageResult
 from .models.address import Address, AddressValidateResult
 from .services.address_validation import normalize, validate
 from .services.get_carrier_accounts import GetCarrierAccounts
+from .services.track_package import track
 from .shipengine_config import ShipEngineConfig
 
 
@@ -41,7 +42,7 @@ class ShipEngine:
         validated and normalized address.
         """
         config: ShipEngineConfig = self.config.merge(new_config=config)
-        return validate(address, config)
+        return validate(address=address, config=config)
 
     def normalize_address(
         self, address: Address, config: Union[Dict[str, any], ShipEngineConfig] = None
@@ -52,8 +53,17 @@ class ShipEngine:
 
     def get_carrier_accounts(
         self, carrier_code: Optional[str] = None, config: Optional[Dict[str, any]] = None
-    ) -> List[CarrierAccount]:
+    ) -> List[Dict[str, any]]:
         """Fetch a list of the carrier accounts connected to your ShipEngine Account."""
         config: ShipEngineConfig = self.config.merge(new_config=config)
         get_accounts = GetCarrierAccounts()
         return get_accounts.fetch_carrier_accounts(config=config, carrier_code=carrier_code)
+
+    def track_package(
+        self,
+        tracking_data: Union[str, Dict[str, any], TrackingQuery],
+        config: Union[Dict[str, any], ShipEngineConfig],
+    ) -> TrackPackageResult:
+        """"""
+        config: ShipEngineConfig = self.config.merge(new_config=config)
+        return track(tracking_data=tracking_data, config=config)
