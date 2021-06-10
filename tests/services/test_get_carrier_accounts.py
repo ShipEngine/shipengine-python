@@ -28,3 +28,24 @@ class TestGetCarrierAccounts:
 
         assert type(accounts) is list
         assert len(accounts) == 0
+
+    def test_multiple_accounts(self) -> None:
+        """DX-1076 - Multiple carrier accounts."""
+        accounts = stub_get_carrier_accounts()
+
+        assert len(accounts) == 5
+        assert accounts[0]["carrier"]["code"] == Carriers.UPS.value
+        assert accounts[1]["carrier"]["code"] == Carriers.FEDEX.value
+        assert accounts[2]["carrier"]["code"] == Carriers.FEDEX.value
+        assert accounts[3]["carrier"]["code"] == Carriers.USPS.value
+        assert accounts[4]["carrier"]["code"] == Carriers.STAMPS_COM.value
+
+        for account in accounts:
+            assert account["account_id"].startswith("car_")
+            assert account["name"] is not None
+            assert account["account_number"] is not None
+            assert account["carrier"] is not None
+            assert account["carrier"]["code"] is not None
+            assert type(account["carrier"]["code"]) == str
+            assert account["carrier"]["name"] is not None
+            assert type(account["carrier"]["name"]) == str
