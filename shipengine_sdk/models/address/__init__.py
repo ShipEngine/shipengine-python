@@ -27,7 +27,7 @@ class Address:
     phone: str = ""
     company: str = ""
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         is_street_valid(self.street)
         is_city_valid(self.city_locality)
         is_state_valid(self.state_province)
@@ -52,7 +52,7 @@ class AddressValidateResult:
         info: Optional[List] = None,
         warnings: Optional[List] = None,
         errors: Optional[List] = None,
-    ):
+    ) -> None:
         self.is_valid = is_valid
         self.request_id = request_id
         self.normalized_address = normalized_address

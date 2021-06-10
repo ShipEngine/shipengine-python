@@ -2,7 +2,7 @@
 import json
 from typing import Optional
 
-from ..models.enums import ErrorCode, ErrorSource, ErrorType
+from ..models.enums import ErrorCode, ErrorSource, ErrorType, does_member_value_exist
 
 
 class ShipEngineError(Exception):
@@ -27,14 +27,14 @@ class ShipEngineError(Exception):
     def _are_enums_valid(self):
         if self.source is None:
             return self
-        elif self.source not in (member.value for member in ErrorSource):
+        elif not does_member_value_exist(self.source, ErrorSource):
             raise ValueError(
                 f"Error source must be a member of ErrorSource enum - [{self.source}] provided."
             )
 
         if self.error_type is None:
             return self
-        elif self.error_type not in (member.value for member in ErrorType):
+        elif not does_member_value_exist(self.error_type, ErrorType):
             raise ValueError(
                 f"Error type must be a member of ErrorType enum - [{self.error_type}] provided."
             )

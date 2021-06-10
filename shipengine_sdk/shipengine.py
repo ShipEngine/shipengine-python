@@ -1,8 +1,10 @@
 """The entrypoint to the ShipEngine API SDK."""
-from typing import Dict, Union
+from typing import Dict, List, Optional, Union
 
+from .models import CarrierAccount
 from .models.address import Address, AddressValidateResult
 from .services.address_validation import normalize, validate
+from .services.get_carrier_accounts import GetCarrierAccounts
 from .shipengine_config import ShipEngineConfig
 
 
@@ -47,3 +49,11 @@ class ShipEngine:
         """Normalize a given address into a standardized format used by carriers."""
         config: ShipEngineConfig = self.config.merge(new_config=config)
         return normalize(address=address, config=config)
+
+    def get_carrier_accounts(
+        self, carrier_code: Optional[str] = None, config: Optional[Dict[str, any]] = None
+    ) -> List[CarrierAccount]:
+        """Fetch a list of the carrier accounts connected to your ShipEngine Account."""
+        config: ShipEngineConfig = self.config.merge(new_config=config)
+        get_accounts = GetCarrierAccounts()
+        return get_accounts.fetch_carrier_accounts(config=config, carrier_code=carrier_code)
