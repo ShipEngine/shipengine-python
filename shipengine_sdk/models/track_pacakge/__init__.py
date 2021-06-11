@@ -117,11 +117,17 @@ class TrackingEvent:
 
     def __init__(self, event: Dict[str, any]) -> None:
         """Tracking event object."""
-        self.date_time = IsoString(iso_string=event["timestamp"]).to_datetime_object()
+        if IsoString(event["timestamp"]).has_timezone():
+            self.date_time = IsoString(iso_string=event["timestamp"]).to_datetime_object()
+        else:
+            self.date_time = datetime.fromisoformat(event["timestamp"])
 
-        self.carrier_date_time = IsoString(
-            iso_string=event["carrierTimestamp"]
-        ).to_datetime_object()
+        if IsoString(iso_string=event["carrierTimestamp"]).has_timezone():
+            self.carrier_date_time = IsoString(
+                iso_string=event["carrierTimestamp"]
+            ).to_datetime_object()
+        else:
+            self.carrier_date_time = datetime.fromisoformat(event["carrierTimestamp"])
 
         self.status = event["status"]
         self.description = event["description"] if "description" in event else None
@@ -141,7 +147,7 @@ class TrackingEvent:
 class TrackPackageResult:
     shipment: Optional[Shipment]
     package: Optional[Package]
-    events: Optional[List[TrackingEvent]]
+    events: Optional[List[TrackingEvent]] = list()
 
     def __init__(self, api_response: Dict[str, any], config: ShipEngineConfig) -> None:
         """This object is used as the return type for the `track_package` and `track` methods."""

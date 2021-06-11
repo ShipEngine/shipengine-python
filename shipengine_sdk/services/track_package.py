@@ -16,7 +16,7 @@ def track(
         is_package_id_valid(tracking_data)
 
         api_response = rpc_request(
-            method=RPCMethods.LIST_CARRIERS.value,
+            method=RPCMethods.TRACK_PACKAGE.value,
             config=config,
             params={"packageID": tracking_data},
         )
@@ -25,13 +25,13 @@ def track(
 
     if type(tracking_data) is TrackingQuery:
         api_response = rpc_request(
-            method=RPCMethods.LIST_CARRIERS.value, config=config, params=tracking_data.to_dict()
+            method=RPCMethods.TRACK_PACKAGE.value, config=config, params=tracking_data.to_dict()
         )
 
         return TrackPackageResult(api_response, config)
     elif type(tracking_data) is dict:
         api_response = rpc_request(
-            method=RPCMethods.LIST_CARRIERS.value, config=config, params=tracking_data
+            method=RPCMethods.TRACK_PACKAGE.value, config=config, params=tracking_data
         )
 
         return TrackPackageResult(api_response, config)
