@@ -2,6 +2,8 @@
 import re
 from datetime import datetime
 
+from shipengine_sdk.models import RegexPatterns
+
 
 class IsoString:
     def __init__(self, iso_string: str) -> None:
@@ -16,6 +18,12 @@ class IsoString:
         """
         self.iso_string = iso_string
 
+    def __str__(self) -> str:
+        return f"{self.iso_string}"
+
+    def to_string(self) -> str:
+        return self.iso_string
+
     def to_datetime_object(self) -> datetime:
         return datetime.strptime(self.iso_string, "%Y-%m-%dT%H:%M:%S.%fZ")
 
@@ -25,9 +33,7 @@ class IsoString:
 
     @staticmethod
     def is_valid_iso_string_no_tz(iso_str: str):
-        pattern = re.compile(
-            r"^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])(\.[0-9]+)?([+-](?:2[0-3]|[01][0-9]):[0-5][0-9])?$"  # noqa
-        )
+        pattern = re.compile(RegexPatterns.VALID_ISO_STRING_NO_TZ.value)
         if pattern.match(iso_str):
             return True
         else:
@@ -35,9 +41,7 @@ class IsoString:
 
     @staticmethod
     def is_valid_iso_string(iso_str: str):
-        pattern = re.compile(
-            r"^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])(\.[0-9]+)?(Z|[+-](?:2[0-3]|[01][0-9]):[0-5][0-9])?$"  # noqa
-        )
+        pattern = re.compile(RegexPatterns.VALID_ISO_STRING.value)
         if pattern.match(iso_str):
             return True
         else:
