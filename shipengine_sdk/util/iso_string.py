@@ -25,7 +25,10 @@ class IsoString:
         return self.iso_string
 
     def to_datetime_object(self) -> datetime:
-        return datetime.strptime(self.iso_string, "%Y-%m-%dT%H:%M:%S.%fZ")
+        if self.has_timezone():
+            return datetime.strptime(self.iso_string, "%Y-%m-%dT%H:%M:%S.%fZ")
+        elif self.is_valid_iso_string_no_tz(self.iso_string):
+            return datetime.fromisoformat(self.iso_string)
 
     def has_timezone(self) -> bool:
         if self.is_valid_iso_string(self.iso_string):
