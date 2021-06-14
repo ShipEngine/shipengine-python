@@ -1,9 +1,9 @@
 """Data objects to be used in the `track_package` and `track` methods."""
 import json
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
-from dataclasses_json import LetterCase, dataclass_json
+from dataclasses_json import LetterCase, dataclass_json  # type: ignore
 
 from ...errors import ShipEngineError
 from ...services.get_carrier_accounts import GetCarrierAccounts
@@ -22,7 +22,7 @@ class Shipment:
     actual_delivery_date: str
 
     def __init__(
-        self, shipment: Dict[str, any], actual_delivery_date: IsoString, config: ShipEngineConfig
+        self, shipment: Dict[str, Any], actual_delivery_date: str, config: ShipEngineConfig
     ) -> None:
         """This object represents a given Shipment."""
         self.config = config
@@ -58,13 +58,13 @@ class Shipment:
         for account in carrier_accounts:
             if account_id == account.account_id:
                 target_carrier.append(account)
-                return target_carrier[0]
             else:
                 raise ShipEngineError(
                     message=f"accountID [{account_id}] doesn't match any of the accounts connected to your ShipEngine Account."  # noqa
                 )
+        return target_carrier[0]
 
-    def to_dict(self) -> Dict[str, any]:
+    def to_dict(self) -> Dict[str, Any]:
         if hasattr(self, "config"):
             del self.config
         else:
@@ -83,19 +83,19 @@ class Package:
     """This object contains package information for a given shipment."""
 
     package_id: Optional[str]
-    weight: Optional[Dict[str, any]]
-    dimensions: Optional[Dict[str, any]]
+    weight: Optional[Dict[str, Any]]
+    dimensions: Optional[Dict[str, Any]]
     tracking_number: Optional[str]
     tracking_url: Optional[str]
 
-    def __init__(self, package: Dict[str, any]) -> None:
+    def __init__(self, package: Dict[str, Any]) -> None:
         self.package_id = package["packageID"] if "packageID" in package else None
         self.weight = package["weight"] if "weight" in package else None
         self.dimensions = package["dimensions"] if "dimensions" in package else None
         self.tracking_number = package["trackingNumber"] if "trackingNumber" in package else None
         self.tracking_url = package["trackingURL"] if "trackingURL" in package else None
 
-    def to_dict(self) -> Dict[str, any]:
+    def to_dict(self) -> Dict[str, Any]:
         return (lambda o: o.__dict__)(self)
 
     def to_json(self) -> str:
@@ -132,7 +132,7 @@ class TrackingEvent:
     signer: Optional[str]
     location: Optional[Location]
 
-    def __init__(self, event: Dict[str, any]) -> None:
+    def __init__(self, event: Dict[str, Any]) -> None:
         """Tracking event object."""
         if IsoString(event["timestamp"]).has_timezone():
             self.date_time = IsoString(iso_string=event["timestamp"]).to_string()
@@ -150,7 +150,7 @@ class TrackingEvent:
             event["carrierStatusCode"] if "carrierStatusCode" in event else None
         )
         self.signer = event["signer"] if "signer" in event else None
-        self.location = Location.from_dict(event["location"]) if "location" in event else None
+        self.location = Location.from_dict(event["location"]) if "location" in event else None  # type: ignore
 
     def to_dict(self):
         return (lambda o: o.__dict__)(self)
@@ -164,7 +164,7 @@ class TrackPackageResult:
     package: Optional[Package]
     events: Optional[List[TrackingEvent]] = list()
 
-    def __init__(self, api_response: Dict[str, any], config: ShipEngineConfig) -> None:
+    def __init__(self, api_response: Dict[str, Any], config: ShipEngineConfig) -> None:
         """This object is used as the return type for the `track_package` and `track` methods."""
         self.events = list()
         result = api_response["result"]

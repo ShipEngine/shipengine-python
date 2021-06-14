@@ -1,5 +1,5 @@
 """Validate a single address or multiple addresses."""
-from typing import Dict
+from typing import Any, Dict
 
 from ..jsonrpc import rpc_request
 from ..models.address import Address, AddressValidateResult
@@ -17,12 +17,12 @@ def validate(address: Address, config: ShipEngineConfig) -> AddressValidateResul
     :returns: :class:`AddressValidateResult`: The response from ShipEngine API including the
     validated and normalized address.
     """
-    api_response: Dict[str, any] = rpc_request(
+    api_response: Dict[str, Any] = rpc_request(
         method=RPCMethods.ADDRESS_VALIDATE.value,
         config=config,
-        params={"address": address.to_dict()},
+        params={"address": address.to_dict()},  # type: ignore
     )
-    result: Dict[str, any] = api_response["result"]
+    result: Dict[str, Any] = api_response["result"]
     return AddressValidateResult(
         is_valid=result["isValid"],
         request_id=api_response["id"],

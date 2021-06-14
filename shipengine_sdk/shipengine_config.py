@@ -1,6 +1,6 @@
 """The global configuration object for the ShipEngine SDK."""
 import json
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 from .models import Endpoints
 from .util import is_api_key_valid, is_retries_valid, is_timeout_valid
@@ -19,7 +19,7 @@ class ShipEngineConfig:
     DEFAULT_TIMEOUT: int = 5
     """Default timeout for the ShipEngineClient in seconds."""
 
-    def __init__(self, config: Dict[str, any]) -> None:
+    def __init__(self, config: Dict[str, Any]) -> None:
         """
         This is the configuration object for the ShipEngine object and it"s properties are
         used throughout this SDK.
@@ -50,7 +50,7 @@ class ShipEngineConfig:
             self.retries: int = self.DEFAULT_RETRIES
         # TODO: add event listener to config object once it"s implemented.
 
-    def merge(self, new_config: Optional[Dict[str, any]] = None):
+    def merge(self, new_config: Optional[Dict[str, Any]] = None):
         """
         The method allows the merging of a method-level configuration
         adjustment into the current configuration.

@@ -1,5 +1,5 @@
 """Functions that help with process requests and handle responses."""
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 from uuid import uuid4
 
 from ..errors import (
@@ -13,7 +13,7 @@ from ..errors import (
 from ..models import ErrorType
 
 
-def wrap_request(method: str, params: Optional[Dict[str, any]]) -> Dict[str, any]:
+def wrap_request(method: str, params: Optional[Dict[str, Any]]) -> Dict[str, Any]:
     """
     Wrap request per `JSON-RPC 2.0` spec.
 
@@ -21,7 +21,7 @@ def wrap_request(method: str, params: Optional[Dict[str, any]]) -> Dict[str, any
     invoke a specific remote procedure.
     :param params: The request data for the RPC request. This argument
     is optional and can either be a dictionary or None.
-    :type params: Optional[Dict[str, any]]
+    :type params: Optional[Dict[str, Any]]
     """
     if params is None:
         return dict(id=f"req_{str(uuid4()).replace('-', '')}", jsonrpc="2.0", method=method)
@@ -31,13 +31,13 @@ def wrap_request(method: str, params: Optional[Dict[str, any]]) -> Dict[str, any
         )
 
 
-def handle_response(response_body: Dict[str, any]) -> Dict[str, any]:
+def handle_response(response_body: Dict[str, Any]) -> Dict[str, Any]:
     """Handles the response from ShipEngine API."""
     if "result" in response_body:
         return response_body
 
-    error: Dict[str, any] = response_body["error"]
-    error_data: Dict[str, any] = error["data"]
+    error: Dict[str, Any] = response_body["error"]
+    error_data: Dict[str, Any] = error["data"]
     error_type: str = error_data["type"]
     if error_type is ErrorType.ACCOUNT_STATUS.value:
         raise AccountStatusError(

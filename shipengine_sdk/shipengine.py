@@ -1,5 +1,5 @@
 """The entrypoint to the ShipEngine API SDK."""
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from .models import CarrierAccount, TrackingQuery, TrackPackageResult
 from .models.address import Address, AddressValidateResult
@@ -17,7 +17,7 @@ class ShipEngine:
     unless specifically overridden when calling a method.
     """
 
-    def __init__(self, config: Union[str, Dict[str, any], ShipEngineConfig]) -> None:
+    def __init__(self, config: Union[str, Dict[str, Any], ShipEngineConfig]) -> None:
         """
         Exposes the functionality of the ShipEngine API.
 
@@ -26,12 +26,12 @@ class ShipEngine:
         """
 
         if type(config) is str:
-            self.config: ShipEngineConfig = ShipEngineConfig({"api_key": config})
+            self.config = ShipEngineConfig({"api_key": config})
         elif type(config) is dict:
-            self.config: ShipEngineConfig = ShipEngineConfig(config)
+            self.config = ShipEngineConfig(config)
 
     def validate_address(
-        self, address: Address, config: Optional[Union[Dict[str, any], ShipEngineConfig]] = None
+        self, address: Address, config: Optional[Union[Dict[str, Any], ShipEngineConfig]] = None
     ) -> AddressValidateResult:
         """
         Validate an address in nearly any countryCode in the world.
@@ -41,34 +41,34 @@ class ShipEngine:
         :returns: :class:`AddressValidateResult`: The response from ShipEngine API including the
         validated and normalized address.
         """
-        config: ShipEngineConfig = self.config.merge(new_config=config)
+        config = self.config.merge(new_config=config)
         return validate(address=address, config=config)
 
     def normalize_address(
-        self, address: Address, config: Optional[Union[Dict[str, any], ShipEngineConfig]] = None
+        self, address: Address, config: Optional[Union[Dict[str, Any], ShipEngineConfig]] = None
     ) -> Address:
         """Normalize a given address into a standardized format used by carriers."""
-        config: ShipEngineConfig = self.config.merge(new_config=config)
+        config = self.config.merge(new_config=config)
         return normalize(address=address, config=config)
 
     def get_carrier_accounts(
         self,
         carrier_code: Optional[str] = None,
-        config: Optional[Union[Dict[str, any], ShipEngineConfig]] = None,
+        config: Optional[Union[Dict[str, Any], ShipEngineConfig]] = None,
     ) -> List[CarrierAccount]:
         """Fetch a list of the carrier accounts connected to your ShipEngine Account."""
-        config: ShipEngineConfig = self.config.merge(new_config=config)
+        config = self.config.merge(new_config=config)
         get_accounts = GetCarrierAccounts()
         return get_accounts.fetch_carrier_accounts(config=config, carrier_code=carrier_code)
 
     def track_package(
         self,
-        tracking_data: Union[str, Dict[str, any], TrackingQuery],
-        config: Optional[Union[Dict[str, any], ShipEngineConfig]] = None,
+        tracking_data: Union[str, Dict[str, Any], TrackingQuery],
+        config: Optional[Union[Dict[str, Any], ShipEngineConfig]] = None,
     ) -> TrackPackageResult:
         """
         Track a package by `tracking_number` and `carrier_code` via the **TrackingQuery** object, by using just the
         **package_id**.
         """
-        config: ShipEngineConfig = self.config.merge(new_config=config)
+        config = self.config.merge(new_config=config)
         return track(tracking_data=tracking_data, config=config)
