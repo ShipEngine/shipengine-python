@@ -32,7 +32,10 @@ def does_delivery_date_match(tracking_result: TrackPackageResult) -> None:
 
 
 def assert_events_in_order(events: List) -> None:
-    """"""
+    """
+    Checks that the order of events is correct in that they should be ordered with
+    the newest event at the bottom of the list.
+    """
     previous_date_time = events[0].date_time
     for event in events:
         assert event.date_time.to_datetime_object() >= previous_date_time.to_datetime_object()
@@ -40,7 +43,7 @@ def assert_events_in_order(events: List) -> None:
 
 
 def track_package_assertions(tracking_result: TrackPackageResult) -> None:
-    """"""
+    """Common `track_package` assertions."""
     carrier_account_carrier_code = tracking_result.shipment.carrier_account.carrier["code"]
     carrier_code = tracking_result.shipment.carrier["code"]
     estimated_delivery = tracking_result.shipment.estimated_delivery_date
@@ -54,6 +57,8 @@ def track_package_assertions(tracking_result: TrackPackageResult) -> None:
 
 class TestTrackPackage:
     _PACKAGE_ID_FEDEX_ACCEPTED: str = "pkg_1FedExAccepted"
+    _PACKAGE_ID_FEDEX_DELIVERED: str = "pkg_1FedExDeLivered"
+    _PACKAGE_ID_FEDEX_DELIVERED_EXCEPTION: str = "pkg_1FedexDeLiveredException"
 
     def test_track_by_tracking_number_and_carrier_code(self) -> None:
         """DX-1084 - Test track by tracking number and carrier code."""
@@ -120,7 +125,7 @@ class TestTrackPackage:
 
     def test_delivered_on_first_try(self) -> None:
         """DX-1091 - Test delivered on first try tracking event."""
-        package_id = "pkg_1FedExDeLivered"
+        package_id = self._PACKAGE_ID_FEDEX_DELIVERED
         shipengine = configurable_stub_shipengine_instance(stub_config())
         tracking_result = shipengine.track_package(tracking_data=package_id)
 
@@ -139,7 +144,7 @@ class TestTrackPackage:
 
     def test_delivered_with_signature(self) -> None:
         """DX-1092 - Test track delivered with signature event."""
-        package_id = "pkg_1FedExDeLivered"
+        package_id = self._PACKAGE_ID_FEDEX_DELIVERED
         shipengine = configurable_stub_shipengine_instance(stub_config())
         tracking_result = shipengine.track_package(tracking_data=package_id)
 
@@ -158,14 +163,14 @@ class TestTrackPackage:
 
     def test_delivered_after_multiple_attempts(self) -> None:
         """DX-1093 - Test delivered after multiple attempts tracking event."""
-        package_id = "pkg_1FedexDeLiveredException"
+        package_id = self._PACKAGE_ID_FEDEX_DELIVERED_EXCEPTION
         shipengine = configurable_stub_shipengine_instance(stub_config())
         tracking_result = shipengine.track_package(tracking_data=package_id)
         assertions_on_delivered_after_exception_or_multiple_attempts(tracking_result)
 
     def test_delivered_after_exception(self) -> None:
         """DX-1094 - Test delivered after exception tracking event."""
-        package_id = "pkg_1FedexDeLiveredException"
+        package_id = self._PACKAGE_ID_FEDEX_DELIVERED_EXCEPTION
         shipengine = configurable_stub_shipengine_instance(stub_config())
         tracking_result = shipengine.track_package(tracking_data=package_id)
         assertions_on_delivered_after_exception_or_multiple_attempts(tracking_result)
@@ -185,7 +190,7 @@ class TestTrackPackage:
 
     def test_track_with_multiple_exceptions(self) -> None:
         """DX-1096 - Test track with multiple exceptions."""
-        package_id = "pkg_1FedexDeLiveredException"
+        package_id = self._PACKAGE_ID_FEDEX_DELIVERED_EXCEPTION
         shipengine = configurable_stub_shipengine_instance(stub_config())
         tracking_result = shipengine.track_package(tracking_data=package_id)
 
