@@ -1,7 +1,7 @@
 """Data objects to be used in the `track_package` and `track` methods."""
 import json
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from dataclasses_json import LetterCase, dataclass_json  # type: ignore
 
@@ -18,11 +18,11 @@ class Shipment:
     account_id: Optional[str] = None
     carrier_account: Optional[CarrierAccount] = None
     carrier: Carrier
-    estimated_delivery_date: str
-    actual_delivery_date: str
+    estimated_delivery_date: Union[IsoString, str]
+    actual_delivery_date: Union[IsoString, str]
 
     def __init__(
-        self, shipment: Dict[str, Any], actual_delivery_date: str, config: ShipEngineConfig
+        self, shipment: Dict[str, Any], actual_delivery_date: IsoString, config: ShipEngineConfig
     ) -> None:
         """This object represents a given Shipment."""
         self.config = config
@@ -43,9 +43,7 @@ class Shipment:
                 else ShipEngineError("The carrierCode field was null from api response.")
             )
 
-        self.estimated_delivery_date = IsoString(
-            iso_string=shipment["estimatedDelivery"]
-        ).to_string()
+        self.estimated_delivery_date = IsoString(iso_string=shipment["estimatedDelivery"])
         self.actual_delivery_date = actual_delivery_date
 
     def _get_carrier_account(self, carrier: str, account_id: str) -> CarrierAccount:
@@ -58,11 +56,11 @@ class Shipment:
         for account in carrier_accounts:
             if account_id == account.account_id:
                 target_carrier.append(account)
+                return target_carrier[0]
             else:
                 raise ShipEngineError(
                     message=f"accountID [{account_id}] doesn't match any of the accounts connected to your ShipEngine Account."  # noqa
                 )
-        return target_carrier[0]
 
     def to_dict(self) -> Dict[str, Any]:
         if hasattr(self, "config"):
@@ -123,8 +121,8 @@ class Location:
 
 
 class TrackingEvent:
-    date_time: str
-    carrier_date_time: str
+    date_time: Union[IsoString, str]
+    carrier_date_time: Union[IsoString, str]
     status: str
     description: Optional[str]
     carrier_status_code: Optional[str]
@@ -134,15 +132,9 @@ class TrackingEvent:
 
     def __init__(self, event: Dict[str, Any]) -> None:
         """Tracking event object."""
-        if IsoString(event["timestamp"]).has_timezone():
-            self.date_time = IsoString(iso_string=event["timestamp"]).to_string()
-        else:
-            self.date_time = IsoString(event["timestamp"]).to_string()
+        self.date_time = IsoString(iso_string=event["timestamp"])
 
-        if IsoString(iso_string=event["carrierTimestamp"]).has_timezone():
-            self.carrier_date_time = IsoString(iso_string=event["carrierTimestamp"]).to_string()
-        else:
-            self.carrier_date_time = IsoString(event["carrierTimestamp"]).to_string()
+        self.carrier_date_time = IsoString(iso_string=event["carrierTimestamp"])
 
         self.status = event["status"]
         self.description = event["description"] if "description" in event else None
@@ -150,7 +142,7 @@ class TrackingEvent:
             event["carrierStatusCode"] if "carrierStatusCode" in event else None
         )
         self.signer = event["signer"] if "signer" in event else None
-        self.location = Location.from_dict(event["location"]) if "location" in event else None  # type: ignore
+        self.location = Location.from_dict(event["location"]) if "location" in event else None
 
     def to_dict(self):
         return (lambda o: o.__dict__)(self)
