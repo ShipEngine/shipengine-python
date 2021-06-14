@@ -2,6 +2,8 @@
 import re
 from datetime import datetime
 
+from shipengine_sdk.models import RegexPatterns
+
 
 class IsoString:
     def __init__(self, iso_string: str) -> None:
@@ -16,14 +18,34 @@ class IsoString:
         """
         self.iso_string = iso_string
 
-    def to_datetime_object(self) -> datetime:
-        return datetime.strptime(self.iso_string, "%Y-%m-%dT%H:%M:%S.%fZ")
+    def __str__(self) -> str:
+        return f"{self.iso_string}"
 
-    def has_time(self) -> bool:
-        pattern = re.compile(r"[0-9]*T[0-9]*")
-        return True if pattern.match(self.iso_string) is not None else False
+    def to_string(self) -> str:
+        return self.iso_string
+
+    def to_datetime_object(self) -> datetime:
+        if self.has_timezone():
+            return datetime.strptime(self.iso_string, "%Y-%m-%dT%H:%M:%S.%fZ")
+        elif self.is_valid_iso_string_no_tz(self.iso_string):
+            return datetime.fromisoformat(self.iso_string)
 
     def has_timezone(self) -> bool:
-        pattern = re.compile(r"(?<=T).*[+-][0-9]|Z$")
-        if self.has_time() is True:
-            return True if pattern.match(self.iso_string) is not None else False
+        if self.is_valid_iso_string(self.iso_string):
+            return False if self.is_valid_iso_string_no_tz(self.iso_string) else True
+
+    @staticmethod
+    def is_valid_iso_string_no_tz(iso_str: str):
+        pattern = re.compile(RegexPatterns.VALID_ISO_STRING_NO_TZ.value)
+        if pattern.match(iso_str):
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def is_valid_iso_string(iso_str: str):
+        pattern = re.compile(RegexPatterns.VALID_ISO_STRING.value)
+        if pattern.match(iso_str):
+            return True
+        else:
+            return False

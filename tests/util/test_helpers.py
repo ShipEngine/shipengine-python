@@ -2,22 +2,38 @@
 from typing import Dict, Optional, Union
 
 from shipengine_sdk import ShipEngine
-from shipengine_sdk.models import Address, AddressValidateResult, Endpoints
+from shipengine_sdk.models import (
+    Address,
+    AddressValidateResult,
+    Endpoints,
+    TrackingQuery,
+)
 
 
-def stub_config() -> Dict[str, any]:
+def stub_config(
+    retries: int = 1,
+) -> Dict[str, any]:
     """
     Return a test configuration dictionary to be used
     when instantiating the ShipEngine object.
     """
     return dict(
-        api_key="baz", base_uri=Endpoints.TEST_RPC_URL.value, page_size=50, retries=2, timeout=15
+        api_key="baz",
+        base_uri=Endpoints.TEST_RPC_URL.value,
+        page_size=50,
+        retries=retries,
+        timeout=15,
     )
+
+
+def configurable_stub_shipengine_instance(config: Dict[str, any]) -> ShipEngine:
+    """"""
+    return ShipEngine(config=config)
 
 
 def stub_shipengine_instance() -> ShipEngine:
     """Return a test instance of the ShipEngine object."""
-    return ShipEngine(stub_config())
+    return ShipEngine(config=stub_config())
 
 
 def address_with_all_fields() -> Address:
@@ -223,7 +239,12 @@ def normalize_an_address(address: Address) -> Address:
     it and calls the `normalize_address` method, providing it the `address` that is passed into
     this function.
     """
-    return stub_shipengine_instance().normalize_address(address)
+    return stub_shipengine_instance().normalize_address(address=address)
+
+
+def track_a_package(tracking_data: Union[str, Dict[str, any], TrackingQuery]):
+    """"""
+    return stub_shipengine_instance().track_package(tracking_data=tracking_data)
 
 
 def stub_get_carrier_accounts(carrier_code: Optional[str] = None):

@@ -1,6 +1,6 @@
 """CarrierAccount class object and immutable carrier object."""
 import json
-from typing import Dict
+from typing import Any, Dict
 
 from ...errors import InvalidFieldValueError, ShipEngineError
 from ..enums import Carriers, does_member_value_exist, get_carrier_name_value
@@ -25,7 +25,7 @@ class Carrier:
 class CarrierAccount:
     carrier: Carrier
 
-    def __init__(self, account_information: Dict[str, any]) -> None:
+    def __init__(self, account_information: Dict[str, Any]) -> None:
         """This class represents a given account with a Carrier provider e.g. `FedEx`, `UPS`, `USPS`."""
         self._set_carrier(account_information["carrierCode"])
         self.account_id = account_information["accountID"]
