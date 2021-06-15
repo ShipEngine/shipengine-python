@@ -1,7 +1,6 @@
 """Track a given package to obtain status updates on it's progression through the fulfillment cycle."""
-from typing import Any, Dict, Union
+from typing import Union
 
-from ..errors import ShipEngineError
 from ..jsonrpc import rpc_request
 from ..models import RPCMethods
 from ..models.track_pacakge import TrackingQuery, TrackPackageResult
@@ -9,9 +8,7 @@ from ..shipengine_config import ShipEngineConfig
 from ..util import is_package_id_valid
 
 
-def track(
-    tracking_data: Union[str, Dict[str, Any], TrackingQuery], config: ShipEngineConfig
-) -> TrackPackageResult:
+def track(tracking_data: Union[str, TrackingQuery], config: ShipEngineConfig) -> TrackPackageResult:
     if type(tracking_data) is str:
         is_package_id_valid(tracking_data)
 
@@ -29,11 +26,3 @@ def track(
         )
 
         return TrackPackageResult(api_response, config)
-    elif type(tracking_data) is dict:
-        api_response = rpc_request(
-            method=RPCMethods.TRACK_PACKAGE.value, config=config, params=tracking_data
-        )
-
-        return TrackPackageResult(api_response, config)
-    else:
-        raise ShipEngineError("Could not track package with the arguments provided.")

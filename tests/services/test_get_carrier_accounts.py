@@ -1,6 +1,7 @@
 """Tests for the GetCarrierAccounts service in the ShipEngine SDK."""
 from shipengine_sdk.errors import ClientSystemError
 from shipengine_sdk.models import Carriers, ErrorCode, ErrorSource, ErrorType
+from shipengine_sdk.services.get_carrier_accounts import GetCarrierAccounts
 
 from ..util.test_helpers import stub_get_carrier_accounts
 
@@ -60,3 +61,12 @@ class TestGetCarrierAccounts:
             assert err.source == ErrorSource.SHIPENGINE.value
             assert err.error_type == ErrorType.SYSTEM.value
             assert err.error_code == ErrorCode.UNSPECIFIED.value
+
+    def test_get_cached_accounts_by_carrier(self) -> None:
+        get_accounts = GetCarrierAccounts()
+        stub_get_carrier_accounts()  # fill the cache
+        accounts = get_accounts.get_cached_accounts_by_carrier_code(carrier_code="fedex")
+
+        assert len(accounts) == 2
+        assert accounts[0].carrier["code"] == "fedex"
+        assert accounts[1].carrier["code"] == "fedex"

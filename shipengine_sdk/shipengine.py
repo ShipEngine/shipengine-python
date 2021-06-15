@@ -63,7 +63,7 @@ class ShipEngine:
 
     def track_package(
         self,
-        tracking_data: Union[str, Dict[str, Any], TrackingQuery],
+        tracking_data: Union[str, TrackingQuery],
         config: Optional[Union[Dict[str, Any], ShipEngineConfig]] = None,
     ) -> TrackPackageResult:
         """
