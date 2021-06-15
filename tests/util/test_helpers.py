@@ -213,6 +213,28 @@ def address_with_invalid_country() -> Address:
     )
 
 
+def address_with_invalid_state() -> Address:
+    """Return an address with an invalid state value."""
+    return Address(
+        street=["4 Jersey St", "Apt. 2b"],
+        city_locality="Boston",
+        state_province="&$",
+        postal_code="02215",
+        country_code="US",
+    )
+
+
+def address_with_invalid_postal_code() -> Address:
+    """Return an address with an invalid postal code."""
+    return Address(
+        street=["4 Jersey St", "Apt. 2b"],
+        city_locality="Boston",
+        state_province="MA",
+        postal_code="2$1*5",
+        country_code="US",
+    )
+
+
 def get_server_side_error() -> Address:
     """Return an address that will cause the server to return a 500 server error."""
     return Address(

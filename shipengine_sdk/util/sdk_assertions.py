@@ -51,7 +51,7 @@ def is_city_valid(city: str) -> None:
 
 def is_state_valid(state: str) -> None:
     """Asserts that state is 2 capitalized letters and that it is not an empty string."""
-    latin_pattern = re.compile(r"^[a-zA-Z\W]*$")
+    latin_pattern = re.compile(r"^[a-zA-Z]*$")
     non_latin_pattern = re.compile(r"[\u4e00-\u9fff]+")
 
     if non_latin_pattern.match(state):

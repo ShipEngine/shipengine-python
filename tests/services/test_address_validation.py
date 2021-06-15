@@ -1,7 +1,7 @@
 """Test the validate address method of the ShipEngine SDK."""
 import re
 
-from shipengine_sdk.errors import ClientSystemError, ValidationError
+from shipengine_sdk.errors import ClientSystemError, ShipEngineError, ValidationError
 from shipengine_sdk.models import (
     Address,
     AddressValidateResult,
@@ -15,6 +15,8 @@ from ..util.test_helpers import (
     address_with_all_fields,
     address_with_errors,
     address_with_invalid_country,
+    address_with_invalid_postal_code,
+    address_with_invalid_state,
     address_with_warnings,
     canada_valid_avs_assertions,
     get_server_side_error,
@@ -237,3 +239,25 @@ class TestValidateAddress:
             returned_address=validated_address,
             expected_residential_indicator=True,
         )
+
+    def test_address_with_invalid_state(self) -> None:
+        """Test validate_address when an invalid state is passed in."""
+        try:
+            address_with_invalid_state()
+        except ShipEngineError as err:
+            assert type(err) is ValidationError
+            assert (
+                err.message
+                == "Invalid address. Either the postal code or the city/locality and state/province must be specified."
+            )  # noqa
+
+    def test_address_with_invalid_postal_code(self) -> None:
+        """Test validate_address when an invalid postal code is passed in."""
+        try:
+            address_with_invalid_postal_code()
+        except ShipEngineError as err:
+            assert type(err) is ValidationError
+            assert (
+                err.message
+                == "Invalid address. Either the postal code or the city/locality and state/province must be specified."
+            )  # noqa
