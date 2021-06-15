@@ -57,10 +57,10 @@ class Shipment:
             if account_id == account.account_id:
                 target_carrier.append(account)
                 return target_carrier[0]
-            else:
-                raise ShipEngineError(
-                    message=f"accountID [{account_id}] doesn't match any of the accounts connected to your ShipEngine Account."  # noqa
-                )
+
+        raise ShipEngineError(
+            message=f"accountID [{account_id}] doesn't match any of the accounts connected to your ShipEngine Account."  # noqa
+        )
 
     def to_dict(self) -> Dict[str, Any]:
         if hasattr(self, "config"):
