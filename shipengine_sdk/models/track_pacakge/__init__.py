@@ -3,7 +3,7 @@ import json
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Union
 
-from dataclasses_json import LetterCase, dataclass_json  # type: ignore
+from dataclasses_json import LetterCase, dataclass_json
 
 from ...errors import ShipEngineError
 from ...services.get_carrier_accounts import GetCarrierAccounts
@@ -175,10 +175,10 @@ class TrackPackageResult:
         self.package = Package(result["package"]) if "package" in result else None
 
     def get_errors(self) -> List[TrackingEvent]:  # TODO: debug
-        """Returns **only** the EXCEPTION events."""
+        """Returns **only** the exception events."""
         errors: List[TrackingEvent] = list()
         for event in self.events:
-            if event.status == "EXCEPTION":
+            if event.status == "exception":
                 errors.append(event)
         return errors
 
@@ -187,9 +187,11 @@ class TrackPackageResult:
         return self.events[-1]
 
     def has_errors(self) -> bool:  # TODO: debug
-        """Returns `true` if there are any EXCEPTION events."""
+        """Returns `true` if there are any exception events."""
         for event in self.events:
-            return event.status == "EXCEPTION"
+            if event.status == "exception":
+                return True
+        return False
 
     def to_dict(self):
         if hasattr(self.shipment, "config"):

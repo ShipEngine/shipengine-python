@@ -1,7 +1,7 @@
 """Test data as functions and common assertion helper functions."""
 from typing import Dict, Optional, Union
 
-from shipengine_sdk import ShipEngine
+from shipengine_sdk import ShipEngine, ShipEngineConfig
 from shipengine_sdk.models import (
     Address,
     AddressValidateResult,
@@ -24,6 +24,11 @@ def stub_config(
         retries=retries,
         timeout=15,
     )
+
+
+def stub_shipengine_config() -> ShipEngineConfig:
+    """Return a valid test ShipEngineConfig object."""
+    return ShipEngineConfig(config=stub_config())
 
 
 def configurable_stub_shipengine_instance(config: Dict[str, any]) -> ShipEngine:
