@@ -1,4 +1,5 @@
 """Testing a string manipulation helper function."""
+from .iso_string import IsoString
 from .sdk_assertions import *  # noqa
 
 
