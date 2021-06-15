@@ -14,10 +14,12 @@ from shipengine_sdk.errors import (
 
 
 def shipengine_error_defaults() -> ShipEngineError:
+    """Return a ShipEngineError that only has a message string passed in."""
     raise ShipEngineError(message="Testing the defaults for this error.")
 
 
 def shipengine_error():
+    """Return a ShipEngineError that have all fields populated by valid values."""
     raise ShipEngineError(
         request_id="req_a523b1b19bd54054b7eb953f000e7f15",
         message="The is a test exception",
@@ -28,7 +30,19 @@ def shipengine_error():
     )
 
 
-def shipengine_error_with_bad_error_type():
+def shipengine_error_with_no_error_type() -> ShipEngineError:
+    """Return a ShipEngineError that only has the error_type set to None."""
+    raise ShipEngineError(
+        request_id="req_a523b1b19bd54054b7eb953f000e7f15",
+        message="The is a test exception",
+        source="shipengine",
+        error_type=None,
+        error_code="invalid_address",
+    )
+
+
+def shipengine_error_with_bad_error_type() -> ShipEngineError:
+    """Return a ShipEngineError that has an invalid error_type."""
     raise ShipEngineError(
         request_id="req_a523b1b19bd54054b7eb953f000e7f15",
         message="The is a test exception",
@@ -38,7 +52,8 @@ def shipengine_error_with_bad_error_type():
     )
 
 
-def shipengine_error_with_bad_error_source():
+def shipengine_error_with_bad_error_source() -> ShipEngineError:
+    """Return a ShipEngineError that has an invalid error_source."""
     raise ShipEngineError(
         request_id="req_a523b1b19bd54054b7eb953f000e7f15",
         message="The is a test exception",
@@ -48,7 +63,8 @@ def shipengine_error_with_bad_error_source():
     )
 
 
-def shipengine_error_with_bad_error_code():
+def shipengine_error_with_bad_error_code() -> ShipEngineError:
+    """Return a ShipEngineError that has an invalid error_code."""
     raise ShipEngineError(
         request_id="req_a523b1b19bd54054b7eb953f000e7f15",
         message="The is a test exception",
@@ -58,31 +74,31 @@ def shipengine_error_with_bad_error_code():
     )
 
 
-def account_status():
+def account_status() -> AccountStatusError:
     raise AccountStatusError("There was an issue with your ShipEngine account.")
 
 
-def business_rule_error():
+def business_rule_error() -> BusinessRuleError:
     raise BusinessRuleError("Invalid postal code.")
 
 
-def security_error():
+def security_error() -> ClientSecurityError:
     raise ClientSecurityError("Unauthorized - you API key is invalid.")
 
 
-def validation_error():
+def validation_error() -> ValidationError:
     raise ValidationError("The value provided must be an integer - object provided.")
 
 
-def client_timeout_error():
+def client_timeout_error() -> ClientTimeoutError:
     raise ClientTimeoutError(300, "shipengine", "req_a523b1b19bd54054b7eb953f000e7f15")
 
 
-def invalid_filed_value_error():
+def invalid_filed_value_error() -> InvalidFieldValueError:
     raise InvalidFieldValueError("is_residential", "Value should be int but got str.", 1)
 
 
-def rate_limit_exceeded_error():
+def rate_limit_exceeded_error() -> RateLimitExceededError:
     raise RateLimitExceededError(300, "shipengine", "req_a523b1b19bd54054b7eb953f000e7f15")
 
 

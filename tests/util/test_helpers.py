@@ -1,23 +1,44 @@
 """Test data as functions and common assertion helper functions."""
 from typing import Dict, Optional, Union
 
-from shipengine_sdk import ShipEngine
-from shipengine_sdk.models import Address, AddressValidateResult, Endpoints
+from shipengine_sdk import ShipEngine, ShipEngineConfig
+from shipengine_sdk.models import (
+    Address,
+    AddressValidateResult,
+    Endpoints,
+    TrackingQuery,
+)
 
 
-def stub_config() -> Dict[str, any]:
+def stub_config(
+    retries: int = 1,
+) -> Dict[str, any]:
     """
     Return a test configuration dictionary to be used
     when instantiating the ShipEngine object.
     """
     return dict(
-        api_key="baz", base_uri=Endpoints.TEST_RPC_URL.value, page_size=50, retries=2, timeout=15
+        api_key="baz",
+        base_uri=Endpoints.TEST_RPC_URL.value,
+        page_size=50,
+        retries=retries,
+        timeout=15,
     )
+
+
+def stub_shipengine_config() -> ShipEngineConfig:
+    """Return a valid test ShipEngineConfig object."""
+    return ShipEngineConfig(config=stub_config())
+
+
+def configurable_stub_shipengine_instance(config: Dict[str, any]) -> ShipEngine:
+    """"""
+    return ShipEngine(config=config)
 
 
 def stub_shipengine_instance() -> ShipEngine:
     """Return a test instance of the ShipEngine object."""
-    return ShipEngine(stub_config())
+    return ShipEngine(config=stub_config())
 
 
 def address_with_all_fields() -> Address:
@@ -197,6 +218,28 @@ def address_with_invalid_country() -> Address:
     )
 
 
+def address_with_invalid_state() -> Address:
+    """Return an address with an invalid state value."""
+    return Address(
+        street=["4 Jersey St", "Apt. 2b"],
+        city_locality="Boston",
+        state_province="&$",
+        postal_code="02215",
+        country_code="US",
+    )
+
+
+def address_with_invalid_postal_code() -> Address:
+    """Return an address with an invalid postal code."""
+    return Address(
+        street=["4 Jersey St", "Apt. 2b"],
+        city_locality="Boston",
+        state_province="MA",
+        postal_code="2$1*5",
+        country_code="US",
+    )
+
+
 def get_server_side_error() -> Address:
     """Return an address that will cause the server to return a 500 server error."""
     return Address(
@@ -223,7 +266,12 @@ def normalize_an_address(address: Address) -> Address:
     it and calls the `normalize_address` method, providing it the `address` that is passed into
     this function.
     """
-    return stub_shipengine_instance().normalize_address(address)
+    return stub_shipengine_instance().normalize_address(address=address)
+
+
+def track_a_package(tracking_data: Union[str, Dict[str, any], TrackingQuery]):
+    """"""
+    return stub_shipengine_instance().track_package(tracking_data=tracking_data)
 
 
 def stub_get_carrier_accounts(carrier_code: Optional[str] = None):

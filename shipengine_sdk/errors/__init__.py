@@ -26,22 +26,22 @@ class ShipEngineError(Exception):
 
     def _are_enums_valid(self):
         if self.source is None:
-            return self
+            pass  # noqa
         elif not does_member_value_exist(self.source, ErrorSource):
             raise ValueError(
                 f"Error source must be a member of ErrorSource enum - [{self.source}] provided."
             )
 
         if self.error_type is None:
-            return self
+            pass  # noqa
         elif not does_member_value_exist(self.error_type, ErrorType):
             raise ValueError(
                 f"Error type must be a member of ErrorType enum - [{self.error_type}] provided."
             )
 
         if self.error_code is None:
-            return self
-        elif self.error_code not in (member.value for member in ErrorCode):
+            pass  # noqa
+        elif not does_member_value_exist(self.error_code, ErrorCode):
             raise ValueError(
                 f"Error type must be a member of ErrorCode enum - [{self.error_code}] provided."
             )

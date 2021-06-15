@@ -2,7 +2,7 @@
 import json
 import os
 import platform
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 import requests
 from requests import PreparedRequest, Request, RequestException, Response, Session
@@ -37,8 +37,8 @@ class ShipEngineClient:
         self.session = requests.session()
 
     def send_rpc_request(
-        self, method: str, params: Optional[Dict[str, any]], retry: int, config: ShipEngineConfig
-    ) -> Dict[str, any]:
+        self, method: str, params: Optional[Dict[str, Any]], retry: int, config: ShipEngineConfig
+    ) -> Dict[str, Any]:
         """
         Send a `JSON-RPC 2.0` request via HTTP Messages to ShipEngine API. If the response
          * is successful, the result is returned. Otherwise, an error is thrown.
@@ -53,13 +53,13 @@ class ShipEngineClient:
             else os.getenv("CLIENT_BASE_URI")
         )
 
-        request_headers: Dict[str, any] = {
+        request_headers: Dict[str, Any] = {
             "User-Agent": self._derive_user_agent(),
             "Content-Type": "application/json",
             "Accept": "application/json",
         }
 
-        request_body: Dict[str, any] = wrap_request(method=method, params=params)
+        request_body: Dict[str, Any] = wrap_request(method=method, params=params)
 
         req: Request = Request(
             method="POST",
@@ -80,7 +80,7 @@ class ShipEngineClient:
                 error_code=ErrorCode.UNSPECIFIED.value,
             )
 
-        resp_body: Dict[str, any] = resp.json()
+        resp_body: Dict[str, Any] = resp.json()
         status_code: int = resp.status_code
 
         is_response_404(status_code=status_code, response_body=resp_body, config=config)

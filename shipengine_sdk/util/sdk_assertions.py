@@ -1,6 +1,6 @@
 """Assertion helper functions."""
 import re
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from ..errors import (
     ClientSystemError,
@@ -16,7 +16,7 @@ validation_message = "Invalid address. Either the postal code or the city/locali
 
 
 def is_street_valid(street: List[str]) -> None:
-    """Checks that street is not empty and that it is not too many address lines."""
+    """Checks that street is not empty and that it is not too mAny address lines."""
     if len(street) == 0:
         raise ValidationError(
             message="Invalid address. At least one address line is required.",
@@ -51,7 +51,7 @@ def is_city_valid(city: str) -> None:
 
 def is_state_valid(state: str) -> None:
     """Asserts that state is 2 capitalized letters and that it is not an empty string."""
-    latin_pattern = re.compile(r"^[a-zA-Z\W]*$")
+    latin_pattern = re.compile(r"^[a-zA-Z]*$")
     non_latin_pattern = re.compile(r"[\u4e00-\u9fff]+")
 
     if non_latin_pattern.match(state):
@@ -89,7 +89,7 @@ def is_country_code_valid(country: str) -> None:
         )
 
 
-def is_api_key_valid(config: Dict[str, any]) -> None:
+def is_api_key_valid(config: Dict[str, Any]) -> None:
     """
     Check if API Key is set and is not empty or whitespace.
 
@@ -115,7 +115,7 @@ def is_api_key_valid(config: Dict[str, any]) -> None:
         )
 
 
-def is_retries_valid(config: Dict[str, any]) -> None:
+def is_retries_valid(config: Dict[str, Any]) -> None:
     """
     Checks that config.retries is a valid value.
 
@@ -132,7 +132,7 @@ def is_retries_valid(config: Dict[str, any]) -> None:
         )
 
 
-def is_timeout_valid(config: Dict[str, any]) -> None:
+def is_timeout_valid(config: Dict[str, Any]) -> None:
     """
     Checks that config.timeout is valid value.
 
@@ -174,7 +174,7 @@ def timeout_validation_error_assertions(error) -> None:
     assert error.source is ErrorSource.SHIPENGINE.value
 
 
-def is_response_404(status_code: int, response_body: Dict[str, any], config) -> None:
+def is_response_404(status_code: int, response_body: Dict[str, Any], config) -> None:
     """Check if status_code is 404 and raises an error if so."""
     if "error" in response_body and status_code == 404:
         error = response_body["error"]
@@ -195,7 +195,7 @@ def is_response_404(status_code: int, response_body: Dict[str, any], config) -> 
         )
 
 
-def is_response_429(status_code: int, response_body: Dict[str, any], config) -> None:
+def is_response_429(status_code: int, response_body: Dict[str, Any], config) -> None:
     """Check if status_code is 429 and raises an error if so."""
     if "error" in response_body and status_code == 429:
         error = response_body["error"]
@@ -214,7 +214,7 @@ def is_response_429(status_code: int, response_body: Dict[str, any], config) -> 
             )
 
 
-def is_response_500(status_code: int, response_body: Dict[str, any]) -> None:
+def is_response_500(status_code: int, response_body: Dict[str, Any]) -> None:
     """Check if the status code is 500 and raises an error if so."""
     if status_code == 500:
         error = response_body["error"]
@@ -230,7 +230,7 @@ def is_response_500(status_code: int, response_body: Dict[str, any]) -> None:
 
 def does_normalized_address_have_errors(result) -> None:
     """
-    Assertions to check if the returned normalized address has any errors. If errors
+    Assertions to check if the returned normalized address has Any errors. If errors
     are present an exception is thrown.
 
     :param AddressValidateResult result: The address validation response from ShipEngine API.
@@ -265,3 +265,11 @@ def does_normalized_address_have_errors(result) -> None:
             error_type=ErrorType.ERROR.value,
             error_code=ErrorCode.INVALID_ADDRESS.value,
         )
+
+
+def is_package_id_valid(package_id: str) -> None:
+    """Checks that package_id is valid."""
+    pattern = re.compile(r"^pkg_[1-9a-zA-Z]+$")
+
+    if not pattern.match(package_id):
+        raise ValidationError(message=f"[{package_id}] is not a valid package ID.")
