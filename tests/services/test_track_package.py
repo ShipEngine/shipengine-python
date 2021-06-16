@@ -1,7 +1,15 @@
 """Testing the `track_package` method of the ShipEngine SDK."""
 from typing import List
 
-from shipengine_sdk.models import TrackingQuery, TrackPackageResult
+from shipengine_sdk.errors import ClientSystemError, ShipEngineError, ValidationError
+from shipengine_sdk.models import (
+    ErrorCode,
+    ErrorSource,
+    ErrorType,
+    TrackingEvent,
+    TrackingQuery,
+    TrackPackageResult,
+)
 from tests.util.test_helpers import configurable_stub_shipengine_instance, stub_config
 
 
@@ -53,6 +61,14 @@ def track_package_assertions(tracking_result: TrackPackageResult) -> None:
     assert carrier_code is not None
     assert type(carrier_code) is str
     assert estimated_delivery.has_timezone() is True
+
+
+def date_time_assertions(event: TrackingEvent) -> None:
+    """Check that date_time has a timezone."""
+    assert event.date_time is not None
+    assert event.carrier_date_time is not None
+    assert event.date_time.has_timezone() is True
+    assert event.carrier_date_time.has_timezone() is False
 
 
 class TestTrackPackage:
@@ -202,3 +218,106 @@ class TestTrackPackage:
         assert tracking_result.events[5].status == "exception"
         assert tracking_result.events[7].status == "delivered"
         assert tracking_result.events[-1].status == "delivered"
+
+    def test_multiple_locations_in_tracking_event(self) -> None:
+        """DX-1097 - Test track package with multiple locations in tracking event."""
+        package_id = "pkg_Attempted"
+        shipengine = configurable_stub_shipengine_instance(stub_config())
+        tracking_result = shipengine.track_package(tracking_data=package_id)
+
+        track_package_assertions(tracking_result=tracking_result)
+        assert_events_in_order(tracking_result.events)
+        assert tracking_result.events[0].location is None
+        assert tracking_result.events[1].location is None
+        assert type(tracking_result.events[2].location.latitude) is float
+        assert type(tracking_result.events[2].location.longitude) is float
+        assert tracking_result.events[4].location.latitude is None
+        assert tracking_result.events[4].location.longitude is None
+
+    def test_carrier_date_time_without_timezone(self) -> None:
+        """DX-1098 - Test track package where carrierDateTime has no timezone."""
+        package_id = "pkg_Attempted"
+        shipengine = configurable_stub_shipengine_instance(stub_config())
+        tracking_result = shipengine.track_package(tracking_data=package_id)
+
+        track_package_assertions(tracking_result=tracking_result)
+        assert_events_in_order(tracking_result.events)
+        assert len(tracking_result.events) == 5
+        for event in tracking_result.events:
+            date_time_assertions(event=event)
+
+    def test_invalid_tracking_number(self) -> None:
+        """DX-1099 - Test track package with an invalid tracking number."""
+        tracking_data = TrackingQuery(carrier_code="fedex", tracking_number="abc123")
+        shipengine = configurable_stub_shipengine_instance(stub_config())
+        try:
+            shipengine.track_package(tracking_data=tracking_data)
+        except ShipEngineError as err:
+            assert type(err) is ClientSystemError
+            assert err.request_id is not None
+            assert err.request_id.startswith("req_")
+            assert err.source == ErrorSource.CARRIER.value
+            assert err.error_type == ErrorType.BUSINESS_RULES.value
+            assert err.error_code == ErrorCode.INVALID_IDENTIFIER.value
+            assert (
+                err.message
+                == f"{tracking_data.tracking_number} is not a valid fedex tracking number."
+            )
+
+    def test_invalid_package_id_prefix(self) -> None:
+        """DX-1100 - Test track package with invalid package_id prefix."""
+        package_id = "car_1FedExAccepted"
+        shipengine = configurable_stub_shipengine_instance(stub_config())
+        try:
+            shipengine.track_package(tracking_data=package_id)
+        except ShipEngineError as err:
+            assert type(err) is ValidationError
+            assert err.request_id is None
+            assert err.source is ErrorSource.SHIPENGINE.value
+            assert err.error_type is ErrorType.VALIDATION.value
+            assert err.error_code is ErrorCode.INVALID_IDENTIFIER.value
+            assert err.message == f"[{package_id[0:4]}] is not a valid package ID prefix."
+
+    def test_invalid_package_id(self) -> None:
+        """DX-1101 - Test track package with invalid package_id."""
+        package_id = "pkg_12!@3a s567"
+        shipengine = configurable_stub_shipengine_instance(stub_config())
+        try:
+            shipengine.track_package(tracking_data=package_id)
+        except ShipEngineError as err:
+            assert type(err) is ValidationError
+            assert err.request_id is None
+            assert err.source is ErrorSource.SHIPENGINE.value
+            assert err.error_type is ErrorType.VALIDATION.value
+            assert err.error_code is ErrorCode.INVALID_IDENTIFIER.value
+            assert err.message == f"[{package_id}] is not a valid package ID."
+
+    def test_package_id_not_found(self) -> None:
+        """DX-1102 - Test track package where package ID cannot be found."""
+        package_id = "pkg_123"
+        shipengine = configurable_stub_shipengine_instance(stub_config())
+        try:
+            shipengine.track_package(tracking_data=package_id)
+        except ShipEngineError as err:
+            assert type(err) is ClientSystemError
+            assert err.request_id is not None
+            assert err.request_id.startswith("req_")
+            assert err.source == ErrorSource.SHIPENGINE.value
+            assert err.error_type == ErrorType.VALIDATION.value
+            assert err.error_code == ErrorCode.INVALID_IDENTIFIER.value
+            assert err.message == f"Package ID {package_id} does not exist."
+
+    def test_server_side_error(self) -> None:
+        """DX-1103 - Test track package server-side error."""
+        tracking_data = TrackingQuery(carrier_code="fedex", tracking_number="500 Server Error")
+        shipengine = configurable_stub_shipengine_instance(stub_config())
+        try:
+            shipengine.track_package(tracking_data=tracking_data)
+        except ShipEngineError as err:
+            assert type(err) is ClientSystemError
+            assert err.request_id is not None
+            assert err.request_id.startswith("req_")
+            assert err.source == ErrorSource.SHIPENGINE.value
+            assert err.error_type == ErrorType.SYSTEM.value
+            assert err.error_code == ErrorCode.UNSPECIFIED.value
+            assert err.message == "Unable to connect to the database"

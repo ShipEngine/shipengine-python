@@ -271,5 +271,18 @@ def is_package_id_valid(package_id: str) -> None:
     """Checks that package_id is valid."""
     pattern = re.compile(r"^pkg_[1-9a-zA-Z]+$")
 
+    if not package_id.startswith("pkg_"):
+        raise ValidationError(
+            message=f"[{package_id[0:4]}] is not a valid package ID prefix.",
+            source=ErrorSource.SHIPENGINE.value,
+            error_type=ErrorType.VALIDATION.value,
+            error_code=ErrorCode.INVALID_IDENTIFIER.value,
+        )
+
     if not pattern.match(package_id):
-        raise ValidationError(message=f"[{package_id}] is not a valid package ID.")
+        raise ValidationError(
+            message=f"[{package_id}] is not a valid package ID.",
+            source=ErrorSource.SHIPENGINE.value,
+            error_type=ErrorType.VALIDATION.value,
+            error_code=ErrorCode.INVALID_IDENTIFIER.value,
+        )

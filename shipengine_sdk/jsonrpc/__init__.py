@@ -14,10 +14,7 @@ from .process_request import handle_response, wrap_request
 def rpc_request(
     method: str, config: ShipEngineConfig, params: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
-    """
-    Create and send a `JSON-RPC 2.0` request over HTTP messages.
-    TODO: add param and return docs
-    """
+    """Create and send a `JSON-RPC 2.0` request over HTTP messages."""
     return rpc_request_loop(method, params, config)
 
 
