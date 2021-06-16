@@ -19,9 +19,9 @@ There are two ways to validate an address using this SDK.
   * [Input Parameters](#input-parameters)
   * [Output](#output)
 - [Examples:](#examples-)
-  * [**Successful Address Validation Output (object repr):**](#--successful-address-validation-output--object-repr----)
-  * [**Successful Address Validation Output (JSON object):**](#--successful-address-validation-output--json-object----)
-  * [**Successful Address Validation Output (dictionary):**](#--successful-address-validation-output--dictionary----)
+  * [Successful Address Validation Output (object repr)](#--successful-address-validation-output--object-repr----)
+  * [Successful Address Validation Output (JSON object)](#--successful-address-validation-output--json-object----)
+  * [Successful Address Validation Output (dictionary)](#--successful-address-validation-output--dictionary----)
 - [Exceptions](#exceptions)
 
 `normalize_address(address: Address, config: Dict[str, Any])` - Normalize a given address.
