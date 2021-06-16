@@ -42,10 +42,7 @@ class ShipEngineClient:
         """
         Send a `JSON-RPC 2.0` request via HTTP Messages to ShipEngine API. If the response
          * is successful, the result is returned. Otherwise, an error is thrown.
-
-        TODO: add param and return docs
         """
-        # TODO: debug the below base_uri variable to verify ternary logic works as intended.
         client: Session = self._request_retry_session(retries=config.retries)
         base_uri: Optional[str] = (
             config.base_uri

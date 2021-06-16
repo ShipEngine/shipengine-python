@@ -109,15 +109,33 @@ class TrackingQuery:
     tracking_number: str
 
 
-@dataclass_json(letter_case=LetterCase.CAMEL)
-@dataclass
 class Location:
-    city_locality: Optional[str] = None
-    state_province: Optional[str] = None
-    postal_code: Optional[str] = None
-    country_code: Optional[str] = None
+    city_locality: Optional[str]
+    state_province: Optional[str]
+    postal_code: Optional[str]
+    country_code: Optional[str]
     latitude: Optional[float] = None
     longitude: Optional[float] = None
+
+    def __init__(self, location_data: Dict[str, Any]) -> None:
+        self.city_locality = (
+            location_data["cityLocality"] if "cityLocality" in location_data else None
+        )
+        self.state_province = (
+            location_data["stateProvince"] if "stateProvince" in location_data else None
+        )
+        self.postal_code = location_data["postalCode"] if "postalCode" in location_data else None
+        self.country_code = location_data["countryCode"] if "countryCode" in location_data else None
+
+        if "coordinates" in location_data:
+            self.latitude = location_data["coordinates"]["latitude"]
+            self.longitude = location_data["coordinates"]["longitude"]
+
+    def to_dict(self):
+        return (lambda o: o.__dict__)(self)
+
+    def to_json(self):
+        return json.dumps(self, default=lambda o: o.__dict__, indent=2)
 
 
 class TrackingEvent:
@@ -142,7 +160,7 @@ class TrackingEvent:
             event["carrierStatusCode"] if "carrierStatusCode" in event else None
         )
         self.signer = event["signer"] if "signer" in event else None
-        self.location = Location.from_dict(event["location"]) if "location" in event else None
+        self.location = Location(event["location"]) if "location" in event else None
 
     def to_dict(self):
         return (lambda o: o.__dict__)(self)
@@ -174,7 +192,7 @@ class TrackPackageResult:
         )
         self.package = Package(result["package"]) if "package" in result else None
 
-    def get_errors(self) -> List[TrackingEvent]:  # TODO: debug
+    def get_errors(self) -> List[TrackingEvent]:
         """Returns **only** the exception events."""
         errors: List[TrackingEvent] = list()
         for event in self.events:
@@ -182,11 +200,11 @@ class TrackPackageResult:
                 errors.append(event)
         return errors
 
-    def get_latest_event(self) -> TrackingEvent:  # TODO: debug
+    def get_latest_event(self) -> TrackingEvent:
         """Returns the latest event to have occurred in the `events` list."""
         return self.events[-1]
 
-    def has_errors(self) -> bool:  # TODO: debug
+    def has_errors(self) -> bool:
         """Returns `true` if there are any exception events."""
         for event in self.events:
             if event.status == "exception":
