@@ -31,6 +31,8 @@ Methods
   which the address resides.
 - [normalize_address](./docs/normalize_address_example.md "Normalize Address method documentation") - Returns a normalized, or standardized, version of the
   address. If the address cannot be normalized, an error is returned.
+- [track_package](./docs/track_package_example.md "Track Package method documentation") - Track a package by `packageId` or by `carrierCode` and `trackingNumber`. This method returns
+the all tracking events for a given shipment.
 
 Class Objects
 -------------
