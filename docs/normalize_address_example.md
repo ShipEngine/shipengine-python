@@ -55,10 +55,8 @@ Address Object
 Input Parameters
 ----------------
 
-The `normalize_address` method accepts an address object containing the properties listed below.
-If you are using TypeScript, you can import the [`Address`]()
-type into your project to take advantage of your
-IDE's code completion functionality.
+The `normalize_address` method accepts an address object containing the properties listed below. You can import
+the [`Address`]() type into your project to take advantage of your IDE's code completion functionality.
 
 
 * `country` *required* <br>
