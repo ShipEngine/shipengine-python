@@ -21,6 +21,9 @@ class Carrier:
     def to_json(self):
         return json.dumps(self, default=lambda o: o.__dict__, indent=2)
 
+    def __repr__(self):
+        return f"Carrier({self.code}, {self.name})"
+
 
 class CarrierAccount:
     carrier: Carrier
@@ -47,3 +50,8 @@ class CarrierAccount:
 
     def to_json(self):
         return json.dumps(self, default=lambda o: o.__dict__, indent=2)
+
+    def __repr__(self):
+        return (
+            f"CarrierAccount({self.account_id}, {self.account_number}, {self.carrier}, {self.name})"
+        )

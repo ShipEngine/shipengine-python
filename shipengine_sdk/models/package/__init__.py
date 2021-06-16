@@ -76,6 +76,9 @@ class Shipment:
             pass  # noqa
         return json.dumps(self, default=lambda o: o.__dict__, indent=2)
 
+    def __repr__(self):
+        return f"Shipment({self.shipment_id}, {self.account_id}, {self.carrier_account}, {self.carrier}, {self.estimated_delivery_date}, {self.actual_delivery_date})"  # noqa
+
 
 class Package:
     """This object contains package information for a given shipment."""
@@ -98,6 +101,9 @@ class Package:
 
     def to_json(self) -> str:
         return json.dumps(self, default=lambda o: o.__dict__, indent=2)
+
+    def __repr__(self):
+        return f"Package({self.package_id}, {self.weight}, {self.dimensions}, {self.tracking_number}, {self.tracking_url})"  # noqa
 
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
@@ -137,6 +143,9 @@ class Location:
     def to_json(self):
         return json.dumps(self, default=lambda o: o.__dict__, indent=2)
 
+    def __repr__(self):
+        return f"Location({self.city_locality}, {self.state_province}, {self.postal_code}, {self.country_code}, {self.latitude}, {self.longitude})"  # noqa
+
 
 class TrackingEvent:
     date_time: Union[IsoString, str]
@@ -167,6 +176,9 @@ class TrackingEvent:
 
     def to_json(self):
         return json.dumps(self, default=lambda o: o.__dict__, indent=2)
+
+    def __repr__(self):
+        return f"TrackingEvent({self.date_time.to_string()}, {self.date_time.to_string()}, {self.status}, {self.description}, {self.carrier_status_code}, {self.carrier_detail_code}, {self.signer}, {self.location})"  # noqa
 
 
 class TrackPackageResult:
@@ -224,3 +236,6 @@ class TrackPackageResult:
         else:
             pass  # noqa
         return json.dumps(self, default=lambda o: o.__dict__, indent=2)
+
+    def __repr__(self):
+        return f"TrackPackageResult({self.shipment}, {self.package}, {self.events})"

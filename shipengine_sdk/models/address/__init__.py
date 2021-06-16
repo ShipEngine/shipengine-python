@@ -78,3 +78,6 @@ class AddressValidateResult:
 
     def to_json(self):
         return json.dumps(self, default=lambda o: o.__dict__, indent=2)
+
+    def __repr__(self):
+        return f"AddressValidateResult({self.is_valid}, {self.request_id}, {self.normalized_address}, {self.info}, {self.warnings}, {self.errors})"  # noqa
