@@ -10,7 +10,8 @@ from shipengine_sdk.models import (
     TrackingQuery,
     TrackPackageResult,
 )
-from tests.util.test_helpers import configurable_stub_shipengine_instance, stub_config
+
+from ..util import configurable_stub_shipengine_instance, stub_config
 
 
 def assertions_on_delivered_after_exception_or_multiple_attempts(
