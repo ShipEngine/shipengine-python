@@ -2,8 +2,7 @@
 from typing import Union
 
 from ..jsonrpc import rpc_request
-from ..models import RPCMethods
-from ..models.track_pacakge import TrackingQuery, TrackPackageResult
+from ..models import RPCMethods, TrackingQuery, TrackPackageResult
 from ..shipengine_config import ShipEngineConfig
 from ..util import is_package_id_valid
 
