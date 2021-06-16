@@ -10,8 +10,8 @@ Australia, Germany, France, Norway, Spain, Sweden, Israel, Italy, and over 160 o
 
 There are two ways to validate an address using this SDK.
 
-- Single Address Validation - `validate_address(Address $address, $config)`
-- Normalize an Address - [normalizeAddress(Address $address, $config)](./normalize_address_example.md)
+- Single Address Validation - `validate_address(address: Address, config: Dict[str, Any])`
+- Normalize an Address - [normalizeAddress(address: Address, config: Dict[str, Any])](./normalize_address_example.md)
 
 ---
 ## **Table of Contents**
@@ -27,7 +27,7 @@ There are two ways to validate an address using this SDK.
 - [Exceptions](#exceptions)
 
 
-`validate_address(Address $address, $config)` - Validate a single address.
+`validate_address(address: Address, config: Dict[str, Any])` - Validate a single address.
 =========================================================================
 
 - The `validate_address` method takes in an list containing address information, which would typically be a set of
@@ -91,7 +91,7 @@ A *string* between `0` to `1000` characters containing the state or province.<br
 
 
 * `is_residential` <br>
-A *boolean* value indicating whether this is a residential or commercial address. Leave `undefined` if unknown. <br>
+A *boolean* value indicating whether this is a residential or commercial address. Leave `None` if unknown. <br>
 
 
 * `name` <br>
@@ -102,7 +102,7 @@ A *string* between `0` and `1000` characters indicating the name of the sender o
 A *string* between `0` and `1000` characters indicating the phone number associated with this address, if any.
 
 
-* `company_name` <br>
+* `company` <br>
 A *string* between `0` and `1000` characters indicating the company name, if this is a business address.
 
 Output
@@ -138,7 +138,7 @@ This property will only be provided if the address is valid.
 
   * `is_residential` <br>
   A *boolean* indicating whether the address is residential or commercial.
-  If unknown, this field will be `undefined`.
+  If unknown, this field will be `None`.
 
   * `name` <br>
   A *string* containing the name of the sender or recipient at the address, if applicable.
@@ -148,7 +148,7 @@ This property will only be provided if the address is valid.
   A *string* containing the phone number associated with this address, if any.
   This field may be empty.
 
-  * `company_name` <br>
+  * `company` <br>
   A *string* containing the company name, if this is a known business address.
   This field may be empty.
 
@@ -206,25 +206,8 @@ print(validated_address)
 -------------------------------------------------------
 As a raw `AddressValidateResult` object `repr`.
 
-```python
-AddressValidateResult(
-    True,
-    req_ca5951303bb74885b53ac29673bead02,
-    Address(
-        street=["4 JERSEY ST APT 2B"],
-        city_locality="BOSTON",
-        state_province="MA",
-        postal_code="02215",
-        country_code="US",
-        is_residential=True,
-        name="SHIPENGINE",
-        phone="123456789",
-        company="AUCTANE",
-    ),
-    [],
-    [],
-    [],
-)
+```
+Address(street=['4 JERSEY ST APT 2B'], city_locality='BOSTON', state_province='MA', postal_code='02215', country_code='US', is_residential=True, name='SHIPENGINE', phone='123456789', company='AUCTANE')
 ```
 
 **Successful Address Validation Output (JSON object):**
@@ -260,14 +243,26 @@ on the `validated_address` variable as `validated_address.to_json()`.
 ------------------------------------------------------
 The `AddressValidateResult` can be converted to a dictionary by using
 the `.to_dict()` method on any of the models in our SDK. The following output comes from using `pprint.pprint()` for
-readablilty/formatting on the `validated_address` variable as `validated_address.to_dict()`.
-```json5
-{"errors": [],
- "info": [],
- "is_valid": True,
- "normalized_address": Address(street=["4 JERSEY ST APT 2B"], city_locality="BOSTON", state_province="MA", postal_code="02215", country_code="US", is_residential=True, name="SHIPENGINE", phone="123456789", company="AUCTANE"),
- "request_id": "req_ca5951303bb74885b53ac29673bead02",
- "warnings": []}
+readability/formatting on the `validated_address` variable as `validated_address.to_dict()`.
+```python
+{
+    "errors": [],
+    "info": [],
+    "is_valid": True,
+    "normalized_address": Address(
+        street=["4 JERSEY ST APT 2B"],
+        city_locality="BOSTON",
+        state_province="MA",
+        postal_code="02215",
+        country_code="US",
+        is_residential=True,
+        name="SHIPENGINE",
+        phone="123456789",
+        company="AUCTANE",
+    ),
+    "request_id": "req_ca5951303bb74885b53ac29673bead02",
+    "warnings": [],
+}
 ```
 
 **Successful Address Validation with Warnings (JSON Object):**
