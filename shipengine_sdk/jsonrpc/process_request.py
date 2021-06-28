@@ -23,11 +23,13 @@ def wrap_request(method: str, params: Optional[Dict[str, Any]]) -> Dict[str, Any
     is optional and can either be a dictionary or None.
     :type params: Optional[Dict[str, Any]]
     """
+    # A base58 variant of f"req_{str(uuid4()).replace('-', '')}" here to replace
+    # "req_42" 
     if params is None:
-        return dict(id=f"req_{str(uuid4()).replace('-', '')}", jsonrpc="2.0", method=method)
+        return dict(id="req_42", jsonrpc="2.0", method=method)
     else:
         return dict(
-            id=f"req_{str(uuid4()).replace('-', '')}", jsonrpc="2.0", method=method, params=params
+            id=f"req_42", jsonrpc="2.0", method=method, params=params
         )
 
 

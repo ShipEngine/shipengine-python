@@ -31,7 +31,7 @@ class CarrierAccount:
     def __init__(self, account_information: Dict[str, Any]) -> None:
         """This class represents a given account with a Carrier provider e.g. `FedEx`, `UPS`, `USPS`."""
         self._set_carrier(account_information["carrierCode"])
-        self.account_id = account_information["accountID"]
+        self.account_id = account_information["accountId"]
         self.account_number = account_information["accountNumber"]
 
     def _set_carrier(self, carrier: str) -> None:

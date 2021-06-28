@@ -11,7 +11,7 @@ def stub_carrier_account_object() -> Dict[str, Any]:
     from the returned ShipEngine API response.
     """
     return {
-        "accountID": "car_1knseddGBrseWTiw",
+        "accountId": "car_1knseddGBrseWTiw",
         "accountNumber": "1169350",
         "carrierCode": "royal_mail",
         "name": "United Parcel Service",

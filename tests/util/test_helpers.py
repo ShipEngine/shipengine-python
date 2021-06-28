@@ -18,7 +18,9 @@ def stub_config(
     when instantiating the ShipEngine object.
     """
     return dict(
-        api_key="baz",
+        # The simengine trigger is currently set with a "_sim" suffix on the
+        # API-Key, but this will soon change to expect a prefix of "TEST_"
+        api_key="baz_sim",
         base_uri=Endpoints.TEST_RPC_URL.value,
         page_size=50,
         retries=retries,

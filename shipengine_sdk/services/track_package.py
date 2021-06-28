@@ -14,7 +14,7 @@ def track(tracking_data: Union[str, TrackingQuery], config: ShipEngineConfig) ->
         api_response = rpc_request(
             method=RPCMethods.TRACK_PACKAGE.value,
             config=config,
-            params={"packageID": tracking_data},
+            params={"packageId": tracking_data},
         )
 
         return TrackPackageResult(api_response, config)

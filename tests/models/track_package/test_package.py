@@ -6,9 +6,9 @@ from shipengine_sdk.models import Package
 
 def stub_package_data() -> Dict[str, Any]:
     return {
-        "packageID": "pkg_1FedExAccepted",
+        "packageId": "pkg_1FedExAccepted",
         "trackingNumber": "5fSkgyuh3GkfUjTZSEAQ8gHeTU29tZ",
-        "trackingURL": "https://www.fedex.com/track/5fSkgyuh3GkfUjTZSEAQ8gHeTU29tZ",
+        "trackingUrl": "https://www.fedex.com/track/5fSkgyuh3GkfUjTZSEAQ8gHeTU29tZ",
         "weight": {"value": 76, "unit": "kilogram"},
         "dimensions": {"length": 36, "width": 36, "height": 23, "unit": "inch"},
     }
