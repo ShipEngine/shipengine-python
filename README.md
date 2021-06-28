@@ -89,6 +89,29 @@ poetry install
 poetry shell
  ```
 
+### Pre-Commit Hooks
+We are using [Pre-Commit](https://pre-commit.com/) to enforce formatting, lint rules, and code analysis so that
+this repo is always in good health.
+ - If you choose not to globally install `pre-commit`, then you can skip installing via `pip` or `homebrew` directly.
+   You can simply run either `pip install -r requirements.txt` or `poetry install`
+To be able to push a PR to the repo after making changes locally, you will need to install `pre-commit` which
+is a tool that runs linting, formatting, and code analysis on your changes.
+```bash
+pip install pre-commit  # Install via pip
+
+OR
+
+brew install pre-commit  # Install via homebrew
+```
+- After you have run either `pip install -r requirements.txt`, `poetry install`, or globally installed
+  [Pre-Commit](https://pre-commit.com/) using the above commands you need to run the following command
+  in the project directory locally. This allows the pre-commit hooks to run when you are looking to commit
+  and push code to this repository.
+```bash
+pre-commit install
+```
+> Note: The checks run in pre-commit hooks are the same checks run in CI in our GitHub Actions.
+
 Testing
 -------
 You can run the tests in the `tests/` directory using [Pytest]() in the **Poetry** environment like this:
