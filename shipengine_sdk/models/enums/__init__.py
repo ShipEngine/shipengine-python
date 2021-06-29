@@ -12,8 +12,15 @@ from .regex_patterns import RegexPatterns
 class Endpoints(Enum):
     """API Endpoint URI's used throughout the ShipEngine SDK."""
 
-    TEST_RPC_URL = "https://simengine.herokuapp.com/jsonrpc"
+    TEST_RPC_URL = "https://shipengine-web-api.herokuapp.com/jsonrpc"
     SHIPENGINE_RPC_URL = "https://api.shipengine.com/jsonrpc"
+
+
+class Events(Enum):
+    """ShipEngine Events emitted by the SDK when a request is sent or when a response is received."""
+
+    ON_REQUEST_SENT = "on_request_sent"
+    ON_RESPONSE_RECEIVED = "on_response_received"
 
 
 class RPCMethods(Enum):
