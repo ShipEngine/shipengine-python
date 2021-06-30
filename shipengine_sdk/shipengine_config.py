@@ -2,6 +2,7 @@
 import json
 from typing import Any, Dict, Optional
 
+from .events.shipengine_event_listener import ShipEngineEventListener
 from .models import Endpoints
 from .util import is_api_key_valid, is_retries_valid, is_timeout_valid
 
@@ -48,7 +49,11 @@ class ShipEngineConfig:
             self.retries: int = config["retries"]
         else:
             self.retries: int = self.DEFAULT_RETRIES
-        # TODO: add event listener to config object once it"s implemented.
+
+        if "event_listener" in config:
+            self.event_listener = config["event_listener"]
+        else:
+            self.event_listener = ShipEngineEventListener()
 
     def merge(self, new_config: Optional[Dict[str, Any]] = None):
         """
@@ -79,7 +84,12 @@ class ShipEngineConfig:
             config.update(
                 {"timeout": new_config["timeout"]}
             ) if "timeout" in new_config else config.update({"timeout": self.timeout})
-            # TODO: added merge rule for event_listener once it is implemented.
+
+            config.update(
+                {"event_listener": new_config["event_listener"]}
+            ) if "event_listener" in new_config else config.update(
+                {"event_listener": self.event_listener}
+            )
 
             return ShipEngineConfig(config)
 
