@@ -125,15 +125,15 @@ class Location:
 
     def __init__(self, location_data: Dict[str, Any]) -> None:
         self.city_locality = (
-            location_data["cityLocality"] if "cityLocality" in location_data else None
+            location_data["cityLocality"] if "cityLocality" in location_data and location_data != None else None
         )
         self.state_province = (
-            location_data["stateProvince"] if "stateProvince" in location_data else None
+            location_data["stateProvince"] if "stateProvince" in location_data and location_data != None else None
         )
-        self.postal_code = location_data["postalCode"] if "postalCode" in location_data else None
-        self.country_code = location_data["countryCode"] if "countryCode" in location_data else None
+        self.postal_code = location_data["postalCode"] if "postalCode" in location_data and location_data != None else None
+        self.country_code = location_data["countryCode"] if "countryCode" in location_data and location_data != None else None
 
-        if "coordinates" in location_data:
+        if "coordinates" in location_data and location_data != None and location_data["coordinates"] != None:
             self.latitude = location_data["coordinates"]["latitude"]
             self.longitude = location_data["coordinates"]["longitude"]
 
@@ -169,7 +169,7 @@ class TrackingEvent:
             event["carrierStatusCode"] if "carrierStatusCode" in event else None
         )
         self.signer = event["signer"] if "signer" in event else None
-        self.location = Location(event["location"]) if "location" in event else None
+        self.location = Location(event["location"]) if "location" in event and event["location"] != None else None
 
     def to_dict(self):
         return (lambda o: o.__dict__)(self)
