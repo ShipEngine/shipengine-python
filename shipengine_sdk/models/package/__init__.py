@@ -26,8 +26,8 @@ class Shipment:
     ) -> None:
         """This object represents a given Shipment."""
         self.config = config
-        self.shipment_id = shipment["shipmentID"] if "shipmentID" in shipment else None
-        self.account_id = shipment["carrierAccountID"] if "carrierAccountID" in shipment else None
+        self.shipment_id = shipment["shipmentId"] if "shipmentId" in shipment else None
+        self.account_id = shipment["carrierAccountId"] if "carrierAccountId" in shipment else None
 
         if self.account_id is not None:
             self.carrier_account = self._get_carrier_account(
@@ -59,7 +59,7 @@ class Shipment:
                 return target_carrier[0]
 
         raise ShipEngineError(
-            message=f"accountID [{account_id}] doesn't match any of the accounts connected to your ShipEngine Account."  # noqa
+            message=f"accountId [{account_id}] doesn't match any of the accounts connected to your ShipEngine Account."  # noqa
         )
 
     def to_dict(self) -> Dict[str, Any]:
@@ -90,11 +90,11 @@ class Package:
     tracking_url: Optional[str]
 
     def __init__(self, package: Dict[str, Any]) -> None:
-        self.package_id = package["packageID"] if "packageID" in package else None
+        self.package_id = package["packageId"] if "packageId" in package else None
         self.weight = package["weight"] if "weight" in package else None
         self.dimensions = package["dimensions"] if "dimensions" in package else None
         self.tracking_number = package["trackingNumber"] if "trackingNumber" in package else None
-        self.tracking_url = package["trackingURL"] if "trackingURL" in package else None
+        self.tracking_url = package["trackingUrl"] if "trackingUrl" in package else None
 
     def to_dict(self) -> Dict[str, Any]:
         return (lambda o: o.__dict__)(self)
@@ -239,3 +239,20 @@ class TrackPackageResult:
 
     def __repr__(self):
         return f"TrackPackageResult({self.shipment}, {self.package}, {self.events})"
+
+
+@dataclass_json(letter_case=LetterCase.CAMEL)
+@dataclass
+class EventOptions:
+    """To be used as the main argument in the **emitEvent()** function."""
+
+    message: Optional[str]
+    id: Optional[str]
+    base_uri: Optional[str]
+    body: Optional[Dict[str, Any]]
+    status_code: Optional[int]
+    retry: Optional[int]
+    request_headers: Optional[List[str]] = None
+    response_headers: Optional[List[str]] = None
+    timeout: Optional[int] = None
+    elapsed: Optional[str] = None

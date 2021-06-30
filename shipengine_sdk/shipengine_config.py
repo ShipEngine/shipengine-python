@@ -2,7 +2,7 @@
 import json
 from typing import Any, Dict, Optional
 
-from .events.shipengine_event_listener import ShipEngineEventListener
+from .events import ShipEngineEventListener
 from .models import Endpoints
 from .util import is_api_key_valid, is_retries_valid, is_timeout_valid
 
