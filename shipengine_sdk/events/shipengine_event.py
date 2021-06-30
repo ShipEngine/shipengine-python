@@ -8,9 +8,8 @@ from typing import Any, Dict
 
 from .. import ShipEngineConfig
 from ..errors import ShipEngineError
-from ..events import Publisher, RequestSentEvent
-from ..events.response_received_event import ResponseReceivedEvent
 from ..models.enums import Events
+from . import Publisher, RequestSentEvent, ResponseReceivedEvent
 
 
 class ShipEngineEvent:

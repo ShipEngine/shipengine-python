@@ -8,6 +8,7 @@ from typing import Callable, List, Optional, Union
 from .request_sent_event import RequestSentEvent
 from .response_received_event import ResponseReceivedEvent
 from .shipengine_event import ShipEngineEvent
+from .shipengine_event_listener import ShipEngineEventListener
 
 
 class Publisher:

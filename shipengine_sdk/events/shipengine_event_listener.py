@@ -1,8 +1,7 @@
 """A default event listener to consume the events emitted by the SDK."""
 from typing import Union
 
-from ..events import RequestSentEvent, Subscriber
-from .response_received_event import ResponseReceivedEvent
+from . import RequestSentEvent, ResponseReceivedEvent, Subscriber
 
 
 class ShipEngineEventListener(Subscriber):
