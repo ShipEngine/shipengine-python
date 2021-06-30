@@ -90,7 +90,7 @@ def address_with_warnings() -> Address:
     return Address(
         street=["170 Warning Blvd", "Apartment 32-B"],
         city_locality="Toronto",
-        state_province="ON",
+        state_province="On",
         postal_code="M6K 3C3",
         country_code="CA",
     )
@@ -123,7 +123,7 @@ def valid_canadian_address() -> Address:
     return Address(
         street=["170 Princes Blvd", "Ste 200"],
         city_locality="Toronto",
-        state_province="ON",
+        state_province="On",
         postal_code="M6K 3C3",
         country_code="CA",
     )
@@ -181,7 +181,7 @@ def unknown_address() -> Address:
     return Address(
         street=["4 Unknown St"],
         city_locality="Toronto",
-        state_province="ON",
+        state_province="On",
         postal_code="M6K 3C3",
         country_code="CA",
     )
@@ -357,7 +357,7 @@ def canada_valid_avs_assertions(
     assert address is not None
     assert address.city_locality == original_address.city_locality
     assert address.state_province == original_address.state_province.title()
-    assert address.postal_code == "M6 K 3 C3"
+    assert address.postal_code == "M6K 3C3"
     assert address.country_code == original_address.country_code.upper()
     assert address.is_residential is expected_residential_indicator
 
@@ -391,6 +391,6 @@ def canada_valid_normalize_assertions(
     assert type(normalized_address) is Address
     assert normalized_address.city_locality == original_address.city_locality
     assert normalized_address.state_province == original_address.state_province.title()
-    assert normalized_address.postal_code == "M6 K 3 C3"
+    assert normalized_address.postal_code == "M6K 3C3"
     assert normalized_address.country_code == original_address.country_code.upper()
     assert normalized_address.is_residential is expected_residential_indicator
