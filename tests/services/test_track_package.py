@@ -321,4 +321,4 @@ class TestTrackPackage:
             assert err.source == ErrorSource.SHIPENGINE.value
             assert err.error_type == ErrorType.SYSTEM.value
             assert err.error_code == ErrorCode.UNSPECIFIED.value
-            assert err.message == "Unable to connect to the database"
+            assert err.message == "Unable to process this request. A downstream API error occurred."
