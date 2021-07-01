@@ -17,9 +17,6 @@ class TestIsoString:
 
         assert type(iso_str) is datetime.datetime
 
-    def test_static_no_tz_check(self) -> None:
-        assert IsoString.is_valid_iso_string_no_tz(self._test_iso_string_no_tz) is True
-
     def test_static_valid_iso_check(self) -> None:
         assert IsoString.is_valid_iso_string(self._test_iso_string_no_tz) is True
 
