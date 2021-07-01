@@ -12,8 +12,7 @@ from .regex_patterns import RegexPatterns
 class Endpoints(Enum):
     """API Endpoint URI's used throughout the ShipEngine SDK."""
 
-    # TEST_RPC_URL = "https://shipengine-web-api.herokuapp.com/jsonrpc"
-    TEST_RPC_URL = "http://localhost:4000/jsonrpc"
+    TEST_RPC_URL = "https://shipengine-web-api.herokuapp.com/jsonrpc"
     SHIPENGINE_RPC_URL = "https://api.shipengine.com/jsonrpc"
 
 
