@@ -83,6 +83,7 @@ class TestTrackPackage:
         tracking_data = TrackingQuery(carrier_code="fedex", tracking_number="abcFedExDelivered")
         tracking_result = shipengine.track_package(tracking_data=tracking_data)
 
+        # Update this/model def for carrier.code -> carrier_code?
         assert tracking_data.carrier_code == tracking_result.shipment.carrier.code
         assert tracking_data.tracking_number == tracking_result.package.tracking_number
         assert tracking_result.package.tracking_url is not None

@@ -25,10 +25,11 @@ class IsoString:
         return self.iso_string
 
     def to_datetime_object(self) -> datetime:
+        iso_string = self.maybe_add_microseconds(self.iso_string)
         if self.has_timezone():
-            return datetime.strptime(self.iso_string, "%Y-%m-%dT%H:%M:%S.%fZ")
+            return datetime.strptime(iso_string, "%Y-%m-%dT%H:%M:%S.%fZ")
         elif self.is_valid_iso_string_no_tz(self.iso_string):
-            return datetime.fromisoformat(self.iso_string)
+            return datetime.fromisoformat(iso_string)
 
     def has_timezone(self) -> bool:
         if self.is_valid_iso_string(self.iso_string):
@@ -49,3 +50,13 @@ class IsoString:
             return True
         else:
             return False
+
+    @staticmethod
+    def maybe_add_microseconds(iso_str: str):
+        if '.' not in iso_str:
+            if 'Z' not in iso_str:
+                return iso_str + '.0'
+            else:
+                return iso_str[:-1] + '.0Z'
+        else:
+            return iso_str
