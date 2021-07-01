@@ -83,8 +83,7 @@ class TestTrackPackage:
         tracking_data = TrackingQuery(carrier_code="fedex", tracking_number="abcFedExDelivered")
         tracking_result = shipengine.track_package(tracking_data=tracking_data)
 
-        # Update this/model def for carrier.code -> carrier_code?
-        assert tracking_data.carrier_code == tracking_result.shipment.carrier.code
+        assert tracking_data.carrier_code == tracking_result.shipment.carrier["code"]
         assert tracking_data.tracking_number == tracking_result.package.tracking_number
         assert tracking_result.package.tracking_url is not None
         assert type(tracking_result.package.tracking_url) is str
@@ -129,7 +128,7 @@ class TestTrackPackage:
         tracking_result = shipengine.track_package(tracking_data=package_id)
 
         track_package_assertions(tracking_result=tracking_result)
-        assert len(tracking_result.events) == 9
+        assert len(tracking_result.events) == 5
         assert_events_in_order(tracking_result.events)
         assert tracking_result.events[0].status == "accepted"
         assert tracking_result.events[1].status == "in_transit"

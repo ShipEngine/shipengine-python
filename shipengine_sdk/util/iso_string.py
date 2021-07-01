@@ -25,23 +25,15 @@ class IsoString:
         return self.iso_string
 
     def to_datetime_object(self) -> datetime:
-        iso_string = self.maybe_add_microseconds(self.iso_string)
+        iso_string = self._maybe_add_microseconds(self.iso_string)
         if self.has_timezone():
             return datetime.strptime(iso_string, "%Y-%m-%dT%H:%M:%S.%fZ")
-        elif self.is_valid_iso_string_no_tz(self.iso_string):
+        elif self._is_valid_iso_string_no_tz(self.iso_string):
             return datetime.fromisoformat(iso_string)
 
     def has_timezone(self) -> bool:
         if self.is_valid_iso_string(self.iso_string):
-            return False if self.is_valid_iso_string_no_tz(self.iso_string) else True
-
-    @staticmethod
-    def is_valid_iso_string_no_tz(iso_str: str):
-        pattern = re.compile(RegexPatterns.VALID_ISO_STRING_NO_TZ.value)
-        if pattern.match(iso_str):
-            return True
-        else:
-            return False
+            return False if self._is_valid_iso_string_no_tz(self.iso_string) else True
 
     @staticmethod
     def is_valid_iso_string(iso_str: str):
@@ -52,7 +44,15 @@ class IsoString:
             return False
 
     @staticmethod
-    def maybe_add_microseconds(iso_str: str):
+    def _is_valid_iso_string_no_tz(iso_str: str):
+        pattern = re.compile(RegexPatterns.VALID_ISO_STRING_NO_TZ.value)
+        if pattern.match(iso_str):
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def _maybe_add_microseconds(iso_str: str):
         if '.' not in iso_str:
             if 'Z' not in iso_str:
                 return iso_str + '.0'
