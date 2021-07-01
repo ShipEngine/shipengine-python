@@ -239,20 +239,3 @@ class TrackPackageResult:
 
     def __repr__(self):
         return f"TrackPackageResult({self.shipment}, {self.package}, {self.events})"
-
-
-@dataclass_json(letter_case=LetterCase.CAMEL)
-@dataclass
-class EventOptions:
-    """To be used as the main argument in the **emitEvent()** function."""
-
-    message: Optional[str]
-    id: Optional[str]
-    base_uri: Optional[str]
-    body: Optional[Dict[str, Any]]
-    status_code: Optional[int]
-    retry: Optional[int]
-    request_headers: Optional[List[str]] = None
-    response_headers: Optional[List[str]] = None
-    timeout: Optional[int] = None
-    elapsed: Optional[str] = None

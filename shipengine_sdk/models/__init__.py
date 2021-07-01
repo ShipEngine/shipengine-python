@@ -15,7 +15,6 @@ from .enums import (
     get_carrier_name_value,
 )
 from .package import (
-    EventOptions,
     Location,
     Package,
     Shipment,
