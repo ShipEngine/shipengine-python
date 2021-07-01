@@ -224,7 +224,6 @@ class TestTrackPackage:
         track_package_assertions(tracking_result=tracking_result)
         assert_events_in_order(tracking_result.events)
         assert tracking_result.events[0].location is None
-        print(tracking_result.events[1].location)
         assert tracking_result.events[1].location.latitude is None
         assert tracking_result.events[1].location.longitude is None
         assert type(tracking_result.events[2].location.latitude) is float
