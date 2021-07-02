@@ -53,10 +53,10 @@ class IsoString:
 
     @staticmethod
     def _maybe_add_microseconds(iso_str: str):
-        if '.' not in iso_str:
-            if 'Z' not in iso_str:
-                return iso_str + '.0'
+        if "." not in iso_str:
+            if "Z" not in iso_str:
+                return iso_str + ".0"
             else:
-                return iso_str[:-1] + '.0Z'
+                return iso_str[:-1] + ".0Z"
         else:
             return iso_str

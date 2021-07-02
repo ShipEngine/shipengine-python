@@ -26,8 +26,7 @@ class Shipment:
     ) -> None:
         """This object represents a given Shipment."""
         self.config = config
-        self.shipment_id = shipment["shipmentId"] if "shipmentId" in shipment \
-          else None
+        self.shipment_id = shipment["shipmentId"] if "shipmentId" in shipment else None
         self.account_id = shipment["carrierAccountId"] if "carrierAccountId" in shipment else None
 
         if self.account_id is not None:
@@ -126,20 +125,31 @@ class Location:
 
     def __init__(self, location_data: Dict[str, Any]) -> None:
         self.city_locality = (
-            location_data["cityLocality"] if "cityLocality" in location_data \
-              and location_data != None else None
+            location_data["cityLocality"]
+            if "cityLocality" in location_data and location_data is not None
+            else None
         )
         self.state_province = (
-            location_data["stateProvince"] if "stateProvince" in location_data \
-              and location_data != None else None
+            location_data["stateProvince"]
+            if "stateProvince" in location_data and location_data is not None
+            else None
         )
-        self.postal_code = location_data["postalCode"] if "postalCode" in \
-          location_data and location_data != None else None
-        self.country_code = location_data["countryCode"] if "countryCode" in \
-          location_data and location_data != None else None
+        self.postal_code = (
+            location_data["postalCode"]
+            if "postalCode" in location_data and location_data is not None
+            else None
+        )
+        self.country_code = (
+            location_data["countryCode"]
+            if "countryCode" in location_data and location_data is not None
+            else None
+        )
 
-        if "coordinates" in location_data and location_data is not None and \
-          location_data["coordinates"] != None:
+        if (
+            "coordinates" in location_data
+            and location_data is not None
+            and location_data["coordinates"] is not None
+        ):
             self.latitude = location_data["coordinates"]["latitude"]
             self.longitude = location_data["coordinates"]["longitude"]
 
@@ -170,13 +180,16 @@ class TrackingEvent:
         self.carrier_date_time = IsoString(iso_string=event["carrierTimestamp"])
 
         self.status = event["status"]
-        self.description = event["description"] if "description" in event else \
-          None
+        self.description = event["description"] if "description" in event else None
         self.carrier_status_code = (
             event["carrierStatusCode"] if "carrierStatusCode" in event else None
         )
         self.signer = event["signer"] if "signer" in event else None
-        self.location = Location(event["location"]) if "location" in event and event["location"] != None else None
+        self.location = (
+            Location(event["location"])
+            if "location" in event and event["location"] is not None
+            else None
+        )
 
     def to_dict(self):
         return (lambda o: o.__dict__)(self)
@@ -209,8 +222,7 @@ class TrackPackageResult:
             if "shipment" in result
             else None
         )
-        self.package = Package(result["package"]) if "package" in result else \
-          None
+        self.package = Package(result["package"]) if "package" in result else None
 
     def get_errors(self) -> List[TrackingEvent]:
         """Returns **only** the exception events."""

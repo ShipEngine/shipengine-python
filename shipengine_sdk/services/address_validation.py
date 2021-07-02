@@ -27,7 +27,7 @@ def validate(address: Address, config: ShipEngineConfig) -> AddressValidateResul
         is_valid=result["isValid"],
         request_id=api_response["id"],
         normalized_address=Address.from_dict(result["normalizedAddress"])
-        if "normalizedAddress" in result and result["normalizedAddress"] != None
+        if "normalizedAddress" in result and result["normalizedAddress"] is not None
         else None,
         messages=result["messages"],
     )
