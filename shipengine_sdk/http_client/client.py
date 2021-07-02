@@ -24,17 +24,11 @@ from ..events import (
 from ..jsonrpc.process_request import handle_response, wrap_request
 from ..models import ErrorCode, ErrorSource, ErrorType
 from ..shipengine_config import ShipEngineConfig
-from ..util.sdk_assertions import is_response_404, is_response_429, is_response_500
+from ..util.sdk_assertions import check_response_for_errors
 
 
 def base_url(config) -> str:
     return config.base_uri if os.getenv("CLIENT_BASE_URI") is None else os.getenv("CLIENT_BASE_URI")
-
-
-def check_for_errors(status_code: int, response_body: Dict[str, Any], config) -> None:
-    is_response_404(status_code=status_code, response_body=response_body, config=config)
-    is_response_429(status_code=status_code, response_body=response_body, config=config)
-    is_response_500(status_code=status_code, response_body=response_body)
 
 
 def generate_event_message(retry: int, method: str, base_uri: str) -> str:
@@ -82,18 +76,6 @@ class ShipEngineClient:
         """
         client: Session = self._request_retry_session(retries=config.retries)
         base_uri = base_url(config=config)
-
-        # base_uri: Optional[str] = (
-        #     config.base_uri
-        #     if os.getenv("CLIENT_BASE_URI") is None
-        #     else os.getenv("CLIENT_BASE_URI")
-        # )
-
-        # request_headers: Dict[str, Any] = {
-        #     "User-Agent": self._derive_user_agent(),
-        #     "Content-Type": "application/json",
-        #     "Accept": "application/json",
-        # }
 
         request_body: Dict[str, Any] = wrap_request(method=method, params=params)
         req_headers = request_headers(self._derive_user_agent())
@@ -156,7 +138,7 @@ class ShipEngineClient:
             config=config,
         )
 
-        check_for_errors(status_code=status_code, response_body=resp_body, config=config)
+        check_response_for_errors(status_code=status_code, response_body=resp_body, config=config)
         return handle_response(resp.json())
 
     def _request_retry_session(

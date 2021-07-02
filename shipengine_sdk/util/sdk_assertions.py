@@ -174,8 +174,10 @@ def timeout_validation_error_assertions(error) -> None:
     assert error.source is ErrorSource.SHIPENGINE.value
 
 
-def is_response_404(status_code: int, response_body: Dict[str, Any], config) -> None:
-    """Check if status_code is 404 and raises an error if so."""
+def check_response_for_errors(status_code: int, response_body: Dict[str, Any], config) -> None:
+    """Checks response and status_code for 404, 429, and 500 error cases and raises an approved exception."""
+
+    # Check if status_code is 404 and raises an error if so.
     if "error" in response_body and status_code == 404:
         error = response_body["error"]
         error_data = error["data"]
@@ -194,9 +196,7 @@ def is_response_404(status_code: int, response_body: Dict[str, Any], config) -> 
             error_code=ErrorCode.NOT_FOUND.value,
         )
 
-
-def is_response_429(status_code: int, response_body: Dict[str, Any], config) -> None:
-    """Check if status_code is 429 and raises an error if so."""
+    # Check if status_code is 429 and raises an error if so.
     if "error" in response_body and status_code == 429:
         error = response_body["error"]
         retry_after = error["data"]["retryAfter"]
@@ -213,9 +213,7 @@ def is_response_429(status_code: int, response_body: Dict[str, Any], config) -> 
                 request_id=response_body["id"],
             )
 
-
-def is_response_500(status_code: int, response_body: Dict[str, Any]) -> None:
-    """Check if the status code is 500 and raises an error if so."""
+    # Check if the status code is 500 and raises an error if so.
     if status_code == 500:
         error = response_body["error"]
         error_data = error["data"]
