@@ -23,9 +23,9 @@ class Address:
     postal_code: str
     country_code: str
     is_residential: Optional[bool] = None
-    name: str = ""
-    phone: str = ""
-    company: str = ""
+    name: Optional[str] = ""
+    phone: Optional[str] = ""
+    company: Optional[str] = ""
 
     def __post_init__(self) -> None:
         is_street_valid(self.street)
