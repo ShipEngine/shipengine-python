@@ -2,6 +2,7 @@
 import json
 import os
 import platform
+from datetime import datetime
 from typing import Any, Dict, Optional
 
 import requests
@@ -13,10 +14,40 @@ from requests.packages.urllib3.util.retry import Retry
 from shipengine_sdk import __version__
 
 from ..errors import ShipEngineError
+from ..events import (
+    EventOptions,
+    RequestSentEvent,
+    ResponseReceivedEvent,
+    ShipEngineEvent,
+    emit_event,
+)
 from ..jsonrpc.process_request import handle_response, wrap_request
 from ..models import ErrorCode, ErrorSource, ErrorType
 from ..shipengine_config import ShipEngineConfig
-from ..util.sdk_assertions import is_response_404, is_response_429, is_response_500
+from ..util.sdk_assertions import check_response_for_errors
+
+
+def base_url(config) -> str:
+    return config.base_uri if os.getenv("CLIENT_BASE_URI") is None else os.getenv("CLIENT_BASE_URI")
+
+
+def generate_event_message(retry: int, method: str, base_uri: str) -> str:
+    if retry == 0:
+        return ShipEngineEvent.new_event_message(
+            method=method, base_uri=base_uri, message_type="base_message"
+        )
+    else:
+        return ShipEngineEvent.new_event_message(
+            method=method, base_uri=base_uri, message_type="retry_message"
+        )
+
+
+def request_headers(user_agent: str) -> Dict[str, Any]:
+    return {
+        "User-Agent": user_agent,
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+    }
 
 
 class ShipEngineAuth(AuthBase):
@@ -44,28 +75,37 @@ class ShipEngineClient:
          * is successful, the result is returned. Otherwise, an error is thrown.
         """
         client: Session = self._request_retry_session(retries=config.retries)
-        base_uri: Optional[str] = (
-            config.base_uri
-            if os.getenv("CLIENT_BASE_URI") is None
-            else os.getenv("CLIENT_BASE_URI")
-        )
-
-        request_headers: Dict[str, Any] = {
-            "User-Agent": self._derive_user_agent(),
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-        }
+        base_uri = base_url(config=config)
 
         request_body: Dict[str, Any] = wrap_request(method=method, params=params)
-
+        req_headers = request_headers(self._derive_user_agent())
         req: Request = Request(
             method="POST",
             url=base_uri,
             data=json.dumps(request_body),
-            headers=request_headers,
+            headers=req_headers,
             auth=ShipEngineAuth(config.api_key),
         )
         prepared_req: PreparedRequest = req.prepare()
+
+        request_event_message = generate_event_message(
+            retry=retry, method=method, base_uri=base_uri
+        )
+
+        request_event_data = EventOptions(
+            message=request_event_message,
+            id=request_body["id"],
+            base_uri=base_uri,
+            request_headers=req_headers,
+            body=request_body,
+            retry=retry,
+            timeout=config.timeout,
+        )
+        request_sent_event = emit_event(
+            emitted_event_type=RequestSentEvent.REQUEST_SENT,
+            event_data=request_event_data,
+            config=config,
+        )
 
         try:
             resp: Response = client.send(request=prepared_req, timeout=config.timeout)
@@ -80,10 +120,25 @@ class ShipEngineClient:
         resp_body: Dict[str, Any] = resp.json()
         status_code: int = resp.status_code
 
-        is_response_404(status_code=status_code, response_body=resp_body, config=config)
-        is_response_429(status_code=status_code, response_body=resp_body, config=config)
-        is_response_500(status_code=status_code, response_body=resp_body)
+        response_event_data = EventOptions(
+            message=request_event_message,
+            id=request_body["id"],
+            base_uri=base_uri,
+            status_code=status_code,
+            response_headers=resp.headers,
+            body=request_body,
+            retry=retry,
+            elapsed=(request_sent_event.timestamp - datetime.now()).total_seconds(),
+        )
 
+        # Emit `ResponseReceivedEvent` to registered Subscribers.
+        emit_event(
+            emitted_event_type=ResponseReceivedEvent.RESPONSE_RECEIVED,
+            event_data=response_event_data,
+            config=config,
+        )
+
+        check_response_for_errors(status_code=status_code, response_body=resp_body, config=config)
         return handle_response(resp.json())
 
     def _request_retry_session(

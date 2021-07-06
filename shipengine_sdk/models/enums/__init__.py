@@ -16,6 +16,13 @@ class Endpoints(Enum):
     SHIPENGINE_RPC_URL = "https://api.shipengine.com/jsonrpc"
 
 
+class Events(Enum):
+    """ShipEngine Events emitted by the SDK when a request is sent or when a response is received."""
+
+    ON_REQUEST_SENT = "on_request_sent"
+    ON_RESPONSE_RECEIVED = "on_response_received"
+
+
 class RPCMethods(Enum):
     """A collection of RPC Methods used throughout the ShipEngine SDK."""
 
