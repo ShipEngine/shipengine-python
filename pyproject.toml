@@ -14,9 +14,10 @@ requests = "^2.25.1"
 python-dotenv = "^0.15.0"
 dataclasses-json = "^0.5.3"
 fuuid = "^0.1.0"
+pytest-mock = "^3.6.1"
 
 [tool.poetry.dev-dependencies]
-pytest = "^4.6"
+pytest = ">=5.0"
 black = "^20.8b1"
 flake8 = "^3.8.4"
 Sphinx = "^3.5.2"
