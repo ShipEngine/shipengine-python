@@ -85,8 +85,8 @@ class TestTrackPackage:
 
         assert tracking_data.carrier_code == tracking_result.shipment.carrier["code"]
         assert tracking_data.tracking_number == tracking_result.package.tracking_number
-        # assert tracking_result.package.tracking_url is not None
-        # assert type(tracking_result.package.tracking_url) is str
+        assert tracking_result.package.tracking_url is not None
+        assert type(tracking_result.package.tracking_url) is str
 
     def test_track_by_package_id(self) -> None:
         """DX-1086 - Test track by package ID."""
@@ -96,7 +96,7 @@ class TestTrackPackage:
 
         assert tracking_result.package.package_id == package_id
         assert tracking_result.package.tracking_number is not None
-        # assert tracking_result.package.tracking_url is not None
+        assert tracking_result.package.tracking_url is not None
         assert tracking_result.shipment.shipment_id is not None
         assert tracking_result.shipment.account_id is not None
 
