@@ -20,7 +20,7 @@ def validate(address: Address, config: ShipEngineConfig) -> AddressValidateResul
     api_response: Dict[str, Any] = rpc_request(
         method=RPCMethods.ADDRESS_VALIDATE.value,
         config=config,
-        params={"address": address.to_dict()},  # type: ignore
+        params={"address": address.to_dict()},
     )
     result: Dict[str, Any] = api_response["result"]
     return AddressValidateResult(

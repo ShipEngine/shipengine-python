@@ -21,8 +21,7 @@ def rpc_request(
 def rpc_request_loop(
     method: str, params: Optional[Dict[str, Any]], config: ShipEngineConfig
 ) -> Dict[str, Any]:
-    client: ShipEngineClient = ShipEngineClient()
-    api_response: Optional[Dict[str, Any]] = None
+    client: ShipEngineClient = ShipEngineClient(config=config)
     retry: int = 0
     while retry <= config.retries:
         try:
@@ -36,6 +35,7 @@ def rpc_request_loop(
                 and err.retry_after < config.timeout
             ):
                 time.sleep(err.retry_after)
+                continue
             else:
                 raise err
         retry += 1
