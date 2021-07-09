@@ -140,7 +140,8 @@ class ShipEngineEventListener(Subscriber):
     # You can add your own event consumption logic by adding/overriding the parent `update()` method below.
     @staticmethod
     def update(event: Union[RequestSentEvent, ResponseReceivedEvent]):
-        print(event.to_dict())
+        # print(event.to_dict())
+        return event
 
 
 def emit_event(emitted_event_type: str, event_data, dispatcher: Dispatcher):
