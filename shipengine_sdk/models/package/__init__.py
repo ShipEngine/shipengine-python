@@ -184,6 +184,9 @@ class TrackingEvent:
         self.carrier_status_code = (
             event["carrierStatusCode"] if "carrierStatusCode" in event else None
         )
+        self.carrier_detail_code = (
+            event["carrierDetailCode"] if "carrierDetailCode" in event else None
+        )
         self.signer = event["signer"] if "signer" in event else None
         self.location = (
             Location(event["location"])
