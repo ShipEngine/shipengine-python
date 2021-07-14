@@ -85,8 +85,13 @@ class ResponseReceivedEvent(ShipEngineEvent):
 
 
 class Dispatcher:
-    def __init__(self, events: List[str]) -> None:
-        self.events = {event: dict() for event in events}
+    def __init__(self, events: Optional[List[str]] = None) -> None:
+        events_list = [Events.ON_REQUEST_SENT.value, Events.ON_RESPONSE_RECEIVED.value]
+        if events:
+            for i in events:
+                events_list.append(i)
+
+        self.events = {event: dict() for event in events_list}
 
     def get_subscribers(self, event: Optional[str] = None):
         return self.events[event]
@@ -102,6 +107,12 @@ class Dispatcher:
     def dispatch(self, event, event_name: str = None):
         for subscriber, callback in self.get_subscribers(event_name).items():
             callback(event)
+
+    def to_dict(self):
+        return (lambda o: o.__dict__)(self)
+
+    def to_json(self):
+        return json.dumps(self, default=lambda o: o.__dict__, indent=2)
 
 
 class Subscriber:
@@ -129,13 +140,11 @@ class ShipEngineEventListener(Subscriber):
     # You can add your own event consumption logic by adding/overriding the parent `update()` method below.
     @staticmethod
     def update(event: Union[RequestSentEvent, ResponseReceivedEvent]):
-        print(event.to_dict())
+        # print(event.to_dict())
+        return event
 
 
-def emit_event(emitted_event_type: str, event_data, config):
-    dispatcher = Dispatcher([Events.ON_REQUEST_SENT.value, Events.ON_RESPONSE_RECEIVED.value])
-    dispatcher.register(event=Events.ON_REQUEST_SENT.value, subscriber=config.event_listener)
-    dispatcher.register(event=Events.ON_RESPONSE_RECEIVED.value, subscriber=config.event_listener)
+def emit_event(emitted_event_type: str, event_data, dispatcher: Dispatcher):
     if emitted_event_type == RequestSentEvent.REQUEST_SENT:
         request_sent_event = RequestSentEvent(
             message=event_data.message,

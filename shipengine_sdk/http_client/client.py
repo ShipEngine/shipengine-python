@@ -15,6 +15,7 @@ from shipengine_sdk import __version__
 
 from ..errors import ShipEngineError
 from ..events import (
+    Dispatcher,
     EventOptions,
     RequestSentEvent,
     ResponseReceivedEvent,
@@ -23,6 +24,7 @@ from ..events import (
 )
 from ..jsonrpc.process_request import handle_response, wrap_request
 from ..models import ErrorCode, ErrorSource, ErrorType
+from ..models.enums import Events
 from ..shipengine_config import ShipEngineConfig
 from ..util.sdk_assertions import check_response_for_errors
 
@@ -61,10 +63,16 @@ class ShipEngineAuth(AuthBase):
 
 
 class ShipEngineClient:
-    _BASE_URI: str = ""
+    _DISPATCHER: Dispatcher = Dispatcher()
 
-    def __init__(self) -> None:
+    def __init__(self, config: ShipEngineConfig) -> None:
         """A `JSON-RPC 2.0` HTTP client used to send all HTTP requests from the SDK."""
+        self._DISPATCHER.register(
+            event=Events.ON_REQUEST_SENT.value, subscriber=config.event_listener
+        )
+        self._DISPATCHER.register(
+            event=Events.ON_RESPONSE_RECEIVED.value, subscriber=config.event_listener
+        )
         self.session = requests.session()
 
     def send_rpc_request(
@@ -104,7 +112,7 @@ class ShipEngineClient:
         request_sent_event = emit_event(
             emitted_event_type=RequestSentEvent.REQUEST_SENT,
             event_data=request_event_data,
-            config=config,
+            dispatcher=self._DISPATCHER,
         )
 
         try:
@@ -135,7 +143,7 @@ class ShipEngineClient:
         emit_event(
             emitted_event_type=ResponseReceivedEvent.RESPONSE_RECEIVED,
             event_data=response_event_data,
-            config=config,
+            dispatcher=self._DISPATCHER,
         )
 
         check_response_for_errors(status_code=status_code, response_body=resp_body, config=config)

@@ -89,7 +89,15 @@ poetry install
 poetry shell
  ```
 
-### Pre-Commit Hooks
+## Adding dependencies to the project
+If your changes require you to install a python package/module using `poetry add <some package>` or
+`poetry add <some package> -D` for a dev dependency. You will also need to run the following command to
+regenerate a `requirements.txt` file that includes the newly added dependencies:
+```bash
+poetry export -f requirements.txt --output requirements.txt --without-hashes --dev
+```
+
+## Pre-Commit Hooks
 We are using [Pre-Commit](https://pre-commit.com/) to enforce formatting, lint rules, and code analysis so that
 this repo is always in good health.
  - If you choose not to globally install `pre-commit`, then you can skip installing via `pip` or `homebrew` directly.
