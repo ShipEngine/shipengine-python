@@ -96,9 +96,11 @@ class Dispatcher:
     def get_subscribers(self, event: Optional[str] = None):
         return self.events[event]
 
-    def register(self, event, subscriber, callback: Optional[Callable] = None):
-        if callback is None:
-            callback = getattr(subscriber, "update")
+    def register(self, event, subscriber, callback: Union[Callable, str] = None):
+        if event is Events.ON_REQUEST_SENT.value and callback is None:
+            callback = getattr(subscriber, "catch_request_sent_event")
+        elif event is Events.ON_RESPONSE_RECEIVED.value and callback is None:
+            callback = getattr(subscriber, "catch_response_received_event")
         self.get_subscribers(event)[subscriber] = callback
 
     def unregister(self, event, subscriber):
@@ -124,6 +126,14 @@ class Subscriber:
 
     @staticmethod
     def update(event: Union[RequestSentEvent, ResponseReceivedEvent]):
+        return event
+
+    @staticmethod
+    def catch_request_sent_event(event: RequestSentEvent):
+        return event
+
+    @staticmethod
+    def catch_response_received_event(event: ResponseReceivedEvent):
         return event
 
     def to_dict(self):
