@@ -12,6 +12,7 @@ from shipengine_sdk.models import (
     ErrorType,
     TrackingQuery,
 )
+from shipengine_sdk.models.enums import Constants
 
 
 def stub_config(
@@ -22,7 +23,7 @@ def stub_config(
     when instantiating the ShipEngine object.
     """
     return dict(
-        api_key="baz_sim",
+        api_key=Constants.API_KEY.value,
         base_uri=Endpoints.TEST_RPC_URL.value,
         page_size=50,
         retries=retries,

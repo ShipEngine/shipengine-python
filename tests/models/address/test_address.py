@@ -3,8 +3,7 @@ import pytest
 
 from shipengine_sdk.errors import ValidationError
 from shipengine_sdk.models import ErrorCode, ErrorSource, ErrorType
-
-from ...util.test_helpers import address_with_too_many_lines, empty_address_lines
+from tests.util import address_with_too_many_lines, empty_address_lines
 
 
 def address_line_assertions(err: ValidationError, variant: str) -> None:
