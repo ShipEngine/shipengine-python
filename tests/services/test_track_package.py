@@ -24,9 +24,9 @@ def assertions_on_delivered_after_exception_or_multiple_attempts(
     assert tracking_result.events[0].status == "accepted"
     assert tracking_result.events[1].status == "in_transit"
     assert tracking_result.events[2].status == "in_transit"
-    assert tracking_result.events[3].status == "exception"
+    assert tracking_result.events[3].status == "unknown"
     assert tracking_result.events[4].status == "exception"
-    assert tracking_result.events[5].status == "attempted_delivery"
+    assert tracking_result.events[5].status == "exception"
     assert tracking_result.events[6].status == "attempted_delivery"
     assert tracking_result.events[7].status == "delivered"
     assert tracking_result.events[-1].status == "delivered"
@@ -128,13 +128,13 @@ class TestTrackPackage:
         tracking_result = shipengine.track_package(tracking_data=package_id)
 
         track_package_assertions(tracking_result=tracking_result)
-        assert len(tracking_result.events) == 5
+        assert len(tracking_result.events) == 9
         assert_events_in_order(tracking_result.events)
         assert tracking_result.events[0].status == "accepted"
         assert tracking_result.events[1].status == "in_transit"
-        assert tracking_result.events[2].status == "attempted_delivery"
-        assert tracking_result.events[3].status == "attempted_delivery"
-        assert tracking_result.events[4].status == "delivered"
+        assert tracking_result.events[2].status == "unknown"
+        assert tracking_result.events[3].status == "in_transit"
+        assert tracking_result.events[-1].status == "delivered"
 
     def test_delivered_on_first_try(self) -> None:
         """DX-1091 - Test delivered on first try tracking event."""
@@ -211,7 +211,7 @@ class TestTrackPackage:
         assert len(tracking_result.events) == 8
         assert tracking_result.events[0].status == "accepted"
         assert tracking_result.events[4].status == "exception"
-        assert tracking_result.events[5].status == "attempted_delivery"
+        assert tracking_result.events[5].status == "exception"
         assert tracking_result.events[7].status == "delivered"
         assert tracking_result.events[-1].status == "delivered"
 
@@ -228,8 +228,6 @@ class TestTrackPackage:
         assert tracking_result.events[1].location.longitude is None
         assert type(tracking_result.events[2].location.latitude) is float
         assert type(tracking_result.events[2].location.longitude) is float
-        assert type(tracking_result.events[4].location.latitude) is float
-        assert type(tracking_result.events[4].location.longitude) is float
 
     def test_carrier_date_time_without_timezone(self) -> None:
         """DX-1098 - Test track package where carrierDateTime has no timezone."""

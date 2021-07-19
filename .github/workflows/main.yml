@@ -52,7 +52,7 @@ jobs:
         tox -e lint
 
 
-  tox-coveralls:
+  coveralls:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -61,25 +61,11 @@ jobs:
         with:
           python-version: 3.7
 
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-
       - name: Install python dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install tox pytest pytest-cov coverage responses
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-
-      - name: Tox testenv
-        run: |
-          tox
 
       - name: Pytest
         run: |

@@ -28,6 +28,8 @@ isort = "^5.8.0"
 responses = "^0.13.3"
 coveralls = "^3.1.0"
 pre-commit = "2.13.0"
+pytest-cache = "^1.0"
+pytest-watch = "^4.2.0"
 
 [tool.black]
 line-length = 100

@@ -76,18 +76,13 @@ on `osx / linux / bashonwindows`:
 curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
 ```
 
-- Once you have **Poetry** installed you need to install the projects dependencies with this command:
+- Once you have **Poetry** installed you need to install the projects dependencies with this command from the project root:
 
 ```bash
-poetry install
+bin/setup
 ```
-
-- After you have installed **Poetry**, you need to start the python environment managed by Poetry by
-  running `poetry shell` in your terminal.
-
-```bash
-poetry shell
- ```
+- This script will install all dependencies specified in `pyproject.toml` via `Poetry` and install the `pre-commit` hooks
+this project uses.
 
 ## Adding dependencies to the project
 If your changes require you to install a python package/module using `poetry add <some package>` or
@@ -100,21 +95,11 @@ poetry export -f requirements.txt --output requirements.txt --without-hashes --d
 ## Pre-Commit Hooks
 We are using [Pre-Commit](https://pre-commit.com/) to enforce formatting, lint rules, and code analysis so that
 this repo is always in good health.
- - If you choose not to globally install `pre-commit`, then you can skip installing via `pip` or `homebrew` directly.
-   You can simply run either `pip install -r requirements.txt` or `poetry install`
-To be able to push a PR to the repo after making changes locally, you will need to install `pre-commit` which
-is a tool that runs linting, formatting, and code analysis on your changes.
-```bash
-pip install pre-commit  # Install via pip
+- `Pre-Commit` is installed and initialized when you run `bin/setup` from the project root as outlined above.
 
-OR
-
-brew install pre-commit  # Install via homebrew
-```
-- After you have run either `pip install -r requirements.txt`, `poetry install`, or globally installed
-  [Pre-Commit](https://pre-commit.com/) using the above commands you need to run the following command
-  in the project directory locally. This allows the pre-commit hooks to run when you are looking to commit
-  and push code to this repository.
+- If you choose not to use `Poetry` and prefer `pip` you can simply run `pip install -r requirements.txt`
+To be able to commit & push a PR to the repo after making changes locally, you will need to install `pre-commit` which
+is a tool that runs tests, linting, formatting, and code analysis on your changes.
 ```bash
 pre-commit install
 ```

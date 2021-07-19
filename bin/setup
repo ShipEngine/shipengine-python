@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+poetry install
+pre-commit install
+poetry shell

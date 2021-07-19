@@ -199,7 +199,8 @@ def check_response_for_errors(status_code: int, response_body: Dict[str, Any], c
     # Check if status_code is 429 and raises an error if so.
     if "error" in response_body and status_code == 429:
         error = response_body["error"]
-        retry_after = error["data"]["retryAfter"]
+        error_data = error["data"]
+        retry_after = error_data["details"]["retryAfter"]
         if retry_after > config.timeout:
             raise ClientTimeoutError(
                 retry_after=config.timeout,

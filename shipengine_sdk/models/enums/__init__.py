@@ -9,10 +9,16 @@ from .error_type import ErrorType
 from .regex_patterns import RegexPatterns
 
 
+class Constants(Enum):
+    """Test API Key for use with Simengine."""
+
+    STUB_API_KEY = "TEST_vMiVbICUjBz4BZjq0TRBLC/9MrxY4+yjvb1G1RMxlJs"
+    CARRIER_ACCOUNT_ID_STUB = "car_41GrQHn5uouiPZc2TNE6PU29tZU9ud"
+
+
 class Endpoints(Enum):
     """API Endpoint URI's used throughout the ShipEngine SDK."""
 
-    TEST_RPC_URL = "https://shipengine-web-api.herokuapp.com/jsonrpc"
     SHIPENGINE_RPC_URL = "https://api.shipengine.com/jsonrpc"
 
 

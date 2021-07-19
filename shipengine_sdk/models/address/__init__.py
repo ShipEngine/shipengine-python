@@ -22,7 +22,7 @@ class Address:
     state_province: str
     postal_code: str
     country_code: str
-    is_residential: Optional[bool] = None
+    is_residential: Optional[bool] = False
     name: Optional[str] = ""
     phone: Optional[str] = ""
     company: Optional[str] = ""

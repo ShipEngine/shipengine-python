@@ -35,8 +35,8 @@ def rpc_request_loop(
                 and err.retry_after < config.timeout
             ):
                 time.sleep(err.retry_after)
+                retry += 1
                 continue
             else:
                 raise err
-        retry += 1
         return api_response

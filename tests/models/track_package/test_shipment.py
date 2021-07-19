@@ -5,6 +5,7 @@ import pytest
 
 from shipengine_sdk.errors import ShipEngineError
 from shipengine_sdk.models import Shipment
+from shipengine_sdk.models.enums import Constants
 from shipengine_sdk.util.iso_string import IsoString
 
 from ...util import stub_shipengine_config
@@ -17,7 +18,7 @@ def stub_valid_shipment_data() -> Dict[str, Any]:
     """
     return {
         "carrierCode": "fedex",
-        "carrierAccountId": "car_kfUjTZSEAQ8gHeT",
+        "carrierAccountId": Constants.CARRIER_ACCOUNT_ID_STUB.value,
         "shipmentId": "shp_yuh3GkfUjTZSEAQ",
         "estimatedDelivery": "2021-06-15T21:00:00.000Z",
     }

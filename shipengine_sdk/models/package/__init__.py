@@ -17,7 +17,7 @@ class Shipment:
     shipment_id: Optional[str] = None
     account_id: Optional[str] = None
     carrier_account: Optional[CarrierAccount] = None
-    carrier: Carrier
+    carrier: Optional[Carrier] = None
     estimated_delivery_date: Union[IsoString, str]
     actual_delivery_date: Union[IsoString, str]
 
@@ -77,7 +77,7 @@ class Shipment:
         return json.dumps(self, default=lambda o: o.__dict__, indent=2)
 
     def __repr__(self):
-        return f"Shipment({self.shipment_id}, {self.account_id}, {self.carrier_account}, {self.carrier}, {self.estimated_delivery_date}, {self.actual_delivery_date})"  # noqa
+        return f"Shipment({self.shipment_id}, {self.account_id})"
 
 
 class Package:
@@ -183,6 +183,9 @@ class TrackingEvent:
         self.description = event["description"] if "description" in event else None
         self.carrier_status_code = (
             event["carrierStatusCode"] if "carrierStatusCode" in event else None
+        )
+        self.carrier_detail_code = (
+            event["carrierDetailCode"] if "carrierDetailCode" in event else None
         )
         self.signer = event["signer"] if "signer" in event else None
         self.location = (

@@ -2,12 +2,16 @@
 from typing import Dict, Optional, Union
 
 from shipengine_sdk import ShipEngine, ShipEngineConfig
+from shipengine_sdk.errors import ShipEngineError
 from shipengine_sdk.models import (
     Address,
     AddressValidateResult,
-    Endpoints,
+    ErrorCode,
+    ErrorSource,
+    ErrorType,
     TrackingQuery,
 )
+from shipengine_sdk.models.enums import Constants
 
 
 def stub_config(
@@ -18,8 +22,7 @@ def stub_config(
     when instantiating the ShipEngine object.
     """
     return dict(
-        api_key="baz_sim",
-        base_uri=Endpoints.TEST_RPC_URL.value,
+        api_key=Constants.STUB_API_KEY.value,
         page_size=50,
         retries=retries,
         timeout=15,
@@ -240,6 +243,17 @@ def address_with_invalid_postal_code() -> Address:
     )
 
 
+def get_429_address() -> Address:
+    """Return an address that fetches a 429 fixture from the server."""
+    return Address(
+        street=["429 Rate Limit Error"],
+        city_locality="Boston",
+        state_province="MA",
+        postal_code="02215",
+        country_code="US",
+    )
+
+
 def get_server_side_error() -> Address:
     """Return an address that will cause the server to return a 500 server error."""
     return Address(
@@ -392,3 +406,16 @@ def canada_valid_normalize_assertions(
     assert normalized_address.postal_code == "M6K 3C3"
     assert normalized_address.country_code == original_address.country_code.upper()
     assert normalized_address.is_residential is expected_residential_indicator
+
+
+def assert_on_429_exception(err: ShipEngineError, error_class: object) -> None:
+    error = err.to_dict()
+    assert type(err) == error_class
+    assert error["request_id"] is not None
+    assert error["request_id"].startswith("req_")
+    assert error["source"] is ErrorSource.SHIPENGINE.value
+    assert error["error_type"] is ErrorType.SYSTEM.value
+    assert error["error_code"] is ErrorCode.RATE_LIMIT_EXCEEDED.value
+    assert error["message"] == "You have exceeded the rate limit."
+    assert error["url"] is not None
+    assert error["url"] == "https://www.shipengine.com/docs/rate-limits"

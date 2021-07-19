@@ -2,6 +2,7 @@
 from typing import Any, Dict
 
 from shipengine_sdk.models import TrackingEvent, TrackPackageResult
+from shipengine_sdk.models.enums import Constants
 
 from ...util import stub_shipengine_config
 
@@ -17,7 +18,7 @@ def stub_track_package_data() -> Dict[str, Any]:
         "result": {
             "shipment": {
                 "carrierCode": "fedex",
-                "carrierAccountId": "car_kfUjTZSEAQ8gHeT",
+                "carrierAccountId": Constants.CARRIER_ACCOUNT_ID_STUB.value,
                 "shipmentId": "shp_tJUaQJz3Twz57iL",
                 "estimatedDelivery": "2021-06-15T21:00:00.000Z",
             },
