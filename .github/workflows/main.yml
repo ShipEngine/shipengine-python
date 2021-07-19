@@ -12,7 +12,7 @@ on:
       - main
 
 jobs:
-  linting:
+  lint_and_pytest:
     runs-on: ubuntu-latest
     strategy:
       matrix:
