@@ -78,7 +78,7 @@ jobs:
           flag-name: Python Test Suite
 
   coveralls_finish:
-    needs: tox-coveralls
+    needs: coveralls
     runs-on: ubuntu-latest
     steps:
       - name: Coveralls Finished
