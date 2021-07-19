@@ -234,5 +234,5 @@ class TestEmittedEvents:
             assert type(response_recd_return) == ResponseReceivedEvent
             assert response_recd_return.retry == 2
             assert (
-                int(str(round((test_start_time - datetime.now()).total_seconds())).strip("-")) == 5
+                int(str(round((test_start_time - datetime.now()).total_seconds())).strip("-")) <= 6
             )
