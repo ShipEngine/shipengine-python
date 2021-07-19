@@ -173,7 +173,7 @@ def emit_event(emitted_event_type: str, event_data, dispatcher: Dispatcher):
             request_id=event_data.id,
             base_uri=event_data.base_uri,
             status_code=event_data.status_code,
-            headers=event_data.request_headers,
+            headers=event_data.response_headers,
             body=event_data.body,
             retry=event_data.retry,
             elapsed=event_data.elapsed,
