@@ -6,7 +6,6 @@ from shipengine_sdk.errors import ShipEngineError
 from shipengine_sdk.models import (
     Address,
     AddressValidateResult,
-    Endpoints,
     ErrorCode,
     ErrorSource,
     ErrorType,
@@ -23,8 +22,7 @@ def stub_config(
     when instantiating the ShipEngine object.
     """
     return dict(
-        api_key=Constants.API_KEY.value,
-        base_uri=Endpoints.TEST_RPC_URL.value,
+        api_key=Constants.STUB_API_KEY.value,
         page_size=50,
         retries=retries,
         timeout=15,

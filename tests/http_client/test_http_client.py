@@ -13,7 +13,6 @@ def validate_address(address):
     shipengine = ShipEngine(
         dict(
             api_key="baz",
-            base_uri=Endpoints.TEST_RPC_URL.value,
             page_size=50,
             retries=2,
             timeout=10,
@@ -47,7 +46,7 @@ class TestShipEngineClient:
     def test_500_server_response(self):
         responses.add(
             responses.POST,
-            Endpoints.TEST_RPC_URL.value,
+            Endpoints.SHIPENGINE_RPC_URL.value,
             json={
                 "jsonrpc": "2.0",
                 "id": "req_DezVNUvRkAP819f3JeqiuS",
@@ -74,7 +73,7 @@ class TestShipEngineClient:
     def test_404_server_response(self):
         responses.add(
             responses.POST,
-            Endpoints.TEST_RPC_URL.value,
+            Endpoints.SHIPENGINE_RPC_URL.value,
             json={
                 "jsonrpc": "2.0",
                 "id": "req_DezVNUvRkAP819f3JeqiuS",
