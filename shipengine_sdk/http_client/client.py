@@ -33,7 +33,19 @@ def base_url(config) -> str:
     return config.base_uri if os.getenv("CLIENT_BASE_URI") is None else os.getenv("CLIENT_BASE_URI")
 
 
-def generate_event_message(retry: int, method: str, base_uri: str) -> str:
+def generate_event_message(
+    retry: int,
+    method: str,
+    base_uri: str,
+    status_code: Optional[int] = None,
+    message_type: Optional[str] = None,
+) -> str:
+    if message_type == "received":
+        if retry > 0:
+            f"Retrying the ShipEngine {method} API at {base_uri}"
+        else:
+            return f"Received an HTTP {status_code} response from the ShipEngine {method} API"
+
     if retry == 0:
         return ShipEngineEvent.new_event_message(
             method=method, base_uri=base_uri, message_type="base_message"
@@ -44,11 +56,12 @@ def generate_event_message(retry: int, method: str, base_uri: str) -> str:
         )
 
 
-def request_headers(user_agent: str) -> Dict[str, Any]:
+def request_headers(user_agent: str, api_key: str) -> Dict[str, Any]:
     return {
         "User-Agent": user_agent,
         "Content-Type": "application/json",
         "Accept": "application/json",
+        "Api-Key": api_key,
     }
 
 
@@ -86,7 +99,7 @@ class ShipEngineClient:
         base_uri = base_url(config=config)
 
         request_body: Dict[str, Any] = wrap_request(method=method, params=params)
-        req_headers = request_headers(self._derive_user_agent())
+        req_headers = request_headers(user_agent=self._derive_user_agent(), api_key=config.api_key)
         req: Request = Request(
             method="POST",
             url=base_uri,
@@ -128,8 +141,15 @@ class ShipEngineClient:
         resp_body: Dict[str, Any] = resp.json()
         status_code: int = resp.status_code
 
+        response_received_message = generate_event_message(
+            retry=retry,
+            method=method,
+            base_uri=base_uri,
+            status_code=status_code,
+            message_type="received",
+        )
         response_event_data = EventOptions(
-            message=request_event_message,
+            message=response_received_message,
             id=request_body["id"],
             base_uri=base_uri,
             status_code=status_code,
@@ -175,8 +195,7 @@ class ShipEngineClient:
         :rtype: str
         """
         sdk_version: str = f"shipengine-python/{__version__}"
-        os_kernel: str = platform.platform(terse=True)
         python_version: str = platform.python_version()
         python_implementation: str = platform.python_implementation()
 
-        return f"{sdk_version} {os_kernel} {python_version} {python_implementation}"
+        return f"{sdk_version} {python_implementation}-v{python_version}"
