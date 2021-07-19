@@ -23,7 +23,6 @@ def rpc_request_loop(
 ) -> Dict[str, Any]:
     client: ShipEngineClient = ShipEngineClient(config=config)
     retry: int = 0
-    api_response = None
     while retry <= config.retries:
         try:
             api_response = client.send_rpc_request(
@@ -36,7 +35,8 @@ def rpc_request_loop(
                 and err.retry_after < config.timeout
             ):
                 time.sleep(err.retry_after)
+                retry += 1
+                continue
             else:
                 raise err
-        retry += 1
-    return api_response
+        return api_response
