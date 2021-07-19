@@ -14,9 +14,7 @@ def stub_config() -> dict:
     Return a test configuration dictionary to be used
     when instantiating the ShipEngine object.
     """
-    return dict(
-        api_key="baz", base_uri=Endpoints.TEST_RPC_URL.value, page_size=50, retries=2, timeout=15
-    )
+    return dict(api_key="baz_sim", page_size=50, retries=2, timeout=15)
 
 
 def valid_residential_address() -> Address:
@@ -59,7 +57,7 @@ def set_config_timeout(timeout: int) -> ShipEngineConfig:
     :raises: :class:`InvalidFieldValueError`: If invalid value is passed into `ShipEngineConfig`
     object at instantiation.
     """
-    return ShipEngineConfig(dict(api_key="baz", timeout=timeout))
+    return ShipEngineConfig(dict(api_key="baz_sim", timeout=timeout))
 
 
 def set_config_retries(retries: int) -> ShipEngineConfig:
@@ -73,7 +71,7 @@ def set_config_retries(retries: int) -> ShipEngineConfig:
     :raises: :class:`InvalidFieldValueError`: If invalid value is passed into `ShipEngineConfig`
     object at instantiation.
     """
-    return ShipEngineConfig(dict(api_key="baz", retries=retries))
+    return ShipEngineConfig(dict(api_key="baz_sim", retries=retries))
 
 
 def complete_valid_config() -> ShipEngineConfig:
@@ -83,8 +81,7 @@ def complete_valid_config() -> ShipEngineConfig:
     """
     return ShipEngineConfig(
         dict(
-            api_key="baz",
-            base_uri=Endpoints.TEST_RPC_URL.value,
+            api_key="baz_sim",
             page_size=50,
             retries=2,
             timeout=10,
@@ -99,8 +96,8 @@ class TestShipEngineConfig:
         valid values for each attribute.
         """
         valid_config: ShipEngineConfig = complete_valid_config()
-        assert valid_config.api_key == "baz"
-        assert valid_config.base_uri is Endpoints.TEST_RPC_URL.value
+        assert valid_config.api_key == "baz_sim"
+        assert valid_config.base_uri is Endpoints.SHIPENGINE_RPC_URL.value
         assert valid_config.page_size == 50
         assert valid_config.retries == 2
         assert valid_config.timeout == 10
@@ -127,7 +124,7 @@ class TestShipEngineConfig:
         """Test case where a valid value is passed in for the retries."""
         retries = 2
         valid_retries = set_config_retries(retries)
-        assert valid_retries.api_key == "baz"
+        assert valid_retries.api_key == "baz_sim"
         assert valid_retries.retries == retries
 
     def test_invalid_retries_provided(self):
@@ -195,7 +192,7 @@ class TestShipEngineConfig:
 
     def test_config_defaults(self) -> None:
         """Test default retries."""
-        config = ShipEngineConfig(dict(api_key="baz"))
+        config = ShipEngineConfig(dict(api_key="baz_sim"))
 
         assert config.retries == 1
         assert config.page_size == 50

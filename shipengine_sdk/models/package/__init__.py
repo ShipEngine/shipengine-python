@@ -17,7 +17,7 @@ class Shipment:
     shipment_id: Optional[str] = None
     account_id: Optional[str] = None
     carrier_account: Optional[CarrierAccount] = None
-    carrier: Carrier
+    carrier: Optional[Carrier] = None
     estimated_delivery_date: Union[IsoString, str]
     actual_delivery_date: Union[IsoString, str]
 
@@ -26,8 +26,8 @@ class Shipment:
     ) -> None:
         """This object represents a given Shipment."""
         self.config = config
-        self.shipment_id = shipment["shipmentID"] if "shipmentID" in shipment else None
-        self.account_id = shipment["carrierAccountID"] if "carrierAccountID" in shipment else None
+        self.shipment_id = shipment["shipmentId"] if "shipmentId" in shipment else None
+        self.account_id = shipment["carrierAccountId"] if "carrierAccountId" in shipment else None
 
         if self.account_id is not None:
             self.carrier_account = self._get_carrier_account(
@@ -59,7 +59,7 @@ class Shipment:
                 return target_carrier[0]
 
         raise ShipEngineError(
-            message=f"accountID [{account_id}] doesn't match any of the accounts connected to your ShipEngine Account."  # noqa
+            message=f"accountId [{account_id}] doesn't match any of the accounts connected to your ShipEngine Account."  # noqa
         )
 
     def to_dict(self) -> Dict[str, Any]:
@@ -77,7 +77,7 @@ class Shipment:
         return json.dumps(self, default=lambda o: o.__dict__, indent=2)
 
     def __repr__(self):
-        return f"Shipment({self.shipment_id}, {self.account_id}, {self.carrier_account}, {self.carrier}, {self.estimated_delivery_date}, {self.actual_delivery_date})"  # noqa
+        return f"Shipment({self.shipment_id}, {self.account_id})"
 
 
 class Package:
@@ -90,11 +90,11 @@ class Package:
     tracking_url: Optional[str]
 
     def __init__(self, package: Dict[str, Any]) -> None:
-        self.package_id = package["packageID"] if "packageID" in package else None
+        self.package_id = package["packageId"] if "packageId" in package else None
         self.weight = package["weight"] if "weight" in package else None
         self.dimensions = package["dimensions"] if "dimensions" in package else None
         self.tracking_number = package["trackingNumber"] if "trackingNumber" in package else None
-        self.tracking_url = package["trackingURL"] if "trackingURL" in package else None
+        self.tracking_url = package["trackingUrl"] if "trackingUrl" in package else None
 
     def to_dict(self) -> Dict[str, Any]:
         return (lambda o: o.__dict__)(self)
@@ -125,15 +125,31 @@ class Location:
 
     def __init__(self, location_data: Dict[str, Any]) -> None:
         self.city_locality = (
-            location_data["cityLocality"] if "cityLocality" in location_data else None
+            location_data["cityLocality"]
+            if "cityLocality" in location_data and location_data is not None
+            else None
         )
         self.state_province = (
-            location_data["stateProvince"] if "stateProvince" in location_data else None
+            location_data["stateProvince"]
+            if "stateProvince" in location_data and location_data is not None
+            else None
         )
-        self.postal_code = location_data["postalCode"] if "postalCode" in location_data else None
-        self.country_code = location_data["countryCode"] if "countryCode" in location_data else None
+        self.postal_code = (
+            location_data["postalCode"]
+            if "postalCode" in location_data and location_data is not None
+            else None
+        )
+        self.country_code = (
+            location_data["countryCode"]
+            if "countryCode" in location_data and location_data is not None
+            else None
+        )
 
-        if "coordinates" in location_data:
+        if (
+            "coordinates" in location_data
+            and location_data is not None
+            and location_data["coordinates"] is not None
+        ):
             self.latitude = location_data["coordinates"]["latitude"]
             self.longitude = location_data["coordinates"]["longitude"]
 
@@ -168,8 +184,15 @@ class TrackingEvent:
         self.carrier_status_code = (
             event["carrierStatusCode"] if "carrierStatusCode" in event else None
         )
+        self.carrier_detail_code = (
+            event["carrierDetailCode"] if "carrierDetailCode" in event else None
+        )
         self.signer = event["signer"] if "signer" in event else None
-        self.location = Location(event["location"]) if "location" in event else None
+        self.location = (
+            Location(event["location"])
+            if "location" in event and event["location"] is not None
+            else None
+        )
 
     def to_dict(self):
         return (lambda o: o.__dict__)(self)

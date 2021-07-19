@@ -2,12 +2,16 @@
 from typing import Dict, Optional, Union
 
 from shipengine_sdk import ShipEngine, ShipEngineConfig
+from shipengine_sdk.errors import ShipEngineError
 from shipengine_sdk.models import (
     Address,
     AddressValidateResult,
-    Endpoints,
+    ErrorCode,
+    ErrorSource,
+    ErrorType,
     TrackingQuery,
 )
+from shipengine_sdk.models.enums import Constants
 
 
 def stub_config(
@@ -18,8 +22,7 @@ def stub_config(
     when instantiating the ShipEngine object.
     """
     return dict(
-        api_key="baz",
-        base_uri=Endpoints.TEST_RPC_URL.value,
+        api_key=Constants.STUB_API_KEY.value,
         page_size=50,
         retries=retries,
         timeout=15,
@@ -88,7 +91,7 @@ def address_with_warnings() -> Address:
     return Address(
         street=["170 Warning Blvd", "Apartment 32-B"],
         city_locality="Toronto",
-        state_province="ON",
+        state_province="On",
         postal_code="M6K 3C3",
         country_code="CA",
     )
@@ -121,7 +124,7 @@ def valid_canadian_address() -> Address:
     return Address(
         street=["170 Princes Blvd", "Ste 200"],
         city_locality="Toronto",
-        state_province="ON",
+        state_province="On",
         postal_code="M6K 3C3",
         country_code="CA",
     )
@@ -179,7 +182,7 @@ def unknown_address() -> Address:
     return Address(
         street=["4 Unknown St"],
         city_locality="Toronto",
-        state_province="ON",
+        state_province="On",
         postal_code="M6K 3C3",
         country_code="CA",
     )
@@ -236,6 +239,17 @@ def address_with_invalid_postal_code() -> Address:
         city_locality="Boston",
         state_province="MA",
         postal_code="2$1*5",
+        country_code="US",
+    )
+
+
+def get_429_address() -> Address:
+    """Return an address that fetches a 429 fixture from the server."""
+    return Address(
+        street=["429 Rate Limit Error"],
+        city_locality="Boston",
+        state_province="MA",
+        postal_code="02215",
         country_code="US",
     )
 
@@ -355,7 +369,7 @@ def canada_valid_avs_assertions(
     assert address is not None
     assert address.city_locality == original_address.city_locality
     assert address.state_province == original_address.state_province.title()
-    assert address.postal_code == "M6 K 3 C3"
+    assert address.postal_code == "M6K 3C3"
     assert address.country_code == original_address.country_code.upper()
     assert address.is_residential is expected_residential_indicator
 
@@ -389,6 +403,19 @@ def canada_valid_normalize_assertions(
     assert type(normalized_address) is Address
     assert normalized_address.city_locality == original_address.city_locality
     assert normalized_address.state_province == original_address.state_province.title()
-    assert normalized_address.postal_code == "M6 K 3 C3"
+    assert normalized_address.postal_code == "M6K 3C3"
     assert normalized_address.country_code == original_address.country_code.upper()
     assert normalized_address.is_residential is expected_residential_indicator
+
+
+def assert_on_429_exception(err: ShipEngineError, error_class: object) -> None:
+    error = err.to_dict()
+    assert type(err) == error_class
+    assert error["request_id"] is not None
+    assert error["request_id"].startswith("req_")
+    assert error["source"] is ErrorSource.SHIPENGINE.value
+    assert error["error_type"] is ErrorType.SYSTEM.value
+    assert error["error_code"] is ErrorCode.RATE_LIMIT_EXCEEDED.value
+    assert error["message"] == "You have exceeded the rate limit."
+    assert error["url"] is not None
+    assert error["url"] == "https://www.shipengine.com/docs/rate-limits"

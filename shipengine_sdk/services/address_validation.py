@@ -20,14 +20,14 @@ def validate(address: Address, config: ShipEngineConfig) -> AddressValidateResul
     api_response: Dict[str, Any] = rpc_request(
         method=RPCMethods.ADDRESS_VALIDATE.value,
         config=config,
-        params={"address": address.to_dict()},  # type: ignore
+        params={"address": address.to_dict()},
     )
     result: Dict[str, Any] = api_response["result"]
     return AddressValidateResult(
         is_valid=result["isValid"],
         request_id=api_response["id"],
         normalized_address=Address.from_dict(result["normalizedAddress"])
-        if "normalizedAddress" in result
+        if "normalizedAddress" in result and result["normalizedAddress"] is not None
         else None,
         messages=result["messages"],
     )

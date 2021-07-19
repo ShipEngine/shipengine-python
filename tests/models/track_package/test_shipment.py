@@ -5,6 +5,7 @@ import pytest
 
 from shipengine_sdk.errors import ShipEngineError
 from shipengine_sdk.models import Shipment
+from shipengine_sdk.models.enums import Constants
 from shipengine_sdk.util.iso_string import IsoString
 
 from ...util import stub_shipengine_config
@@ -17,8 +18,8 @@ def stub_valid_shipment_data() -> Dict[str, Any]:
     """
     return {
         "carrierCode": "fedex",
-        "carrierAccountID": "car_kfUjTZSEAQ8gHeT",
-        "shipmentID": "shp_yuh3GkfUjTZSEAQ",
+        "carrierAccountId": Constants.CARRIER_ACCOUNT_ID_STUB.value,
+        "shipmentId": "shp_yuh3GkfUjTZSEAQ",
         "estimatedDelivery": "2021-06-15T21:00:00.000Z",
     }
 
@@ -26,18 +27,18 @@ def stub_valid_shipment_data() -> Dict[str, Any]:
 def stub_invalid_shipment_data() -> Dict[str, Any]:
     """
     Return a dictionary that mimics the Shipment data that would
-    be returned by ShipEngine API, where the `carrierAccountID` is invalid.
+    be returned by ShipEngine API, where the `carrierAccountId` is invalid.
     """
     return {
         "carrierCode": "fedex",
-        "carrierAccountID": "car_kfUoSHIPENGINEQ8gHeT",
-        "shipmentID": "shp_yuh3GkfUjTZSEAQ",
+        "carrierAccountId": "car_kfUoSHIPENGINEQ8gHeT",
+        "shipmentId": "shp_yuh3GkfUjTZSEAQ",
         "estimatedDelivery": "2021-06-15T21:00:00.000Z",
     }
 
 
 def stub_invalid_account_id_shipment_instantiation() -> Shipment:
-    """Return a test Shipment object that has an invalid `carrierAccountID`.."""
+    """Return a test Shipment object that has an invalid `carrierAccountId`.."""
     return Shipment(
         shipment=stub_invalid_shipment_data(),
         actual_delivery_date=IsoString("2021-06-10T21:00:00.000"),

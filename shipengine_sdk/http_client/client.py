@@ -2,6 +2,7 @@
 import json
 import os
 import platform
+from datetime import datetime
 from typing import Any, Dict, Optional
 
 import requests
@@ -13,10 +14,55 @@ from requests.packages.urllib3.util.retry import Retry
 from shipengine_sdk import __version__
 
 from ..errors import ShipEngineError
+from ..events import (
+    Dispatcher,
+    EventOptions,
+    RequestSentEvent,
+    ResponseReceivedEvent,
+    ShipEngineEvent,
+    emit_event,
+)
 from ..jsonrpc.process_request import handle_response, wrap_request
 from ..models import ErrorCode, ErrorSource, ErrorType
+from ..models.enums import Events
 from ..shipengine_config import ShipEngineConfig
-from ..util.sdk_assertions import is_response_404, is_response_429, is_response_500
+from ..util.sdk_assertions import check_response_for_errors
+
+
+def base_url(config) -> str:
+    return config.base_uri if os.getenv("CLIENT_BASE_URI") is None else os.getenv("CLIENT_BASE_URI")
+
+
+def generate_event_message(
+    retry: int,
+    method: str,
+    base_uri: str,
+    status_code: Optional[int] = None,
+    message_type: Optional[str] = None,
+) -> str:
+    if message_type == "received":
+        if retry > 0:
+            f"Retrying the ShipEngine {method} API at {base_uri}"
+        else:
+            return f"Received an HTTP {status_code} response from the ShipEngine {method} API"
+
+    if retry == 0:
+        return ShipEngineEvent.new_event_message(
+            method=method, base_uri=base_uri, message_type="base_message"
+        )
+    else:
+        return ShipEngineEvent.new_event_message(
+            method=method, base_uri=base_uri, message_type="retry_message"
+        )
+
+
+def request_headers(user_agent: str, api_key: str) -> Dict[str, Any]:
+    return {
+        "User-Agent": user_agent,
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Api-Key": api_key,
+    }
 
 
 class ShipEngineAuth(AuthBase):
@@ -30,10 +76,16 @@ class ShipEngineAuth(AuthBase):
 
 
 class ShipEngineClient:
-    _BASE_URI: str = ""
+    _DISPATCHER: Dispatcher = Dispatcher()
 
-    def __init__(self) -> None:
+    def __init__(self, config: ShipEngineConfig) -> None:
         """A `JSON-RPC 2.0` HTTP client used to send all HTTP requests from the SDK."""
+        self._DISPATCHER.register(
+            event=Events.ON_REQUEST_SENT.value, subscriber=config.event_listener
+        )
+        self._DISPATCHER.register(
+            event=Events.ON_RESPONSE_RECEIVED.value, subscriber=config.event_listener
+        )
         self.session = requests.session()
 
     def send_rpc_request(
@@ -44,28 +96,37 @@ class ShipEngineClient:
          * is successful, the result is returned. Otherwise, an error is thrown.
         """
         client: Session = self._request_retry_session(retries=config.retries)
-        base_uri: Optional[str] = (
-            config.base_uri
-            if os.getenv("CLIENT_BASE_URI") is None
-            else os.getenv("CLIENT_BASE_URI")
-        )
-
-        request_headers: Dict[str, Any] = {
-            "User-Agent": self._derive_user_agent(),
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-        }
+        base_uri = base_url(config=config)
 
         request_body: Dict[str, Any] = wrap_request(method=method, params=params)
-
+        req_headers = request_headers(user_agent=self._derive_user_agent(), api_key=config.api_key)
         req: Request = Request(
             method="POST",
             url=base_uri,
             data=json.dumps(request_body),
-            headers=request_headers,
+            headers=req_headers,
             auth=ShipEngineAuth(config.api_key),
         )
         prepared_req: PreparedRequest = req.prepare()
+
+        request_event_message = generate_event_message(
+            retry=retry, method=method, base_uri=base_uri
+        )
+
+        request_event_data = EventOptions(
+            message=request_event_message,
+            id=request_body["id"],
+            base_uri=base_uri,
+            request_headers=req_headers,
+            body=request_body,
+            retry=retry,
+            timeout=config.timeout,
+        )
+        request_sent_event = emit_event(
+            emitted_event_type=RequestSentEvent.REQUEST_SENT,
+            event_data=request_event_data,
+            dispatcher=self._DISPATCHER,
+        )
 
         try:
             resp: Response = client.send(request=prepared_req, timeout=config.timeout)
@@ -80,10 +141,32 @@ class ShipEngineClient:
         resp_body: Dict[str, Any] = resp.json()
         status_code: int = resp.status_code
 
-        is_response_404(status_code=status_code, response_body=resp_body, config=config)
-        is_response_429(status_code=status_code, response_body=resp_body, config=config)
-        is_response_500(status_code=status_code, response_body=resp_body)
+        response_received_message = generate_event_message(
+            retry=retry,
+            method=method,
+            base_uri=base_uri,
+            status_code=status_code,
+            message_type="received",
+        )
+        response_event_data = EventOptions(
+            message=response_received_message,
+            id=request_body["id"],
+            base_uri=base_uri,
+            status_code=status_code,
+            response_headers=resp.headers,
+            body=request_body,
+            retry=retry,
+            elapsed=(request_sent_event.timestamp - datetime.now()).total_seconds(),
+        )
 
+        # Emit `ResponseReceivedEvent` to registered Subscribers.
+        emit_event(
+            emitted_event_type=ResponseReceivedEvent.RESPONSE_RECEIVED,
+            event_data=response_event_data,
+            dispatcher=self._DISPATCHER,
+        )
+
+        check_response_for_errors(status_code=status_code, response_body=resp_body, config=config)
         return handle_response(resp.json())
 
     def _request_retry_session(
@@ -112,8 +195,7 @@ class ShipEngineClient:
         :rtype: str
         """
         sdk_version: str = f"shipengine-python/{__version__}"
-        os_kernel: str = platform.platform(terse=True)
         python_version: str = platform.python_version()
         python_implementation: str = platform.python_implementation()
 
-        return f"{sdk_version} {os_kernel} {python_version} {python_implementation}"
+        return f"{sdk_version} {python_implementation}-v{python_version}"

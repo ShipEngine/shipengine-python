@@ -1,6 +1,7 @@
 """Functions that help with process requests and handle responses."""
 from typing import Any, Dict, Optional
-from uuid import uuid4
+
+from fuuid import b58_fuuid
 
 from ..errors import (
     AccountStatusError,
@@ -24,11 +25,9 @@ def wrap_request(method: str, params: Optional[Dict[str, Any]]) -> Dict[str, Any
     :type params: Optional[Dict[str, Any]]
     """
     if params is None:
-        return dict(id=f"req_{str(uuid4()).replace('-', '')}", jsonrpc="2.0", method=method)
+        return dict(id=f"req_{b58_fuuid()}", jsonrpc="2.0", method=method)
     else:
-        return dict(
-            id=f"req_{str(uuid4()).replace('-', '')}", jsonrpc="2.0", method=method, params=params
-        )
+        return dict(id=f"req_{b58_fuuid()}", jsonrpc="2.0", method=method, params=params)
 
 
 def handle_response(response_body: Dict[str, Any]) -> Dict[str, Any]:

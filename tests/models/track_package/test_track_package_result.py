@@ -2,6 +2,7 @@
 from typing import Any, Dict
 
 from shipengine_sdk.models import TrackingEvent, TrackPackageResult
+from shipengine_sdk.models.enums import Constants
 
 from ...util import stub_shipengine_config
 
@@ -17,14 +18,14 @@ def stub_track_package_data() -> Dict[str, Any]:
         "result": {
             "shipment": {
                 "carrierCode": "fedex",
-                "carrierAccountID": "car_kfUjTZSEAQ8gHeT",
-                "shipmentID": "shp_tJUaQJz3Twz57iL",
+                "carrierAccountId": Constants.CARRIER_ACCOUNT_ID_STUB.value,
+                "shipmentId": "shp_tJUaQJz3Twz57iL",
                 "estimatedDelivery": "2021-06-15T21:00:00.000Z",
             },
             "package": {
-                "packageID": "pkg_1FedexDeLiveredException",
+                "packageId": "pkg_1FedexDeLiveredException",
                 "trackingNumber": "2A4g3tJUaQJz3Twz57iLWBciD7wZWH",
-                "trackingURL": "https://www.fedex.com/track/2A4g3tJUaQJz3Twz57iLWBciD7wZWH",
+                "trackingUrl": "https://www.fedex.com/track/2A4g3tJUaQJz3Twz57iLWBciD7wZWH",
                 "weight": {"value": 76, "unit": "kilogram"},
                 "dimensions": {"length": 36, "width": 36, "height": 23, "unit": "inch"},
             },
