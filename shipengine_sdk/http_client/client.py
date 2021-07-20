@@ -1,4 +1,4 @@
-"""A Python library for ShipEngine API."""
+"""A synchronous HTTP Client for the ShipEngine SDK."""
 import json
 import os
 import platform
