@@ -24,21 +24,6 @@ pip install shipengine
 
 > The following assumes that you have already set the `SHIPENGINE_API_KEY` environment variable with your API Key using `os.environ["SHIPENGINE_API_KEY"] = "<YOUR_API_KEY_HERE>"`.
 
-Methods
--------
-- [validate_address](./docs/address_validation_example.md "Validate Address method documentation") - Indicates whether the provided address is valid. If the
-  address is valid, the method returns a normalized version of the address based on the standards of the country in
-  which the address resides.
-- [normalize_address](./docs/normalize_address_example.md "Normalize Address method documentation") - Returns a normalized, or standardized, version of the
-  address. If the address cannot be normalized, an error is returned.
-- [track_package](./docs/track_package_example.md "Track Package method documentation") - Track a package by `packageId` or by `carrierCode` and `trackingNumber`. This method returns
-the all tracking events for a given shipment.
-
-Class Objects
--------------
-- [ShipEngine]() - A configurable entry point to the ShipEngine API SDK, this class provides convenience methods
-  for various ShipEngine API Services.
-
 Instantiate ShipEngine Class
 ----------------------------
 ```python
@@ -63,8 +48,26 @@ shipengine = ShipEngine(
 )
 ```
 
+Methods
+-------
+- [validate_address](./docs/address_validation_example.md "Validate Address method documentation") - Indicates whether the provided address is valid. If the
+  address is valid, the method returns a normalized version of the address based on the standards of the country in
+  which the address resides.
+- [normalize_address](./docs/normalize_address_example.md "Normalize Address method documentation") - Returns a normalized, or standardized, version of the
+  address. If the address cannot be normalized, an error is returned.
+- [track_package](./docs/track_package_example.md "Track Package method documentation") - Track a package by `packageId` or by `carrierCode` and `trackingNumber`. This method returns
+the all tracking events for a given shipment.
+
+Class Objects
+-------------
+- [ShipEngine]() - A configurable entry point to the ShipEngine API SDK, this class provides convenience methods
+  for various ShipEngine API Services.
+
+Contributing
+============
+
 Local Development
-=================
+-----------------
 > You will need to install `Python3.7` if you do not have it locally, before working on this project.
 
 This project uses [Poetry]() to manage project dependencies, build steps, and publishing to [PYPI]().
