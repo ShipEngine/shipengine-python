@@ -2,6 +2,8 @@
 import re
 from typing import Any, Dict, List
 
+from shipengine_sdk.enums import Country, ErrorCode, ErrorSource, ErrorType
+
 from ..errors import (
     ClientSystemError,
     ClientTimeoutError,
@@ -10,7 +12,6 @@ from ..errors import (
     ShipEngineError,
     ValidationError,
 )
-from ..models.enums import Country, ErrorCode, ErrorSource, ErrorType
 
 validation_message = "Invalid address. Either the postal code or the city/locality and state/province must be specified."  # noqa
 

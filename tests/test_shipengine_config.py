@@ -2,9 +2,9 @@
 import pytest
 
 from shipengine_sdk import ShipEngine, ShipEngineConfig
+from shipengine_sdk.enums import Endpoints
 from shipengine_sdk.errors import InvalidFieldValueError, ValidationError
 from shipengine_sdk.models.address import Address
-from shipengine_sdk.models.enums import Endpoints
 from shipengine_sdk.util import api_key_validation_error_assertions
 from shipengine_sdk.util.sdk_assertions import timeout_validation_error_assertions
 

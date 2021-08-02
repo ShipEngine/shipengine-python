@@ -2,7 +2,12 @@
 import json
 from typing import Optional
 
-from ..models.enums import ErrorCode, ErrorSource, ErrorType, does_member_value_exist
+from shipengine_sdk.enums import (
+    ErrorCode,
+    ErrorSource,
+    ErrorType,
+    does_member_value_exist,
+)
 
 
 class ShipEngineError(Exception):

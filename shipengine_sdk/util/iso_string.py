@@ -2,7 +2,7 @@
 import re
 from datetime import datetime
 
-from ..models.enums import RegexPatterns
+from shipengine_sdk.enums import RegexPatterns
 
 
 class IsoString:

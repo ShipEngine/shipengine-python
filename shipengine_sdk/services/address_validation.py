@@ -1,9 +1,10 @@
 """Validate a single address or multiple addresses."""
 from typing import Any, Dict
 
+from shipengine_sdk.enums import RPCMethods
+
 from ..jsonrpc import rpc_request
 from ..models.address import Address, AddressValidateResult
-from ..models.enums import RPCMethods
 from ..shipengine_config import ShipEngineConfig
 from ..util import does_normalized_address_have_errors
 

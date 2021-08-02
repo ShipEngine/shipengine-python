@@ -2,7 +2,7 @@
 import json
 import os
 import platform
-from datetime import datetime
+import time
 from typing import Any, Dict, Optional
 
 import requests
@@ -13,47 +13,14 @@ from requests.packages.urllib3.util.retry import Retry
 
 from shipengine_sdk import __version__
 
-from ..errors import ShipEngineError
-from ..events import (
-    Dispatcher,
-    EventOptions,
-    RequestSentEvent,
-    ResponseReceivedEvent,
-    ShipEngineEvent,
-    emit_event,
-)
-from ..jsonrpc.process_request import handle_response, wrap_request
+from ..enums import HTTPVerbs
+from ..errors import RateLimitExceededError, ShipEngineError
 from ..models import ErrorCode, ErrorSource, ErrorType
-from ..models.enums import Events
 from ..shipengine_config import ShipEngineConfig
-from ..util.sdk_assertions import check_response_for_errors
 
 
 def base_url(config) -> str:
     return config.base_uri if os.getenv("CLIENT_BASE_URI") is None else os.getenv("CLIENT_BASE_URI")
-
-
-def generate_event_message(
-    retry: int,
-    method: str,
-    base_uri: str,
-    status_code: Optional[int] = None,
-    message_type: Optional[str] = None,
-) -> str:
-    if message_type == "received":
-        if retry > 0:
-            f"Retrying the ShipEngine {method} API at {base_uri}"
-        else:
-            return f"Received an HTTP {status_code} response from the ShipEngine {method} API"
-
-    if retry == 0:
-        return ShipEngineEvent.new_event_message(
-            method=method, base_uri=base_uri, message_type="base_message"
-        )
-    else:
-        return ShipEngineEvent.new_event_message(
-            method=method, base_uri=base_uri, message_type="retry_message"
-        )
 
 
 def request_headers(user_agent: str, api_key: str) -> Dict[str, Any]:
@@ -76,20 +43,64 @@ class ShipEngineAuth(AuthBase):
 
 
 class ShipEngineClient:
-    _DISPATCHER: Dispatcher = Dispatcher()
-
-    def __init__(self, config: ShipEngineConfig) -> None:
+    def __init__(self) -> None:
         """A `JSON-RPC 2.0` HTTP client used to send all HTTP requests from the SDK."""
-        self._DISPATCHER.register(
-            event=Events.ON_REQUEST_SENT.value, subscriber=config.event_listener
-        )
-        self._DISPATCHER.register(
-            event=Events.ON_RESPONSE_RECEIVED.value, subscriber=config.event_listener
-        )
         self.session = requests.session()
 
-    def send_rpc_request(
-        self, method: str, params: Optional[Dict[str, Any]], retry: int, config: ShipEngineConfig
+    def get(self, endpoint: str, config: ShipEngineConfig):
+        """Send an HTTP GET request."""
+        return self._request_loop(
+            http_method=HTTPVerbs.GET.value, endpoint=endpoint, params=None, config=config
+        )
+
+    def post(
+        self, endpoint: str, config: ShipEngineConfig, params: Optional[Dict[str, Any]] = None
+    ):
+        """Send an HTTP POST request."""
+        return self._request_loop(
+            http_method=HTTPVerbs.POST.value, endpoint=endpoint, params=params, config=config
+        )
+
+    def delete(self, endpoint: str, config: ShipEngineConfig):
+        """Send an HTTP DELETE request."""
+        return self._request_loop(
+            http_method=HTTPVerbs.DELETE.value, endpoint=endpoint, params=None, config=config
+        )
+
+    def put(self, endpoint: str, config: ShipEngineConfig, params: Optional[Dict[str, Any]] = None):
+        """Send an HTTP PUT request."""
+        return self._request_loop(
+            http_method=HTTPVerbs.PUT.value, endpoint=endpoint, params=params, config=config
+        )
+
+    def _request_loop(
+        self,
+        http_method: str,
+        endpoint: str,
+        params: Optional[Dict[str, Any]],
+        config: ShipEngineConfig,
+    ) -> Dict[str, Any]:
+        retry: int = 0
+        while retry <= config.retries:
+            try:
+                api_response = self._send_request(
+                    http_method=http_method, body=params, retry=retry, config=config
+                )
+            except Exception as err:
+                if (
+                    retry < config.retries
+                    and type(err) is RateLimitExceededError
+                    and err.retry_after < config.timeout
+                ):
+                    time.sleep(err.retry_after)
+                    retry += 1
+                    continue
+                else:
+                    raise err
+            return api_response
+
+    def _send_request(
+        self, http_method: str, body: Optional[Dict[str, Any]], retry: int, config: ShipEngineConfig
     ) -> Dict[str, Any]:
         """
         Send a `JSON-RPC 2.0` request via HTTP Messages to ShipEngine API. If the response
@@ -98,76 +109,31 @@ class ShipEngineClient:
         client: Session = self._request_retry_session(retries=config.retries)
         base_uri = base_url(config=config)
 
-        request_body: Dict[str, Any] = wrap_request(method=method, params=params)
         req_headers = request_headers(user_agent=self._derive_user_agent(), api_key=config.api_key)
         req: Request = Request(
-            method="POST",
+            method=http_method,
             url=base_uri,
-            data=json.dumps(request_body),
+            data=json.dumps(body),
             headers=req_headers,
             auth=ShipEngineAuth(config.api_key),
         )
         prepared_req: PreparedRequest = req.prepare()
 
-        request_event_message = generate_event_message(
-            retry=retry, method=method, base_uri=base_uri
-        )
-
-        request_event_data = EventOptions(
-            message=request_event_message,
-            id=request_body["id"],
-            base_uri=base_uri,
-            request_headers=req_headers,
-            body=request_body,
-            retry=retry,
-            timeout=config.timeout,
-        )
-        request_sent_event = emit_event(
-            emitted_event_type=RequestSentEvent.REQUEST_SENT,
-            event_data=request_event_data,
-            dispatcher=self._DISPATCHER,
-        )
-
         try:
             resp: Response = client.send(request=prepared_req, timeout=config.timeout)
         except RequestException as err:
             raise ShipEngineError(
-                message=f"An unknown error occurred while calling the ShipEngine {method} API:\n {err.response}",
+                message=f"An unknown error occurred while calling the ShipEngine {http_method} API:\n {err.response}",
                 source=ErrorSource.SHIPENGINE.value,
                 error_type=ErrorType.SYSTEM.value,
                 error_code=ErrorCode.UNSPECIFIED.value,
             )
 
         resp_body: Dict[str, Any] = resp.json()
-        status_code: int = resp.status_code
+        # status_code: int = resp.status_code
 
-        response_received_message = generate_event_message(
-            retry=retry,
-            method=method,
-            base_uri=base_uri,
-            status_code=status_code,
-            message_type="received",
-        )
-        response_event_data = EventOptions(
-            message=response_received_message,
-            id=request_body["id"],
-            base_uri=base_uri,
-            status_code=status_code,
-            response_headers=resp.headers,
-            body=request_body,
-            retry=retry,
-            elapsed=(request_sent_event.timestamp - datetime.now()).total_seconds(),
-        )
-
-        # Emit `ResponseReceivedEvent` to registered Subscribers.
-        emit_event(
-            emitted_event_type=ResponseReceivedEvent.RESPONSE_RECEIVED,
-            event_data=response_event_data,
-            dispatcher=self._DISPATCHER,
-        )
-
-        check_response_for_errors(status_code=status_code, response_body=resp_body, config=config)
-        return handle_response(resp.json())
+        # check_response_for_errors(status_code=status_code, response_body=resp_body, config=config)
+        return resp_body
 
     def _request_retry_session(
         self, retries: int = 1, backoff_factor=1, status_force_list=(429, 500, 502, 503, 504)
@@ -195,7 +161,9 @@ class ShipEngineClient:
         :rtype: str
         """
         sdk_version: str = f"shipengine-python/{__version__}"
+        platform_os = platform.system()
+        os_version = platform.release()
         python_version: str = platform.python_version()
         python_implementation: str = platform.python_implementation()
 
-        return f"{sdk_version} {python_implementation}-v{python_version}"
+        return f"shipengine-python/{sdk_version} {platform_os}/{os_version} {python_implementation}/{python_version}"
