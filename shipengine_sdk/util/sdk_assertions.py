@@ -176,55 +176,50 @@ def timeout_validation_error_assertions(error) -> None:
 
 
 def check_response_for_errors(status_code: int, response_body: Dict[str, Any], config) -> None:
-    """Checks response and status_code for 404, 429, and 500 error cases and raises an approved exception."""
+    """Checks response and status_code for 400, 404, 429, and 500 error cases and raises an approved exception."""
 
-    # Check if status_code is 404 and raises an error if so.
-    if "error" in response_body and status_code == 404:
-        error = response_body["error"]
-        error_data = error["data"]
-        raise ClientSystemError(
-            message=error["message"],
-            request_id=response_body["id"],
-            source=error_data["source"],
-            error_type=error_data["type"],
-            error_code=error_data["code"],
-        )
-    elif status_code == 404:
+    error = response_body["errors"][0]
+
+    if status_code == 400:
         raise ShipEngineError(
-            message=f"Resource not found, please check the base_uri you have set and try again. [{config.base_uri}] is currently set.",  # noqa
+            message=error["message"],
             source=ErrorSource.SHIPENGINE.value,
-            error_type=ErrorType.SYSTEM.value,
-            error_code=ErrorCode.NOT_FOUND.value,
+            error_type=error["error_type"],
+            error_code=error["error_code"],
+        )
+
+    if status_code == 404:
+        raise ShipEngineError(
+            message=error["message"],
+            source=ErrorSource.SHIPENGINE.value,
+            error_type=error["error_type"],
+            error_code=error["error_code"],
         )
 
     # Check if status_code is 429 and raises an error if so.
-    if "error" in response_body and status_code == 429:
-        error = response_body["error"]
-        error_data = error["data"]
-        retry_after = error_data["details"]["retryAfter"]
+    if "errors" in response_body and status_code == 429:
+        retry_after = error["details"]["retryAfter"]
         if retry_after > config.timeout:
             raise ClientTimeoutError(
                 retry_after=config.timeout,
                 source=ErrorSource.SHIPENGINE.value,
-                request_id=response_body["id"],
+                request_id=response_body["request_id"],
             )
         else:
             raise RateLimitExceededError(
                 retry_after=retry_after,
                 source=ErrorSource.SHIPENGINE.value,
-                request_id=response_body["id"],
+                request_id=response_body["request_id"],
             )
 
     # Check if the status code is 500 and raises an error if so.
     if status_code == 500:
-        error = response_body["error"]
-        error_data = error["data"]
         raise ClientSystemError(
             message=error["message"],
-            request_id=response_body["id"],
-            source=error_data["source"],
-            error_type=error_data["type"],
-            error_code=error_data["code"],
+            request_id=response_body["request_id"],
+            source=error["error_source"],
+            error_type=error["error_type"],
+            error_code=error["error_code"],
         )
 
 

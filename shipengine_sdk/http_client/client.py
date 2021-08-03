@@ -16,6 +16,7 @@ from shipengine_sdk import __version__
 from ..enums import ErrorCode, ErrorSource, ErrorType, HTTPVerbs
 from ..errors import RateLimitExceededError, ShipEngineError
 from ..shipengine_config import ShipEngineConfig
+from ..util import check_response_for_errors
 
 
 def base_url(config) -> str:
@@ -138,9 +139,9 @@ class ShipEngineClient:
             )
 
         resp_body: Dict[str, Any] = resp.json()
-        # status_code: int = resp.status_code
+        status_code: int = resp.status_code
 
-        # check_response_for_errors(status_code=status_code, response_body=resp_body, config=config)
+        check_response_for_errors(status_code=status_code, response_body=resp_body, config=config)
         return resp_body
 
     def _request_retry_session(
