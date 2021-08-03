@@ -2,13 +2,12 @@
 import json
 from typing import Any, Dict, Optional
 
-from .events import ShipEngineEventListener
-from .models import Endpoints
+from .enums import BaseURL
 from .util import is_api_key_valid, is_retries_valid, is_timeout_valid
 
 
 class ShipEngineConfig:
-    DEFAULT_BASE_URI: str = Endpoints.SHIPENGINE_RPC_URL.value
+    DEFAULT_BASE_URI: str = BaseURL.SHIPENGINE_RPC_URL.value
     """A ShipEngine API Key, sandbox API Keys start with `TEST_`."""
 
     DEFAULT_PAGE_SIZE: int = 50
@@ -50,11 +49,6 @@ class ShipEngineConfig:
         else:
             self.retries: int = self.DEFAULT_RETRIES
 
-        if "event_listener" in config:
-            self.event_listener = config["event_listener"]
-        else:
-            self.event_listener = ShipEngineEventListener()
-
     def merge(self, new_config: Optional[Dict[str, Any]] = None):
         """
         The method allows the merging of a method-level configuration
@@ -84,12 +78,6 @@ class ShipEngineConfig:
             config.update(
                 {"timeout": new_config["timeout"]}
             ) if "timeout" in new_config else config.update({"timeout": self.timeout})
-
-            config.update(
-                {"event_listener": new_config["event_listener"]}
-            ) if "event_listener" in new_config else config.update(
-                {"event_listener": self.event_listener}
-            )
 
             return ShipEngineConfig(config)
 

@@ -3,11 +3,6 @@ from typing import Any, Dict, Union
 
 from shipengine_sdk.enums import Endpoints
 
-# from .models import CarrierAccount, TrackingQuery, TrackPackageResult
-# from .models.address import Address, AddressValidateResult
-# from .services.address_validation import normalize, validate
-# from .services.get_carrier_accounts import GetCarrierAccounts
-# from .services.track_package import track
 from .http_client import ShipEngineClient
 from .shipengine_config import ShipEngineConfig
 
@@ -34,61 +29,82 @@ class ShipEngine:
         elif type(config) is dict:
             self.config = ShipEngineConfig(config)
 
-    def validate_addresses(
-        self, params: Dict[str, Any], config: Union[str, Dict[str, Any], ShipEngineConfig] = None
+    def create_label_from_rate(
+        self, rate_id: str, params: Dict[str, Any], config: Union[str, Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
-        Validate an address in nearly any countryCode in the world.
+        When retrieving rates for shipments using the /rates endpoint, the returned information contains a rateId
+        property that can be used to generate a label without having to refill in the shipment information repeatedly.
+        See: https://shipengine.github.io/shipengine-openapi/#operation/create_label_from_rate
 
-        :param Dict[str, Any] params: The address to be validate.
-        :param Union[str, Dict[str, Any], ShipEngineConfig] config: The global ShipEngine configuration object.
-        :returns: Dict[str, Any]: The response from ShipEngine API including the
-        validated and normalized address.
+        :param str rate_id: The rate_id you wish to create a shipping label for.
+        :params Dict[str, Any] params: A list of label params that will dictate the label display and
+        level of verification.
+        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration to set new values
+        for properties of the global ShipEngineConfig object.
+        :returns Dict[str, Any]: A label that corresponds the to shipment details for a rate_id you provided.
+        """
+        config = self.config.merge(new_config=config)
+        return self.client.post(endpoint=f"v1/labels/rates/{rate_id}", params=params, config=config)
+
+    def create_label_from_shipment(
+        self, params: Dict[str, Any], config: Union[str, Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """
+        Purchase and print a shipping label for a given shipment.
+        See: https://shipengine.github.io/shipengine-openapi/#operation/create_label
+        # TODO: Add docstring type annotations.
+        """
+        config = self.config.merge(new_config=config)
+        return self.client.post(endpoint="v1/labels", params=params, config=config)
+
+    def get_rates_from_shipment(
+        self, params: Dict[str, Any], config: Union[str, Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """
+        Given some shipment details and rate options, this endpoint returns a list of rate quotes.
+        See: https://shipengine.github.io/shipengine-openapi/#operation/calculate_rates
+        # TODO: Add docstring type annotations.
+        """
+        config = self.config.merge(new_config=config)
+        return self.client.post(endpoint="v1/rates", params=params, config=config)
+
+    def list_carriers(self, config: Dict[str, Any] = None) -> Dict[str, Any]:
+        """Fetch the carrier accounts connected to your ShipEngine Account."""
+        config = self.config.merge(new_config=config)
+        return self.client.get(endpoint=Endpoints.LIST_CARRIERS.value, config=config)
+
+    def validate_addresses(
+        self, address: Dict[str, Any], config: Union[str, Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """
+        Address validation ensures accurate addresses and can lead to reduced shipping costs by preventing address
+        correction surcharges. ShipEngine cross references multiple databases to validate addresses and identify
+        potential deliverability issues.
+        See: https://shipengine.github.io/shipengine-openapi/#operation/validate_address
+
+        :param Dict[str, Any] address: The address to be validate.
+        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration to set new values
+        for properties of the global ShipEngineConfig object.
+        :returns: Dict[str, Any]: The response from ShipEngine API including the validated and normalized address.
         """
         config = self.config.merge(new_config=config)
         return self.client.post(
-            endpoint=Endpoints.ADDRESSES_VALIDATE.value, params=params, config=config
+            endpoint=Endpoints.ADDRESSES_VALIDATE.value, params=address, config=config
         )
 
-    # def validate_address(
-    #     self, address: Address, config: Optional[Union[Dict[str, Any], ShipEngineConfig]] = None
-    # ) -> AddressValidateResult:
-    #     """
-    #     Validate an address in nearly any countryCode in the world.
-    #
-    #     :param Address address: The address to be validate.
-    #     :param ShipEngineConfig config: The global ShipEngine configuration object.
-    #     :returns: :class:`AddressValidateResult`: The response from ShipEngine API including the
-    #     validated and normalized address.
-    #     """
-    #     config = self.config.merge(new_config=config)
-    #     return validate(address=address, config=config)
-    #
-    # def normalize_address(
-    #     self, address: Address, config: Optional[Union[Dict[str, Any], ShipEngineConfig]] = None
-    # ) -> Address:
-    #     """Normalize a given address into a standardized format used by carriers."""
-    #     config = self.config.merge(new_config=config)
-    #     return normalize(address=address, config=config)
-    #
-    # def get_carrier_accounts(
-    #     self,
-    #     carrier_code: Optional[str] = None,
-    #     config: Optional[Union[Dict[str, Any], ShipEngineConfig]] = None,
-    # ) -> List[CarrierAccount]:
-    #     """Fetch a list of the carrier accounts connected to your ShipEngine Account."""
-    #     config = self.config.merge(new_config=config)
-    #     get_accounts = GetCarrierAccounts()
-    #     return get_accounts.fetch_carrier_accounts(config=config, carrier_code=carrier_code)
-    #
-    # def track_package(
-    #     self,
-    #     tracking_data: Union[str, TrackingQuery],
-    #     config: Optional[Union[Dict[str, Any], ShipEngineConfig]] = None,
-    # ) -> TrackPackageResult:
-    #     """
-    #     Track a package by `tracking_number` and `carrier_code` via the **TrackingQuery** object, by using just the
-    #     **package_id**.
-    #     """
-    #     config = self.config.merge(new_config=config)
-    #     return track(tracking_data=tracking_data, config=config)
+    def void_label_by_label_id(
+        self, label_id: str, config: Union[str, Dict[str, Any]]
+    ) -> Dict[str, Any]:
+        """
+        Void label with a Label Id.
+        See: https://shipengine.github.io/shipengine-openapi/#operation/void_label
+
+        :param str label_id: The label_id of the label you wish to void.
+        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration to set new values
+        for properties of the global ShipEngineConfig object.
+        :returns Dict[str, Any]: The response from ShipEngine API confirming the label was successfully voided or
+        unable to be voided.
+        """
+        config = self.config.merge(new_config=config)
+        return self.client.put(endpoint=f"v1/labels/{label_id}/void", config=config)

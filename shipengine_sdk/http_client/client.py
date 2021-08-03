@@ -13,9 +13,8 @@ from requests.packages.urllib3.util.retry import Retry
 
 from shipengine_sdk import __version__
 
-from ..enums import HTTPVerbs
+from ..enums import ErrorCode, ErrorSource, ErrorType, HTTPVerbs
 from ..errors import RateLimitExceededError, ShipEngineError
-from ..models import ErrorCode, ErrorSource, ErrorType
 from ..shipengine_config import ShipEngineConfig
 
 
@@ -47,7 +46,7 @@ class ShipEngineClient:
         """A `JSON-RPC 2.0` HTTP client used to send all HTTP requests from the SDK."""
         self.session = requests.session()
 
-    def get(self, endpoint: str, config: ShipEngineConfig):
+    def get(self, endpoint: str, config: ShipEngineConfig) -> Dict[str, Any]:
         """Send an HTTP GET request."""
         return self._request_loop(
             http_method=HTTPVerbs.GET.value, endpoint=endpoint, params=None, config=config
@@ -55,7 +54,7 @@ class ShipEngineClient:
 
     def post(
         self, endpoint: str, config: ShipEngineConfig, params: Optional[Dict[str, Any]] = None
-    ):
+    ) -> Dict[str, Any]:
         """Send an HTTP POST request."""
         return self._request_loop(
             http_method=HTTPVerbs.POST.value, endpoint=endpoint, params=params, config=config
@@ -84,7 +83,11 @@ class ShipEngineClient:
         while retry <= config.retries:
             try:
                 api_response = self._send_request(
-                    http_method=http_method, body=params, retry=retry, config=config
+                    http_method=http_method,
+                    endpoint=endpoint,
+                    body=params,
+                    retry=retry,
+                    config=config,
                 )
             except Exception as err:
                 if (
@@ -100,19 +103,24 @@ class ShipEngineClient:
             return api_response
 
     def _send_request(
-        self, http_method: str, body: Optional[Dict[str, Any]], retry: int, config: ShipEngineConfig
+        self,
+        http_method: str,
+        endpoint: str,
+        body: Optional[Dict[str, Any]],
+        retry: int,
+        config: ShipEngineConfig,
     ) -> Dict[str, Any]:
         """
         Send a `JSON-RPC 2.0` request via HTTP Messages to ShipEngine API. If the response
          * is successful, the result is returned. Otherwise, an error is thrown.
         """
-        client: Session = self._request_retry_session(retries=config.retries)
         base_uri = base_url(config=config)
+        client: Session = self._request_retry_session(retries=config.retries, url_base=base_uri)
 
         req_headers = request_headers(user_agent=self._derive_user_agent(), api_key=config.api_key)
         req: Request = Request(
             method=http_method,
-            url=base_uri,
+            url=f"{base_uri}{endpoint}",
             data=json.dumps(body),
             headers=req_headers,
             auth=ShipEngineAuth(config.api_key),
@@ -136,7 +144,11 @@ class ShipEngineClient:
         return resp_body
 
     def _request_retry_session(
-        self, retries: int = 1, backoff_factor=1, status_force_list=(429, 500, 502, 503, 504)
+        self,
+        url_base: str,
+        retries: int = 1,
+        backoff_factor=1,
+        status_force_list=(429, 500, 502, 503, 504),
     ) -> Session:
         """A requests `Session()` that has retries enforced."""
         retry: Retry = Retry(
@@ -149,6 +161,7 @@ class ShipEngineClient:
         adapter: HTTPAdapter = HTTPAdapter(max_retries=retry)
         self.session.mount("http://", adapter=adapter)
         self.session.mount("https://", adapter=adapter)
+        self.session.url_base = url_base
         return self.session
 
     @staticmethod
