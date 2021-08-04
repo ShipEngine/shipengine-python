@@ -1,5 +1,5 @@
 """Test test conversion helper function. snake_case -> camelCase."""
-from shipengine_sdk.util import snake_to_camel
+from shipengine.util import snake_to_camel
 
 
 class TestSnakeToCamelCase:

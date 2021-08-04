@@ -2,7 +2,7 @@
 import re
 from typing import Any, Dict, List
 
-from shipengine_sdk.enums import Country, ErrorCode, ErrorSource, ErrorType
+from shipengine.enums import Country, ErrorCode, ErrorSource, ErrorType
 
 from ..errors import (
     ClientSystemError,

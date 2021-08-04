@@ -1,11 +1,11 @@
 """Testing the ShipEngineConfig object."""
 import pytest
 
-from shipengine_sdk import ShipEngine, ShipEngineConfig
-from shipengine_sdk.enums import BaseURL, Constants
-from shipengine_sdk.errors import InvalidFieldValueError, ValidationError
-from shipengine_sdk.util import api_key_validation_error_assertions
-from shipengine_sdk.util.sdk_assertions import timeout_validation_error_assertions
+from shipengine import ShipEngine, ShipEngineConfig
+from shipengine.enums import BaseURL, Constants
+from shipengine.errors import InvalidFieldValueError, ValidationError
+from shipengine.util import api_key_validation_error_assertions
+from shipengine.util.sdk_assertions import timeout_validation_error_assertions
 
 
 def stub_config() -> dict:

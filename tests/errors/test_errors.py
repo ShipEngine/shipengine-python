@@ -1,7 +1,7 @@
 """Tests for the ShipEngine SDK Errors"""
 import pytest
 
-from shipengine_sdk.errors import (
+from shipengine.errors import (
     AccountStatusError,
     BusinessRuleError,
     ClientSecurityError,

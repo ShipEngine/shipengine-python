@@ -5,7 +5,7 @@ import urllib.parse as urlparse
 
 import responses
 
-from shipengine_sdk.enums import BaseURL, Endpoints
+from shipengine.enums import BaseURL, Endpoints
 
 from ..util import stub_shipengine_instance, valid_commercial_address
 

@@ -1,8 +1,8 @@
 """Test data as functions and common assertion helper functions."""
 from typing import Any, Dict, List
 
-from shipengine_sdk import ShipEngine, ShipEngineConfig
-from shipengine_sdk.enums import Constants
+from shipengine import ShipEngine, ShipEngineConfig
+from shipengine.enums import Constants
 
 
 def stub_config(

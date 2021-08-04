@@ -1,11 +1,20 @@
 [tool.poetry]
-name = "shipengine_sdk"
-version = "0.0.1"
+name = "shipengine"
+version = "0.0.0"
 description = "A Python library for ShipEngine."
 authors = ["KaseyCantu <kpc.software.engineer@gmail.com>"]
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/ShipEngine/shipengine-python"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "semver"
+format = "{base}"
+
+[tool.poetry-dynamic-versioning.substitution]
+files = ["*.py", "*/__init__.py", "*/__version__.py", "*/_version.py"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
@@ -14,6 +23,7 @@ requests = "^2.25.1"
 python-dotenv = "^0.15.0"
 dataclasses-json = "^0.5.3"
 fuuid = "^0.1.0"
+poetry-dynamic-versioning = "^0.13.0"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=5.0"
@@ -45,5 +55,5 @@ relative_files = true
 [tool.poetry.scripts]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
 build-backend = "poetry.core.masonry.api"

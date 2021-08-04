@@ -12,7 +12,7 @@ from requests.adapters import HTTPAdapter
 from requests.auth import AuthBase
 from requests.packages.urllib3.util.retry import Retry
 
-from shipengine_sdk import __version__
+from shipengine import __version__
 
 from ..enums import ErrorCode, ErrorSource, ErrorType, HTTPVerbs
 from ..errors import RateLimitExceededError, ShipEngineError

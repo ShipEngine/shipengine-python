@@ -1,7 +1,7 @@
 """The entrypoint to the ShipEngine API SDK."""
 from typing import Any, Dict, List, Union
 
-from shipengine_sdk.enums import Endpoints
+from shipengine.enums import Endpoints
 
 from .http_client import ShipEngineClient
 from .shipengine_config import ShipEngineConfig
