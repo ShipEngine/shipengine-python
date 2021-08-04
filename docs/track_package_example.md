@@ -246,11 +246,12 @@ An *array of objects* representing the individual tracking events that have occu
 
 Example
 =======
+
 ```python
 import os
 
-from shipengine_sdk import ShipEngine
-from shipengine_sdk.models import TrackingQuery
+from shipengine import ShipEngine
+from shipengine.models import TrackingQuery
 
 api_key = os.getenv("SHIPENGINE_API_KEY")
 

@@ -61,7 +61,7 @@ Input Parameters
 ----------------
 
 The `validate_address` method accepts an address object containing the properties listed below.
-You can import the [`Address`](../shipengine_sdk/models/address/__init__.py)
+You can import the [`Address`](../shipengine/models/address/__init__.py)
 type into your project to take advantage of your
 IDE's code completion functionality.
 
@@ -108,7 +108,7 @@ A *string* between `0` and `1000` characters indicating the company name, if thi
 Output
 ------
 The `validate_address` method returns an address validation result object containing the properties listed below.
-You can import the [`AddressValidationResult`](../shipengine_sdk/models/address/__init__.py)
+You can import the [`AddressValidationResult`](../shipengine/models/address/__init__.py)
 type into your project to take advantage of your IDE's code completion functionality.
 
 * `is_valid` <br>
@@ -179,8 +179,8 @@ Examples:
 ```python
 import os
 
-from shipengine_sdk import ShipEngine
-from shipengine_sdk.models import Address
+from shipengine import ShipEngine
+from shipengine.models import Address
 
 api_key = os.getenv("SHIPENGINE_API_KEY")
 
@@ -309,5 +309,5 @@ Exceptions
 ==========
 
 - This method will only throw an exception that is an instance/extension of
-  ([ShipEngineError](../shipengine_sdk/errors/__init__.py)) if there is a problem if a problem occurs, such as a
+  ([ShipEngineError](../shipengine/errors/__init__.py)) if there is a problem if a problem occurs, such as a
   network error or an error response from the API.

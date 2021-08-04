@@ -32,7 +32,7 @@ containing method-level configuration options.
 
 - **Behavior**: The `normalize_address` method will either return a normalized version of the address you pass in. This
   will throw an exception if address validation fails, or an invalid address is provided. The normalized address will
-  be returned as an instance of the [Address](../shipengine_sdk/models/address/__init__.py) class.
+  be returned as an instance of the [Address](../shipengine/models/address/__init__.py) class.
 
 - **Method level configuration** - You can optionally pass in an list that contains `configuration` values to be used
   for the current method call. The options are `api_key`, `base_uri`, `page_size`,
@@ -150,8 +150,8 @@ Examples:
 ```python
 import os
 
-from shipengine_sdk import ShipEngine
-from shipengine_sdk.models import Address
+from shipengine import ShipEngine
+from shipengine.models import Address
 
 api_key = os.getenv("SHIPENGINE_API_KEY")
 

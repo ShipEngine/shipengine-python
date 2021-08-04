@@ -1,7 +1,7 @@
 """Tests for the ShipEngine SDK Errors"""
 import pytest
 
-from shipengine_sdk.errors import (
+from shipengine.errors import (
     AccountStatusError,
     BusinessRuleError,
     ClientSecurityError,
@@ -23,7 +23,7 @@ def shipengine_error():
     raise ShipEngineError(
         request_id="req_a523b1b19bd54054b7eb953f000e7f15",
         message="The is a test exception",
-        source="shipengine",
+        error_source="shipengine",
         error_type="validation",
         error_code="invalid_address",
         url="https://google.com",
@@ -35,7 +35,7 @@ def shipengine_error_with_no_error_type() -> ShipEngineError:
     raise ShipEngineError(
         request_id="req_a523b1b19bd54054b7eb953f000e7f15",
         message="The is a test exception",
-        source="shipengine",
+        error_source="shipengine",
         error_type=None,
         error_code="invalid_address",
     )
@@ -46,7 +46,7 @@ def shipengine_error_with_bad_error_type() -> ShipEngineError:
     raise ShipEngineError(
         request_id="req_a523b1b19bd54054b7eb953f000e7f15",
         message="The is a test exception",
-        source="shipengine",
+        error_source="shipengine",
         error_type="tracking",
         error_code="invalid_address",
     )
@@ -57,7 +57,7 @@ def shipengine_error_with_bad_error_source() -> ShipEngineError:
     raise ShipEngineError(
         request_id="req_a523b1b19bd54054b7eb953f000e7f15",
         message="The is a test exception",
-        source="wayne_enterprises",
+        error_source="wayne_enterprises",
         error_type="validation",
         error_code="invalid_address",
     )
@@ -68,7 +68,7 @@ def shipengine_error_with_bad_error_code() -> ShipEngineError:
     raise ShipEngineError(
         request_id="req_a523b1b19bd54054b7eb953f000e7f15",
         message="The is a test exception",
-        source="shipengine",
+        error_source="shipengine",
         error_type="validation",
         error_code="failure",
     )

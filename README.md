@@ -26,20 +26,22 @@ pip install shipengine
 
 Instantiate ShipEngine Class
 ----------------------------
+
 ```python
 import os
 
-from shipengine_sdk import ShipEngine
+from shipengine import ShipEngine
 
 api_key = os.getenv("SHIPENGINE_API_KEY")
 
 shipengine = ShipEngine(api_key)
 ```
 - You can also pass in a `dictionary` containing configuration options instead of just passing in a string that is your `API Key`.
+
 ```python
 import os
 
-from shipengine_sdk import ShipEngine
+from shipengine import ShipEngine
 
 api_key = os.getenv("SHIPENGINE_API_KEY")
 

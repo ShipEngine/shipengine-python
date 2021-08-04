@@ -1,0 +1,45 @@
+on:
+  push:
+    branches:
+      - main
+
+name: ShipEngine Python CD
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: GoogleCloudPlatform/release-please-action@v2
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: python
+          package-name: shipengine
+
+      # Checkout code if release was created
+      - uses: actions/checkout@v2
+        if: ${{ setps.release.outputs.release_created }}
+
+      # Setup Python if release was created
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Install dependancies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Build the code
+        run: |
+          poetry build
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Publish package
+        run: |
+          poetry publish
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+        if: ${{ steps.release.outputs.release_created }}
