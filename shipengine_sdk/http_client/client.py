@@ -4,6 +4,7 @@ import os
 import platform
 import time
 from typing import Any, Dict, Optional
+from urllib.parse import urljoin
 
 import requests
 from requests import PreparedRequest, Request, RequestException, Response, Session
@@ -121,7 +122,7 @@ class ShipEngineClient:
         req_headers = request_headers(user_agent=self._derive_user_agent(), api_key=config.api_key)
         req: Request = Request(
             method=http_method,
-            url=f"{base_uri}{endpoint}",
+            url=urljoin(base_uri, endpoint),
             data=json.dumps(body),
             headers=req_headers,
             auth=ShipEngineAuth(config.api_key),
@@ -133,7 +134,7 @@ class ShipEngineClient:
         except RequestException as err:
             raise ShipEngineError(
                 message=f"An unknown error occurred while calling the ShipEngine {http_method} API:\n {err.response}",
-                source=ErrorSource.SHIPENGINE.value,
+                error_source=ErrorSource.SHIPENGINE.value,
                 error_type=ErrorType.SYSTEM.value,
                 error_code=ErrorCode.UNSPECIFIED.value,
             )

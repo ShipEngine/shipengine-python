@@ -15,7 +15,7 @@ class ShipEngineError(Exception):
         self,
         message: str,
         request_id: Optional[str] = None,
-        source: Optional[str] = None,
+        error_source: Optional[str] = None,
         error_type: Optional[str] = None,
         error_code: Optional[str] = None,
         url: Optional[str] = None,
@@ -23,18 +23,18 @@ class ShipEngineError(Exception):
         """Base exception class that all other client errors will inherit from."""
         self.message = message
         self.request_id = request_id
-        self.source = source
+        self.error_source = error_source
         self.error_code = error_code
         self.error_type = error_type
         self.url = url
         self._are_enums_valid()
 
     def _are_enums_valid(self):
-        if self.source is None:
+        if self.error_source is None:
             pass  # noqa
-        elif not does_member_value_exist(self.source, ErrorSource):
+        elif not does_member_value_exist(self.error_source, ErrorSource):
             raise ValueError(
-                f"Error source must be a member of ErrorSource enum - [{self.source}] provided."
+                f"Error source must be a member of ErrorSource enum - [{self.error_source}] provided."
             )
 
         if self.error_type is None:
@@ -82,17 +82,17 @@ class ClientTimeoutError(ShipEngineError):
     def __init__(
         self,
         retry_after: int,
-        source: Optional[str] = None,
+        error_source: Optional[str] = None,
         request_id: Optional[str] = None,
     ) -> None:
         """An exception that indicates the configured timeout has been reached for a given request."""
         self.retry_after = retry_after
-        self.source = source
+        self.error_source = error_source
         self.request_id = request_id
         super(ClientTimeoutError, self).__init__(
             message=f"The request took longer than the {retry_after} seconds allowed.",
             request_id=self.request_id,
-            source=self.source,
+            error_source=self.error_source,
             error_type=ErrorType.SYSTEM.value,
             error_code=ErrorCode.TIMEOUT.value,
             url="https://www.shipengine.com/docs/rate-limits",
@@ -100,15 +100,15 @@ class ClientTimeoutError(ShipEngineError):
 
 
 class InvalidFieldValueError(ShipEngineError):
-    def __init__(self, field_name: str, reason: str, field_value, source: str = None) -> None:
+    def __init__(self, field_name: str, reason: str, field_value, error_source: str = None) -> None:
         """This error occurs when a field has been set to an invalid value."""
         self.field_name = field_name
         self.field_value = field_value
-        self.source = source
+        self.error_source = error_source
         super(InvalidFieldValueError, self).__init__(
             request_id=None,
             message=f"{self.field_name} - {reason} {self.field_value} was provided.",
-            source=self.source,
+            error_source=self.error_source,
             error_type=ErrorType.VALIDATION.value,
             error_code=ErrorCode.INVALID_FIELD_VALUE.value,
         )
@@ -117,18 +117,18 @@ class InvalidFieldValueError(ShipEngineError):
 class RateLimitExceededError(ShipEngineError):
     def __init__(
         self,
-        retry_after: int,
-        source: Optional[str] = None,
+        retry_after: Optional[int] = None,
+        error_source: Optional[str] = None,
         request_id: Optional[str] = None,
     ) -> None:
         """The amount of time (in SECONDS) to wait before retrying the request."""
         self.retry_after = retry_after
-        self.source = source
+        self.error_source = error_source
         self.request_id = request_id
         super(RateLimitExceededError, self).__init__(
             message="You have exceeded the rate limit.",
             request_id=self.request_id,
-            source=self.source,
+            error_source=self.error_source,
             error_type=ErrorType.SYSTEM.value,
             error_code=ErrorCode.RATE_LIMIT_EXCEEDED.value,
             url="https://www.shipengine.com/docs/rate-limits",

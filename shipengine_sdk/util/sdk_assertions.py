@@ -6,7 +6,6 @@ from shipengine_sdk.enums import Country, ErrorCode, ErrorSource, ErrorType
 
 from ..errors import (
     ClientSystemError,
-    ClientTimeoutError,
     InvalidFieldValueError,
     RateLimitExceededError,
     ShipEngineError,
@@ -21,14 +20,14 @@ def is_street_valid(street: List[str]) -> None:
     if len(street) == 0:
         raise ValidationError(
             message="Invalid address. At least one address line is required.",
-            source=ErrorSource.SHIPENGINE.value,
+            error_source=ErrorSource.SHIPENGINE.value,
             error_type=ErrorType.VALIDATION.value,
             error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
         )
     elif len(street) > 3:
         raise ValidationError(
             message="Invalid address. No more than 3 street lines are allowed.",
-            source=ErrorSource.SHIPENGINE.value,
+            error_source=ErrorSource.SHIPENGINE.value,
             error_type=ErrorType.VALIDATION.value,
             error_code=ErrorCode.INVALID_FIELD_VALUE.value,
         )
@@ -44,7 +43,7 @@ def is_city_valid(city: str) -> None:
     elif not latin_pattern.match(city) or city == "":
         raise ValidationError(
             message=validation_message,
-            source=ErrorSource.SHIPENGINE.value,
+            error_source=ErrorSource.SHIPENGINE.value,
             error_type=ErrorType.VALIDATION.value,
             error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
         )
@@ -60,7 +59,7 @@ def is_state_valid(state: str) -> None:
     elif not latin_pattern.match(state) or state == "":
         raise ValidationError(
             message=validation_message,
-            source=ErrorSource.SHIPENGINE.value,
+            error_source=ErrorSource.SHIPENGINE.value,
             error_type=ErrorType.VALIDATION.value,
             error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
         )
@@ -73,7 +72,7 @@ def is_postal_code_valid(postal_code: str) -> None:
     if not pattern.match(postal_code) or postal_code == "":
         raise ValidationError(
             message=validation_message,
-            source=ErrorSource.SHIPENGINE.value,
+            error_source=ErrorSource.SHIPENGINE.value,
             error_type=ErrorType.VALIDATION.value,
             error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
         )
@@ -84,7 +83,7 @@ def is_country_code_valid(country: str) -> None:
     if country not in (member.value for member in Country):
         raise ValidationError(
             message=f"Invalid address: [{country}] is not a valid country code.",
-            source=ErrorSource.SHIPENGINE.value,
+            error_source=ErrorSource.SHIPENGINE.value,
             error_type=ErrorType.VALIDATION.value,
             error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
         )
@@ -102,7 +101,7 @@ def is_api_key_valid(config: Dict[str, Any]) -> None:
     if "api_key" not in config or config["api_key"] == "":
         raise ValidationError(
             message=message,
-            source=ErrorSource.SHIPENGINE.value,
+            error_source=ErrorSource.SHIPENGINE.value,
             error_type=ErrorType.VALIDATION.value,
             error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
         )
@@ -110,7 +109,7 @@ def is_api_key_valid(config: Dict[str, Any]) -> None:
     if re.match(r"\s", config["api_key"]):
         raise ValidationError(
             message=message,
-            source=ErrorSource.SHIPENGINE.value,
+            error_source=ErrorSource.SHIPENGINE.value,
             error_type=ErrorType.VALIDATION.value,
             error_code=ErrorCode.FIELD_VALUE_REQUIRED.value,
         )
@@ -129,7 +128,7 @@ def is_retries_valid(config: Dict[str, Any]) -> None:
             field_name="retries",
             reason="Retries must be zero or greater.",
             field_value=config["retries"],
-            source=ErrorSource.SHIPENGINE.value,
+            error_source=ErrorSource.SHIPENGINE.value,
         )
 
 
@@ -146,7 +145,7 @@ def is_timeout_valid(config: Dict[str, Any]) -> None:
             field_name="timeout",
             reason="Timeout must be zero or greater.",
             field_value=config["timeout"],
-            source=ErrorSource.SHIPENGINE.value,
+            error_source=ErrorSource.SHIPENGINE.value,
         )
 
 
@@ -162,7 +161,7 @@ def api_key_validation_error_assertions(error) -> None:
     assert error.request_id is None
     assert error.error_type is ErrorType.VALIDATION.value
     assert error.error_code is ErrorCode.FIELD_VALUE_REQUIRED.value
-    assert error.source is ErrorSource.SHIPENGINE.value
+    assert error.error_source is ErrorSource.SHIPENGINE.value
     assert error.message == "A ShipEngine API key must be specified."
 
 
@@ -172,18 +171,18 @@ def timeout_validation_error_assertions(error) -> None:
     assert error.request_id is None
     assert error.error_type is ErrorType.VALIDATION.value
     assert error.error_code is ErrorCode.INVALID_FIELD_VALUE.value
-    assert error.source is ErrorSource.SHIPENGINE.value
+    assert error.error_source is ErrorSource.SHIPENGINE.value
 
 
 def check_response_for_errors(status_code: int, response_body: Dict[str, Any], config) -> None:
     """Checks response and status_code for 400, 404, 429, and 500 error cases and raises an approved exception."""
-
-    error = response_body["errors"][0]
+    if status_code != 200:
+        error = response_body["errors"][0]
 
     if status_code == 400:
         raise ShipEngineError(
             message=error["message"],
-            source=ErrorSource.SHIPENGINE.value,
+            error_source=ErrorSource.SHIPENGINE.value,
             error_type=error["error_type"],
             error_code=error["error_code"],
         )
@@ -191,93 +190,55 @@ def check_response_for_errors(status_code: int, response_body: Dict[str, Any], c
     if status_code == 404:
         raise ShipEngineError(
             message=error["message"],
-            source=ErrorSource.SHIPENGINE.value,
+            error_source=ErrorSource.SHIPENGINE.value,
             error_type=error["error_type"],
             error_code=error["error_code"],
         )
 
     # Check if status_code is 429 and raises an error if so.
-    if "errors" in response_body and status_code == 429:
-        retry_after = error["details"]["retryAfter"]
-        if retry_after > config.timeout:
-            raise ClientTimeoutError(
-                retry_after=config.timeout,
-                source=ErrorSource.SHIPENGINE.value,
-                request_id=response_body["request_id"],
-            )
-        else:
-            raise RateLimitExceededError(
-                retry_after=retry_after,
-                source=ErrorSource.SHIPENGINE.value,
-                request_id=response_body["request_id"],
-            )
+    if status_code == 429:
+        # TODO: Need to access retry after in response headers and add back in the below code.
+        # retry_after = error["details"]["retryAfter"]
+        # if retry_after > config.timeout:
+        #     raise ClientTimeoutError(
+        #         retry_after=config.timeout,
+        #         error_source=ErrorSource.SHIPENGINE.value,
+        #         request_id=response_body["request_id"],
+        #     )
+        # else:
+        raise RateLimitExceededError(
+            # retry_after=retry_after,
+            error_source=ErrorSource.SHIPENGINE.value,
+            request_id=response_body["request_id"],
+        )
 
     # Check if the status code is 500 and raises an error if so.
     if status_code == 500:
         raise ClientSystemError(
             message=error["message"],
             request_id=response_body["request_id"],
-            source=error["error_source"],
+            error_source=error["error_source"],
             error_type=error["error_type"],
             error_code=error["error_code"],
         )
 
 
-def does_normalized_address_have_errors(result) -> None:
-    """
-    Assertions to check if the returned normalized address has Any errors. If errors
-    are present an exception is thrown.
-
-    :param AddressValidateResult result: The address validation response from ShipEngine API.
-    """
-    if len(result.errors) > 1:
-        error_list = list()
-        for err in result.errors:
-            error_list.append(err["message"])
-
-        str_errors = "\n".join(error_list)
-
-        raise ShipEngineError(
-            message=f"Invalid address.\n{str_errors}",
-            request_id=result.request_id,
-            source=ErrorSource.SHIPENGINE.value,
-            error_type=ErrorType.ERROR.value,
-            error_code=ErrorCode.INVALID_ADDRESS.value,
-        )
-    elif len(result.errors) == 1:
-        raise ShipEngineError(
-            message=f"Invalid address. {result.errors[0]['message']}",
-            request_id=result.request_id,
-            source=ErrorSource.SHIPENGINE.value,
-            error_type=ErrorType.ERROR.value,
-            error_code=result.errors[0]["code"],
-        )
-    elif result.is_valid is False:
-        raise ShipEngineError(
-            message="Invalid address - The address provided could not be normalized.",
-            request_id=result.request_id,
-            source=ErrorSource.SHIPENGINE.value,
-            error_type=ErrorType.ERROR.value,
-            error_code=ErrorCode.INVALID_ADDRESS.value,
-        )
-
-
-def is_package_id_valid(package_id: str) -> None:
-    """Checks that package_id is valid."""
-    pattern = re.compile(r"^pkg_[1-9a-zA-Z]+$")
-
-    if not package_id.startswith("pkg_"):
-        raise ValidationError(
-            message=f"[{package_id[0:4]}] is not a valid package ID prefix.",
-            source=ErrorSource.SHIPENGINE.value,
-            error_type=ErrorType.VALIDATION.value,
-            error_code=ErrorCode.INVALID_IDENTIFIER.value,
-        )
-
-    if not pattern.match(package_id):
-        raise ValidationError(
-            message=f"[{package_id}] is not a valid package ID.",
-            source=ErrorSource.SHIPENGINE.value,
-            error_type=ErrorType.VALIDATION.value,
-            error_code=ErrorCode.INVALID_IDENTIFIER.value,
-        )
+# def is_package_id_valid(package_id: str) -> None:
+#     """Checks that package_id is valid."""
+#     pattern = re.compile(r"^pkg_[1-9a-zA-Z]+$")
+#
+#     if not package_id.startswith("pkg_"):
+#         raise ValidationError(
+#                 message=f"[{package_id[0:4]}] is not a valid package ID prefix.",
+#                 error_source=ErrorSource.SHIPENGINE.value,
+#                 error_type=ErrorType.VALIDATION.value,
+#                 error_code=ErrorCode.INVALID_IDENTIFIER.value,
+#         )
+#
+#     if not pattern.match(package_id):
+#         raise ValidationError(
+#                 message=f"[{package_id}] is not a valid package ID.",
+#                 error_source=ErrorSource.SHIPENGINE.value,
+#                 error_type=ErrorType.VALIDATION.value,
+#                 error_code=ErrorCode.INVALID_IDENTIFIER.value,
+#         )

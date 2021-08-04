@@ -1,8 +1,8 @@
 """Testing the ShipEngineConfig object."""
 import pytest
 
-from shipengine_sdk import ShipEngineConfig
-from shipengine_sdk.enums import BaseURL
+from shipengine_sdk import ShipEngine, ShipEngineConfig
+from shipengine_sdk.enums import BaseURL, Constants
 from shipengine_sdk.errors import InvalidFieldValueError, ValidationError
 from shipengine_sdk.util import api_key_validation_error_assertions
 from shipengine_sdk.util.sdk_assertions import timeout_validation_error_assertions
@@ -66,12 +66,29 @@ def complete_valid_config() -> ShipEngineConfig:
     """
     return ShipEngineConfig(
         dict(
-            api_key="baz_sim",
+            api_key=Constants.STUB_API_KEY.value,
             page_size=50,
             retries=2,
             timeout=10,
         )
     )
+
+
+def valid_commercial_address():
+    return [
+        {
+            "name": "ShipEngine",
+            "company": "Auctane",
+            "phone": "1-123-123-1234",
+            "address_line1": "3800 N Lamar Blvd",
+            "address_line2": "ste 220",
+            "city_locality": "Austin",
+            "state_province": "TX",
+            "postal_code": "78756",
+            "country_code": "US",
+            "address_residential_indicator": "unknown",
+        }
+    ]
 
 
 class TestShipEngineConfig:
@@ -81,7 +98,7 @@ class TestShipEngineConfig:
         valid values for each attribute.
         """
         valid_config: ShipEngineConfig = complete_valid_config()
-        assert valid_config.api_key == "baz_sim"
+        assert valid_config.api_key.startswith("TEST_")
         assert valid_config.base_uri is BaseURL.SHIPENGINE_RPC_URL.value
         assert valid_config.page_size == 50
         assert valid_config.retries == 2
@@ -105,14 +122,14 @@ class TestShipEngineConfig:
             with pytest.raises(ValidationError):
                 config_with_empty_api_key()
 
-    def test_valid_retries(self):
+    def test_valid_retries(self) -> None:
         """Test case where a valid value is passed in for the retries."""
         retries = 2
         valid_retries = set_config_retries(retries)
         assert valid_retries.api_key == "baz_sim"
         assert valid_retries.retries == retries
 
-    def test_invalid_retries_provided(self):
+    def test_invalid_retries_provided(self) -> None:
         """DX-1442 - Invalid retries at instantiation."""
         retries = -3
         try:
@@ -125,7 +142,7 @@ class TestShipEngineConfig:
             with pytest.raises(InvalidFieldValueError):
                 set_config_retries(retries)
 
-    def test_invalid_timeout_provided(self):
+    def test_invalid_timeout_provided(self) -> None:
         """DX-1443 - Invalid timeout at instantiation."""
         timeout = -5
         try:
@@ -136,44 +153,44 @@ class TestShipEngineConfig:
                 e.message == f"timeout - Timeout must be zero or greater. {timeout} was provided."
             )
 
-    # def test_invalid_timeout_in_method_call(self):
-    #     """DX-1447 - Invalid timeout in method call configuration."""
-    #     timeout = -5
-    #     try:
-    #         shipengine = ShipEngine(stub_config())
-    #         shipengine.validate_address(
-    #             address=valid_residential_address(), config=dict(timeout=timeout)
-    #         )
-    #     except InvalidFieldValueError as e:
-    #         timeout_validation_error_assertions(e)
-    #         assert (
-    #             e.message == f"timeout - Timeout must be zero or greater. {timeout} was provided."
-    #         )
+    def test_invalid_timeout_in_method_call(self) -> None:
+        """DX-1447 - Invalid timeout in method call configuration."""
+        timeout = -5
+        try:
+            shipengine = ShipEngine(stub_config())
+            shipengine.validate_addresses(
+                address=valid_commercial_address(), config=dict(timeout=timeout)
+            )
+        except InvalidFieldValueError as e:
+            timeout_validation_error_assertions(e)
+            assert (
+                e.message == f"timeout - Timeout must be zero or greater. {timeout} was provided."
+            )
 
-    # def test_invalid_retries_in_method_call(self):
-    #     """DX-1446 - Invalid retries in method call configuration."""
-    #     retries = -5
-    #     try:
-    #         shipengine = ShipEngine(stub_config())
-    #         shipengine.validate_address(
-    #             address=valid_residential_address(), config=dict(retries=retries)
-    #         )
-    #     except InvalidFieldValueError as e:
-    #         timeout_validation_error_assertions(e)
-    #         assert (
-    #             e.message == f"retries - Retries must be zero or greater. {retries} was provided."
-    #         )
+    def test_invalid_retries_in_method_call(self) -> None:
+        """DX-1446 - Invalid retries in method call configuration."""
+        retries = -5
+        try:
+            shipengine = ShipEngine(stub_config())
+            shipengine.validate_addresses(
+                address=valid_commercial_address(), config=dict(retries=retries)
+            )
+        except InvalidFieldValueError as e:
+            timeout_validation_error_assertions(e)
+            assert (
+                e.message == f"retries - Retries must be zero or greater. {retries} was provided."
+            )
 
-    # def test_invalid_api_key_in_method_call(self):
-    #     """DX-1445 - Invalid api_key in method call configuration."""
-    #     api_key = "   "
-    #     try:
-    #         shipengine = ShipEngine(stub_config())
-    #         shipengine.validate_address(
-    #             address=valid_residential_address(), config=dict(api_key=api_key)
-    #         )
-    #     except Exception as e:
-    #         api_key_validation_error_assertions(e)
+    def test_invalid_api_key_in_method_call(self) -> None:
+        """DX-1445 - Invalid api_key in method call configuration."""
+        api_key = "   "
+        try:
+            shipengine = ShipEngine(stub_config())
+            shipengine.validate_addresses(
+                address=valid_commercial_address(), config=dict(api_key=api_key)
+            )
+        except Exception as e:
+            api_key_validation_error_assertions(e)
 
     def test_config_defaults(self) -> None:
         """Test default retries."""

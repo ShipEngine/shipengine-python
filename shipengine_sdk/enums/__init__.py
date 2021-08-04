@@ -33,6 +33,7 @@ class Endpoints(Enum):
     """A collection of RPC Methods used throughout the ShipEngine SDK."""
 
     ADDRESSES_VALIDATE = "v1/addresses/validate"
+    GET_RATE_FROM_SHIPMENT = "v1/rates"
     LIST_CARRIERS = "v1/carriers"
 
 

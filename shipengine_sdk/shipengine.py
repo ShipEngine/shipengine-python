@@ -63,19 +63,21 @@ class ShipEngine:
         return self.client.post(endpoint="v1/labels", params=params, config=config)
 
     def get_rates_from_shipment(
-        self, params: Dict[str, Any], config: Union[str, Dict[str, Any]] = None
+        self, shipment: Dict[str, Any], config: Union[str, Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
         Given some shipment details and rate options, this endpoint returns a list of rate quotes.
         See: https://shipengine.github.io/shipengine-openapi/#operation/calculate_rates
 
-        :param Dict[str, Any] params: A dictionary of shipment details for the label creation.
+        :param Dict[str, Any] shipment: A dictionary of shipment details for the label creation.
         :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration to set new values
         for properties of the global ShipEngineConfig object.
         :returns Dict[str, Any]: A label that corresponds the to shipment details provided.
         """
         config = self.config.merge(new_config=config)
-        return self.client.post(endpoint="v1/rates", params=params, config=config)
+        return self.client.post(
+            endpoint=Endpoints.GET_RATE_FROM_SHIPMENT.value, params=shipment, config=config
+        )
 
     def list_carriers(self, config: Dict[str, Any] = None) -> Dict[str, Any]:
         """
