@@ -17,7 +17,7 @@ jobs:
 
       # Checkout code if release was created
       - uses: actions/checkout@v2
-        if: ${{ setps.release.outputs.release_created }}
+        if: ${{ steps.release.outputs.release_created }}
 
       # Setup Python if release was created
       - name: Install Python
