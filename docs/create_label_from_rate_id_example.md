@@ -52,7 +52,7 @@ def create_label_from_rate_id_demo():
             rate_id="se-799373193", params=params
         )
         print("::SUCCESS::")
-        p.pprint(result)
+        print(result)
     except ShipEngineError as err:
         print("::ERROR::")
         print(err.to_json())
