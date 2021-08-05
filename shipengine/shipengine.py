@@ -48,19 +48,19 @@ class ShipEngine:
         return self.client.post(endpoint=f"v1/labels/rates/{rate_id}", params=params, config=config)
 
     def create_label_from_shipment(
-        self, params: Dict[str, Any], config: Union[str, Dict[str, Any]] = None
+        self, shipment: Dict[str, Any], config: Union[str, Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
         Purchase and print a shipping label for a given shipment.
         See: https://shipengine.github.io/shipengine-openapi/#operation/create_label
 
-        :param Dict[str, Any] params: A dictionary of shipment details for the label creation.
+        :param Dict[str, Any] shipment: A dictionary of shipment details for the label creation.
         :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration to set new values
         for properties of the global ShipEngineConfig object.
         :returns Dict[str, Any]: A label that corresponds the to shipment details provided.
         """
         config = self.config.merge(new_config=config)
-        return self.client.post(endpoint="v1/labels", params=params, config=config)
+        return self.client.post(endpoint="v1/labels", params=shipment, config=config)
 
     def get_rates_from_shipment(
         self, shipment: Dict[str, Any], config: Union[str, Dict[str, Any]] = None

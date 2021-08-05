@@ -142,7 +142,12 @@ class ShipEngineClient:
         resp_body: Dict[str, Any] = resp.json()
         status_code: int = resp.status_code
 
-        check_response_for_errors(status_code=status_code, response_body=resp_body, config=config)
+        check_response_for_errors(
+            status_code=status_code,
+            response_body=resp_body,
+            response_headers=resp.headers,
+            config=config,
+        )
         return resp_body
 
     def _request_retry_session(

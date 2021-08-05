@@ -52,7 +52,7 @@ shipengine = ShipEngine(
 
 Methods
 -------
-- [validate_address](./docs/address_validation_example.md "Validate Address method documentation") - Indicates whether the provided address is valid. If the
+- [validate_address](./docs/addresses_validate_example.md "Validate Address method documentation") - Indicates whether the provided address is valid. If the
   address is valid, the method returns a normalized version of the address based on the standards of the country in
   which the address resides.
 - [normalize_address](./docs/normalize_address_example.md "Normalize Address method documentation") - Returns a normalized, or standardized, version of the
