@@ -1,5 +1,5 @@
-Create Label From Rate Documentation
-====================================
+Create Label From Rate ID Documentation
+=======================================
 When retrieving rates for shipments using the `get_rates_from_shipment` method, the returned information contains a `rate_id` property that can be used to purchase a label without having to refill in the shipment information repeatedly.
 
 Please see [our docs](https://www.shipengine.com/docs/labels/create-from-rate/) to learn more about creating shipping labels from rates.
@@ -25,6 +25,7 @@ shipping and rate details encapsulated in the `rate_id` passed in.
 
 Example:
 ========
+
 ```python
 import os
 
@@ -47,7 +48,7 @@ def create_label_from_rate_demo():
             "label_download_type": "url",
             "display_scheme": "label",
         }
-        result = shipengine.create_label_from_rate(
+        result = shipengine.create_label_from_rate_id(
             rate_id="se-799373193", params=params
         )
         print("::SUCCESS::")

@@ -52,13 +52,18 @@ shipengine = ShipEngine(
 
 Methods
 -------
-- [validate_address](./docs/addresses_validate_example.md "Validate Address method documentation") - Indicates whether the provided address is valid. If the
+- [addresses_validate](./docs/addresses_validate_example.md) - Indicates whether the provided address is valid. If the
   address is valid, the method returns a normalized version of the address based on the standards of the country in
   which the address resides.
-- [normalize_address](./docs/normalize_address_example.md "Normalize Address method documentation") - Returns a normalized, or standardized, version of the
-  address. If the address cannot be normalized, an error is returned.
-- [track_package](./docs/track_package_example.md "Track Package method documentation") - Track a package by `packageId` or by `carrierCode` and `trackingNumber`. This method returns
+- [create_label_from_rate_id](./docs/create_label_from_rate_id_example.md) - Purchase a label by `rate_id`. When using the `get_rates_from_shipment` method, you can use one of the returned `rate_id` values with this method to purchase a label against a given rate.
+- [create_label_from_shipment](./docs/create_label_from_shipment.md) - Purchase a label created from shipment details.
+- [get_rates_from_shipment](./docs/get_rates_from_shipment_example.md) - Fetch rates from shipment details to shop the best shipping rate for your package.
+- [list_carriers](./docs/list_carriers_example.md) - Lists the carrier accounts connected to your SHipEngine account.
+- [track_package_by_label_id](./docs/track_package_by_label_id_example.md) - Track a package by `label_id`, the preferred way to track shipments if you crate shipping labels using ShipEngine. This method returns
 the all tracking events for a given shipment.
+- [track_package_by_carrier_code_and_tracking_number](./docs/track_package_by_carrier_code_and_tracking_number_example.md) - Track a package by `carrier_code` and `tracking_number`. This method returns
+the all tracking events for a given shipment.
+- [void_label_by_label_id](./docs/void_label_by_label_id_example.md) - Void a shipping label you created using ShipEngine by its `label_id`. This method returns an object that indicates the status of the void label request.
 
 Class Objects
 -------------

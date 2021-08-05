@@ -29,7 +29,7 @@ class ShipEngine:
         elif type(config) is dict:
             self.config = ShipEngineConfig(config)
 
-    def create_label_from_rate(
+    def create_label_from_rate_id(
         self, rate_id: str, params: Dict[str, Any], config: Union[str, Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
