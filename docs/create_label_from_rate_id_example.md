@@ -48,7 +48,7 @@ def create_label_from_rate_id_demo():
             "label_download_type": "url",
             "display_scheme": "label",
         }
-        result = shipengine.create_label_from_rate_id_id(
+        result = shipengine.create_label_from_rate_id(
             rate_id="se-799373193", params=params
         )
         print("::SUCCESS::")

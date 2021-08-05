@@ -67,7 +67,7 @@ the all tracking events for a given shipment.
 
 Class Objects
 -------------
-- [ShipEngine]() - A configurable entry point to the ShipEngine API SDK, this class provides convenience methods
+- [ShipEngine](./) - A configurable entry point to the ShipEngine API SDK, this class provides convenience methods
   for various ShipEngine API Services.
 
 Contributing
