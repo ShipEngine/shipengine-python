@@ -6,7 +6,7 @@ Please see [our docs](https://www.shipengine.com/docs/labels/create-from-rate/) 
 
 Input Parameters
 ----------------
-The `create_label_from_rate` method accepts a valid `rate_id` and a dictionary of label params that
+The `create_label_from_rate_id` method accepts a valid `rate_id` and a dictionary of label params that
 will dictate the label display and level of verification.
 ```python
 params = {
@@ -20,7 +20,7 @@ params = {
 
 Output
 ------
-The `create_label_from_rate` method returns a shipping label that corresponds to the
+The `create_label_from_rate_id` method returns a shipping label that corresponds to the
 shipping and rate details encapsulated in the `rate_id` passed in.
 
 Example:
@@ -33,7 +33,7 @@ from shipengine import ShipEngine
 from shipengine.errors import ShipEngineError
 
 
-def create_label_from_rate_demo():
+def create_label_from_rate_id_demo():
     api_key = os.getenv("SHIPENGINE_API_KEY")
 
     shipengine = ShipEngine(
@@ -48,7 +48,7 @@ def create_label_from_rate_demo():
             "label_download_type": "url",
             "display_scheme": "label",
         }
-        result = shipengine.create_label_from_rate_id(
+        result = shipengine.create_label_from_rate_id_id(
             rate_id="se-799373193", params=params
         )
         print("::SUCCESS::")
@@ -56,11 +56,14 @@ def create_label_from_rate_demo():
     except ShipEngineError as err:
         print("::ERROR::")
         print(err.to_json())
+
+
+create_label_from_rate_id_demo()
 ```
 
 Example Output:
 ===============
-- Successful `create_label_from_rate()` result.
+- Successful `create_label_from_rate_id()` result.
 ```python
 {
     "batch_id": "",
