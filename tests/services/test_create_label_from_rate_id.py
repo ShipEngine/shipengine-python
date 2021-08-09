@@ -92,4 +92,4 @@ class TestCreateLabelFromRateID(unittest.TestCase):
             "display_scheme": "label",
         }
         result = shipengine.create_label_from_rate_id(rate_id="se-799373193", params=params)
-        self.assertEqual("se-799373193", result["label_id"])
+        self.assertEqual(result["label_id"], "se-799373193")
