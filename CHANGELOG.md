@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0](https://www.github.com/ShipEngine/shipengine-python/compare/v1.0.0...v1.0.0) (2021-08-11)
+
+
+### Miscellaneous Chores
+
+* release 1.0.0 ([f6f702f](https://www.github.com/ShipEngine/shipengine-python/commit/f6f702fa3427508cd78953b88d62e4bf3a0f3bf1))
+
 ## 1.0.0 (2021-08-11)
 
 
