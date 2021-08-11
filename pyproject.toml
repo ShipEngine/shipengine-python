@@ -26,9 +26,10 @@ enable = true
 vcs = "git"
 style = "semver"
 format = "{base}"
+bump = true
 
 [tool.poetry-dynamic-versioning.substitution]
-files = ["*.py", "*/__init__.py", "*/__version__.py", "*/_version.py"]
+files = ["*.py", "*/__init__.py", "*/__version__.py", "*/version.py"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
