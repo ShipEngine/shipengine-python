@@ -1,10 +1,10 @@
 [tool.poetry]
 name = "shipengine"
 version = "0.0.0"
-description = "A Python library for ShipEngine."
+description = "The official Python library for ShipEngine API."
 readme = "README.md"
-authors = ["KaseyCantu <kpc.software.engineer@gmail.com>"]
-homepage = "https://github.com/ShipEngine/shipengine-python"
+authors = ["ShipEngine <support@shipengine.com>"]
+homepage = "https://www.shipengine.com/"
 license = "Apache-2.0"
 repository = "https://github.com/ShipEngine/shipengine-python"
 include = ["CHANGELOG.md"]
