@@ -8,14 +8,12 @@ ShipEngine Python SDK
 ![GitHub](https://img.shields.io/github/license/shipengine/shipengine-python?color=blue)
 ![OS Compatibility](https://shipengine.github.io/img/badges/os-badges.svg)
 
-> ATTN: This project is under development and not ready for consumer use.
-
 - The official Python module for ShipEngine API.
 
 Quick Start
 ===========
 
-Install `shipengine` via pip (not yet published):
+Install `shipengine` via `pip`:
 ```bash
 pip install shipengine
 ```
