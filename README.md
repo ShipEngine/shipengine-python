@@ -129,7 +129,7 @@ poetry run tox
 
 Linting
 -------
-You can run the `linting environment` in **Tox** using this command:
+You can run the `linting environment` in **Tox** using this commandi:
 
 ```bash
 poetry tox -e lint
