@@ -2,10 +2,24 @@
 name = "shipengine"
 version = "0.0.0"
 description = "A Python library for ShipEngine."
-authors = ["KaseyCantu <kpc.software.engineer@gmail.com>"]
-license = "Apache-2.0"
 readme = "README.md"
+authors = ["KaseyCantu <kpc.software.engineer@gmail.com>"]
+homepage = "https://github.com/ShipEngine/shipengine-python"
+license = "Apache-2.0"
 repository = "https://github.com/ShipEngine/shipengine-python"
+include = ["CHANGELOG.md"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
 
 [tool.poetry-dynamic-versioning]
 enable = true
