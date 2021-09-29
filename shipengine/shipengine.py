@@ -144,7 +144,7 @@ class ShipEngine:
         )
 
     def void_label_by_label_id(
-        self, label_id: str, config: Union[str, Dict[str, Any]]
+        self, label_id: str, config: Union[str, Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
         Void label with a Label Id.
