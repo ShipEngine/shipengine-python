@@ -171,3 +171,16 @@ class ShipEngine:
         """
         config = self.config.merge(new_config=config)
         return self.client.post(endpoint='/v1/rates/estimate', params=shipment, config=config)
+
+    def update_shipment_by_id(self, shipment_id: str, config: Union[str, Dict[str, Any]] = None) -> Dict[str, Any]:
+        """
+        Void label with a Label Id.
+        See: https://shipengine.github.io/shipengine-openapi/#operation/update_shipment
+
+        :param str shipment_id: The shipment_id of the shipment you wish to update.
+        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration to set new values
+        for properties of the global ShipEngineConfig object.
+        :returns Dict[str, Any]: Updated information corresponding to the shipment provided.
+        """
+        config = self.config.merge(new_config=config)
+        return self.client.put(endpoint=f"/v1/shipments/{shipment_id}", config=config)
