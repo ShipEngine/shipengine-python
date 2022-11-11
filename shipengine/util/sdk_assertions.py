@@ -200,18 +200,28 @@ def check_response_for_errors(
 
     # Check if status_code is 429 and raises an error if so.
     if status_code == 429:
+        request_id = response_body.get("request_id") or response_headers.get(
+            'x-shipengine-requestid'
+        )
         retry_after = response_headers["Retry-After"]
+        if not isinstance(retry_after, str) or not retry_after.isdigit():
+            raise ShipEngineError(
+                message="Unexpected Retry-After header value.",
+                error_source=ErrorSource.SHIPENGINE.value,
+                request_id=request_id,
+            )
+        retry_after = int(retry_after)
         if retry_after > config.timeout:
             raise ClientTimeoutError(
                 retry_after=config.timeout,
                 error_source=ErrorSource.SHIPENGINE.value,
-                request_id=response_body["request_id"],
+                request_id=request_id,
             )
         else:
             raise RateLimitExceededError(
                 retry_after=retry_after,
                 error_source=ErrorSource.SHIPENGINE.value,
-                request_id=response_body["request_id"],
+                request_id=request_id,
             )
 
     # Check if the status code is 500 and raises an error if so.
