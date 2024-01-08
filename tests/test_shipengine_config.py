@@ -198,7 +198,7 @@ class TestShipEngineConfig:
 
         assert config.retries == 1
         assert config.page_size == 50
-        assert config.timeout == 5
+        assert config.timeout == 60
         assert config.base_uri is BaseURL.SHIPENGINE_RPC_URL.value
 
     def test_to_dict_method(self) -> None:
