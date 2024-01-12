@@ -16,7 +16,7 @@ class ShipEngineConfig:
     DEFAULT_RETRIES: int = 1
     """Default number of retries the ShipEngineClient should make before returning an exception."""
 
-    DEFAULT_TIMEOUT: int = 5
+    DEFAULT_TIMEOUT: int = 60
     """Default timeout for the ShipEngineClient in seconds."""
 
     def __init__(self, config: Dict[str, Any]) -> None:
