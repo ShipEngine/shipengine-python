@@ -48,5 +48,14 @@ class ErrorType(Enum):
     AUTHORIZATION = "authorization"
     """General authorization error type."""
 
+    INTEGRATIONS = "integrations"
+    """General integrations error type."""
+
+    WALLET = "wallet"
+    """General wallet error type."""
+
+    FUNDING_SOURCES = "funding_sources"
+    """General funding sources error type."""
+
     ERROR = "error"
     """Generic error."""
