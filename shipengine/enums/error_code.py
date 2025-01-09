@@ -235,3 +235,13 @@ class ErrorCode(Enum):
         ShipEngine only allows you to have one webhook of each type. If you would
         like to replace a webhook with a new one, please delete the old one first.
     """
+
+    FUNDING_SOURCE_MISSING_CONFIGURATION = "funding_source_missing_configuration"
+    """
+        Funding source isnt properly configured and can't be used.
+    """
+
+    FUNDING_SOURCE_ERROR = "funding_source_error"
+    """
+        There was a problem with a funding source.
+    """
