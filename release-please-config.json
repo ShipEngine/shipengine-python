@@ -1,0 +1,11 @@
+{
+  "packages": {
+    ".": {
+      "release-type": "python",
+      "package-name": "shipengine",
+      "changelog-path": "CHANGELOG.md",
+      "bump-minor-pre-major": false,
+      "bump-patch-for-minor-pre-major": false
+    }
+  }
+}
