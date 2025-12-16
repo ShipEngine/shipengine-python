@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.2](https://github.com/ShipEngine/shipengine-python/compare/v2.0.1...v2.0.2) (2025-12-16)
+
+
+### Bug Fixes
+
+* regenerate poetry.lock and update to modern Poetry config ([6ee6fbe](https://github.com/ShipEngine/shipengine-python/commit/6ee6fbef131b49db9fe998939547b5a01a6281aa))
+* regenerate poetry.lock and update to modern Poetry config ([80b2531](https://github.com/ShipEngine/shipengine-python/commit/80b2531ced22aea74334caa2050fb572b8d43e9e))
+
 ## [2.0.1](https://github.com/ShipEngine/shipengine-python/compare/v2.0.0...v2.0.1) (2025-12-16)
 
 
