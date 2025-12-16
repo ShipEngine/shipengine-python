@@ -41,7 +41,7 @@ dataclasses-json = "^0.5.3"
 fuuid = "^0.1.0"
 poetry-dynamic-versioning = "^0.13.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = "^7.0.0"
 pytest-cov = "^2.11.1"
 pytest-mock = "^3.6.1"
