@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.3](https://github.com/ShipEngine/shipengine-python/compare/v2.0.2...v2.0.3) (2025-12-16)
+
+
+### Bug Fixes
+
+* update GitHub workflow badge and resolve CD PyYAML compatibility issue ([5b634ca](https://github.com/ShipEngine/shipengine-python/commit/5b634ca5862ddaadd3e527d91b2b55314a158e98))
+* update GitHub workflow badge URL and fix PyYAML compatibility ([65cc2a3](https://github.com/ShipEngine/shipengine-python/commit/65cc2a3a3e0e3ee6d298c417bed2aba01c3b9d5e))
+
 ## [2.0.2](https://github.com/ShipEngine/shipengine-python/compare/v2.0.1...v2.0.2) (2025-12-16)
 
 
