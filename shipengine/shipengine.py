@@ -158,3 +158,18 @@ class ShipEngine:
         """
         config = self.config.merge(new_config=config)
         return self.client.put(endpoint=f"v1/labels/{label_id}/void", config=config)
+
+    def list_labels_by_tracking_number(
+        self, tracking_number: str, config: Union[str, Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """
+        Lists labels with the specified tracking_number
+
+        :param str tracking_number: The tracking_number of the label(s) you wish to get.
+        :returns Dict[str, Any]: The response from ShipEngine API including the label(s) with the specified 
+        tracking_number.
+        """
+        config = self.config.merge(new_config=config)
+        return self.client.get(
+            endpoint=f"v1/labels?tracking_number={tracking_number}", config=config
+        )
