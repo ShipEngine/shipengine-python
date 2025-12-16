@@ -56,8 +56,8 @@ Methods
 - [create_label_from_rate_id](./docs/create_label_from_rate_id_example.md) - Purchase a label by `rate_id`. When using the `get_rates_from_shipment` method, you can use one of the returned `rate_id` values with this method to purchase a label against a given rate.
 - [create_label_from_shipment](./docs/create_label_from_shipment.md) - Purchase a label created from shipment details.
 - [get_rates_from_shipment](./docs/get_rates_from_shipment_example.md) - Fetch rates from shipment details to shop the best shipping rate for your package.
-- [list_carriers](./docs/list_carriers_example.md) - Lists the carrier accounts connected to your SHipEngine account.
-- [track_package_by_label_id](./docs/track_package_by_label_id_example.md) - Track a package by `label_id`, the preferred way to track shipments if you crate shipping labels using ShipEngine. This method returns
+- [list_carriers](./docs/list_carriers_example.md) - Lists the carrier accounts connected to your ShipEngine account.
+- [track_package_by_label_id](./docs/track_package_by_label_id_example.md) - Track a package by `label_id`, the preferred way to track shipments if you create shipping labels using ShipEngine. This method returns
 the all tracking events for a given shipment.
 - [track_package_by_carrier_code_and_tracking_number](./docs/track_package_by_carrier_code_and_tracking_number_example.md) - Track a package by `carrier_code` and `tracking_number`. This method returns
 the all tracking events for a given shipment.
