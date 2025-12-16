@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.5](https://github.com/ShipEngine/shipengine-python/compare/v2.0.4...v2.0.5) (2025-12-16)
+
+
+### Bug Fixes
+
+* correct typo in linting section of README ([222b293](https://github.com/ShipEngine/shipengine-python/commit/222b2930706476254b2229b72db63f9ec3cffb0a))
+
 ## [2.0.4](https://github.com/ShipEngine/shipengine-python/compare/v2.0.3...v2.0.4) (2025-12-16)
 
 
