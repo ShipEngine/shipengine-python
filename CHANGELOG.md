@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.1](https://github.com/ShipEngine/shipengine-python/compare/v2.0.0...v2.0.1) (2025-12-16)
+
+
+### Bug Fixes
+
+* correct typo in CD workflow (dependancies -&gt; dependencies) ([a665002](https://github.com/ShipEngine/shipengine-python/commit/a665002dca3048d012c3974aab7cdc5d4ed57e0c))
+* correct typo in CD workflow (dependancies -&gt; dependencies) ([088bee5](https://github.com/ShipEngine/shipengine-python/commit/088bee5bb6cfffa19d301aafd7d5d4aedced8b89))
+
 ## [2.0.0](https://github.com/ShipEngine/shipengine-python/compare/v1.0.2...v2.0.0) (2025-12-16)
 
 ### ⚠ BREAKING CHANGES
