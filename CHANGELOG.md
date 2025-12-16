@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.1](https://github.com/ShipEngine/shipengine-python/compare/v1.0.0...v1.0.1) (2025-12-16)
+## [2.0.0](https://github.com/ShipEngine/shipengine-python/compare/v1.0.2...v2.0.0) (2025-12-16)
 
 
 ### ⚠ BREAKING CHANGES
