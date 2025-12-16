@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "shipengine"
-version = "2.0.1"
+version = "2.0.2"
 description = "The official Python library for ShipEngine API."
 readme = "README.md"
 authors = ["ShipEngine <support@shipengine.com>"]
