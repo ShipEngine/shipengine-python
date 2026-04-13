@@ -62,6 +62,26 @@ class ShipEngine:
         config = self.config.merge(new_config=config)
         return self.client.post(endpoint="v1/labels", params=shipment, config=config)
 
+    def get_rate_estimate(
+        self, params: Dict[str, Any], config: Union[str, Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """
+        Get a rate estimate for a shipment given a minimal set of shipment details.
+        Unlike get_rates_from_shipment, this endpoint does not require a full shipment object.
+        Note: estimates do not include all possible charges (e.g. fuel surcharges, customs fees).
+        See: https://shipengine.github.io/shipengine-openapi/#operation/estimate_rates
+
+        :param Dict[str, Any] params: A dictionary of rate estimate params including carrier_ids,
+        origin/destination postal codes and country codes, and package weight.
+        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration to set new values
+        for properties of the global ShipEngineConfig object.
+        :returns Dict[str, Any]: A list of rate estimates from the specified carriers.
+        """
+        config = self.config.merge(new_config=config)
+        return self.client.post(
+            endpoint=Endpoints.GET_RATE_ESTIMATE.value, params=params, config=config
+        )
+
     def get_rates_from_shipment(
         self, shipment: Dict[str, Any], config: Union[str, Dict[str, Any]] = None
     ) -> Dict[str, Any]:
