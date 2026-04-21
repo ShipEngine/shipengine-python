@@ -39,7 +39,6 @@ requests = "^2.25.1"
 python-dotenv = "^0.15.0"
 dataclasses-json = "^0.5.3"
 fuuid = "^0.1.0"
-poetry-dynamic-versioning = "^0.13.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.0.0"
@@ -52,7 +51,7 @@ tox = "^3.23.0"
 coverage = "^5.5"
 isort = "^5.8.0"
 coveralls = "^3.1.0"
-pre-commit = "2.13.0"
+pre-commit = "^3.0.0"
 pytest-watch = "^4.2.0"
 responses = "^0.13.3"
 
@@ -71,5 +70,5 @@ relative_files = true
 [tool.poetry.scripts]
 
 [build-system]
-requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

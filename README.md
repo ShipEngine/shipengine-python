@@ -74,7 +74,7 @@ Contributing
 
 Local Development
 -----------------
-> You will need to install `Python3.10` if you do not have it locally, before working on this project.
+> You will need to install `Python3.10` or higher if you do not have it locally, before working on this project.
 
 This project uses [Poetry]() to manage project dependencies, build steps, and publishing to [PYPI]().
 
