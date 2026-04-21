@@ -55,6 +55,7 @@ Methods
   which the address resides.
 - [create_label_from_rate_id](./docs/create_label_from_rate_id_example.md) - Purchase a label by `rate_id`. When using the `get_rates_from_shipment` method, you can use one of the returned `rate_id` values with this method to purchase a label against a given rate.
 - [create_label_from_shipment](./docs/create_label_from_shipment.md) - Purchase a label created from shipment details.
+- [get_rate_estimate](./docs/get_rate_estimate_example.md) - Get a rate estimate given minimal shipment details (carrier IDs, origin/destination, and weight) without requiring a full shipment object.
 - [get_rates_from_shipment](./docs/get_rates_from_shipment_example.md) - Fetch rates from shipment details to shop the best shipping rate for your package.
 - [list_carriers](./docs/list_carriers_example.md) - Lists the carrier accounts connected to your ShipEngine account.
 - [track_package_by_label_id](./docs/track_package_by_label_id_example.md) - Track a package by `label_id`, the preferred way to track shipments if you create shipping labels using ShipEngine. This method returns
