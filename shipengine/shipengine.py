@@ -64,7 +64,7 @@ class ShipEngine:
 
     def get_rate_estimate(
         self, params: Dict[str, Any], config: Union[str, Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    ) -> list[Dict[str, Any]]:
         """
         Get a rate estimate for a shipment given a minimal set of shipment details.
         Unlike get_rates_from_shipment, this endpoint does not require a full shipment object.
@@ -75,7 +75,7 @@ class ShipEngine:
         origin/destination postal codes and country codes, and package weight.
         :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration to set new values
         for properties of the global ShipEngineConfig object.
-        :returns Dict[str, Any]: A list of rate estimates from the specified carriers.
+        :returns list[Dict[str, Any]]: A list of rate estimates from the specified carriers.
         """
         config = self.config.merge(new_config=config)
         return self.client.post(
