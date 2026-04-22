@@ -58,7 +58,6 @@ responses = "^0.13.3"
 [tool.black]
 line-length = 100
 target-version = ["py310"]
-safe = true
 
 [tool.isort]
 profile = "black"
