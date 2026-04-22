@@ -31,7 +31,9 @@ def list_labels_by_tracking_number_demo():
         {"api_key": api_key, "page_size": 75, "retries": 3, "timeout": 10}
     )
     try:
-        result = shipengine.list_labels_by_tracking_number(tracking_number="1ZXXXXXXXXXXXXXXXX")
+        result = shipengine.list_labels_by_tracking_number(
+            tracking_number="1ZXXXXXXXXXXXXXXXX"
+        )
         print("::SUCCESS::")
         print(result)
     except ShipEngineError as err:

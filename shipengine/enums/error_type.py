@@ -1,9 +1,13 @@
 """Enumeration of error types returned by ShipEngine API."""
+
 from enum import Enum
 
 
 class ErrorType(Enum):
-    """Indicates the type of an error. Think of this as a broad category rather than a specific error."""
+    """Indicates the type of an error.
+
+    Think of this as a broad category rather than a specific error.
+    """
 
     ACCOUNT_STATUS = "account_status"
     """

@@ -1,4 +1,5 @@
 """ShipEngine SDK Enumerations"""
+
 from enum import Enum
 
 from .country import Country

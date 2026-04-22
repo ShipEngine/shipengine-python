@@ -1,4 +1,5 @@
 """Errors that will be raised through-out the ShipEngine SDK."""
+
 import json
 from typing import Optional
 
@@ -29,7 +30,8 @@ class ShipEngineError(Exception):
             pass  # noqa
         elif not does_member_value_exist(self.error_source, ErrorSource):
             raise ValueError(
-                f"Error source must be a member of ErrorSource enum - [{self.error_source}] provided."
+                "Error source must be a member of ErrorSource enum - "
+                f"[{self.error_source}] provided."
             )
 
         if self.error_type is None:
@@ -43,7 +45,7 @@ class ShipEngineError(Exception):
             pass  # noqa
         elif not does_member_value_exist(self.error_code, ErrorCode):
             raise ValueError(
-                f"Error type must be a member of ErrorCode enum - [{self.error_code}] provided."
+                "Error type must be a member of ErrorCode enum - " f"[{self.error_code}] provided."
             )
 
     def to_dict(self):
@@ -80,7 +82,7 @@ class ClientTimeoutError(ShipEngineError):
         error_source: Optional[str] = None,
         request_id: Optional[str] = None,
     ) -> None:
-        """An exception that indicates the configured timeout has been reached for a given request."""
+        """An exception indicating the configured timeout was reached for a given request."""
         self.retry_after = retry_after
         self.error_source = error_source
         self.request_id = request_id
