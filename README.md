@@ -63,7 +63,7 @@ the all tracking events for a given shipment.
 - [track_package_by_carrier_code_and_tracking_number](./docs/track_package_by_carrier_code_and_tracking_number_example.md) - Track a package by `carrier_code` and `tracking_number`. This method returns
 the all tracking events for a given shipment.
 - [void_label_by_label_id](./docs/void_label_by_label_id_example.md) - Void a shipping label you created using ShipEngine by its `label_id`. This method returns an object that indicates the status of the void label request.
-- [list_labels_by_tracking_number] (./docs/list_labels_by_tracking_number.md) - List the labels associated with the inputted tracking number.
+- [list_labels_by_tracking_number](./docs/list_labels_by_tracking_number.md) - List the labels associated with the given tracking number.
 
 Class Objects
 -------------
@@ -83,7 +83,7 @@ You can use the following `curl` command to download **Poetry** from your termin
 on `osx / linux / bashonwindows`:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+curl -sSL https://install.python-poetry.org | python3 -
 ```
 
 - Once you have **Poetry** installed you need to install the projects dependencies with this command from the project root:
