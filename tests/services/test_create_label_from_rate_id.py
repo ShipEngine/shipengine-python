@@ -1,4 +1,5 @@
 """Testing the create label from rate ID functionality in the ShipEngine SDK."""
+
 import json
 import unittest
 import urllib.parse as urlparse

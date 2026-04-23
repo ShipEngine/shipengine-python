@@ -1,4 +1,5 @@
 """Test data as functions and common assertion helper functions."""
+
 from typing import Any, Dict, List
 
 from shipengine import ShipEngine, ShipEngineConfig
@@ -26,7 +27,7 @@ def stub_shipengine_config() -> ShipEngineConfig:
 
 
 def configurable_stub_shipengine_instance(config: Dict[str, any]) -> ShipEngine:
-    """"""
+    """Return a test instance of the ShipEngine object with the given config."""
     return ShipEngine(config=config)
 
 

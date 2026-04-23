@@ -1,4 +1,5 @@
 """The global configuration object for the ShipEngine SDK."""
+
 import json
 from typing import Any, Dict, Optional
 
@@ -59,25 +60,35 @@ class ShipEngineConfig:
         else:
             config = dict()
 
-            config.update(
-                {"api_key": new_config["api_key"]}
-            ) if "api_key" in new_config else config.update({"api_key": self.api_key})
+            (
+                config.update({"api_key": new_config["api_key"]})
+                if "api_key" in new_config
+                else config.update({"api_key": self.api_key})
+            )
 
-            config.update(
-                {"base_uri": new_config["base_uri"]}
-            ) if "base_uri" in new_config else config.update({"base_uri": self.base_uri})
+            (
+                config.update({"base_uri": new_config["base_uri"]})
+                if "base_uri" in new_config
+                else config.update({"base_uri": self.base_uri})
+            )
 
-            config.update(
-                {"page_size": new_config["page_size"]}
-            ) if "page_size" in new_config else config.update({"page_size": self.page_size})
+            (
+                config.update({"page_size": new_config["page_size"]})
+                if "page_size" in new_config
+                else config.update({"page_size": self.page_size})
+            )
 
-            config.update(
-                {"retries": new_config["retries"]}
-            ) if "retries" in new_config else config.update({"retries": self.retries})
+            (
+                config.update({"retries": new_config["retries"]})
+                if "retries" in new_config
+                else config.update({"retries": self.retries})
+            )
 
-            config.update(
-                {"timeout": new_config["timeout"]}
-            ) if "timeout" in new_config else config.update({"timeout": self.timeout})
+            (
+                config.update({"timeout": new_config["timeout"]})
+                if "timeout" in new_config
+                else config.update({"timeout": self.timeout})
+            )
 
             return ShipEngineConfig(config)
 

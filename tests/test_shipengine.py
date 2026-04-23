@@ -1,4 +1,5 @@
 """Testing the ShipEngine object."""
+
 import pytest
 
 from shipengine import ShipEngine

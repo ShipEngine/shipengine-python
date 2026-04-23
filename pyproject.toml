@@ -44,8 +44,8 @@ fuuid = "^0.1.0"
 pytest = "^7.0.0"
 pytest-cov = "^2.11.1"
 pytest-mock = "^3.6.1"
-black = "^22.0.0"
-flake8 = "^6.0.0"
+black = "^24.0.0"
+flake8 = "^7.0.0"
 Sphinx = "^3.5.2"
 tox = "^3.23.0"
 coverage = "^5.5"
@@ -58,7 +58,6 @@ responses = "^0.13.3"
 [tool.black]
 line-length = 100
 target-version = ["py310"]
-safe = true
 
 [tool.isort]
 profile = "black"

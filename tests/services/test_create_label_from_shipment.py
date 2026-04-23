@@ -1,4 +1,5 @@
 """Testing the create label from shipment functionality."""
+
 import json
 import unittest
 import urllib.parse as urlparse

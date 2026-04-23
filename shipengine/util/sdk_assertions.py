@@ -1,4 +1,5 @@
 """Assertion helper functions."""
+
 import re
 from typing import Any, Dict, List
 
@@ -67,7 +68,10 @@ def is_state_valid(state: str) -> None:
 
 
 def is_postal_code_valid(postal_code: str) -> None:
-    """Checks that the given postal code is alpha-numeric. A match would be '78756-123', '02215' or 'M6K 3C3'"""
+    """Check that the given postal code is alpha-numeric.
+
+    A match would be '78756-123', '02215' or 'M6K 3C3'.
+    """
     pattern = re.compile(r"^[a-zA-Z0-9\s-]*$")
 
     if not pattern.match(postal_code) or postal_code == "":
@@ -178,7 +182,10 @@ def timeout_validation_error_assertions(error) -> None:
 def check_response_for_errors(
     status_code: int, response_body: Dict[str, Any], response_headers, config
 ) -> None:
-    """Checks response and status_code for 400, 404, 429, and 500 error cases and raises an approved exception."""
+    """Check response and status_code for 400, 404, 429, and 500 error cases.
+
+    Raises an approved exception when an error is detected.
+    """
 
     if status_code == 400:
         error = response_body["errors"][0]
