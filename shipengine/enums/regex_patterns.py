@@ -1,4 +1,5 @@
 """Enumeration of Regular Expression patterns used in the ShipEngine SDK."""
+
 from enum import Enum
 
 

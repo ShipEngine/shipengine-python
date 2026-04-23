@@ -1,4 +1,5 @@
 """A synchronous HTTP Client for the ShipEngine SDK."""
+
 import json
 import os
 import platform
@@ -133,7 +134,10 @@ class ShipEngineClient:
             resp: Response = client.send(request=prepared_req, timeout=config.timeout)
         except RequestException as err:
             raise ShipEngineError(
-                message=f"An unknown error occurred while calling the ShipEngine {http_method} API:\n {err.response}",
+                message=(
+                    f"An unknown error occurred while calling the ShipEngine {http_method} "
+                    f"API:\n {err.response}"
+                ),
                 error_source=ErrorSource.SHIPENGINE.value,
                 error_type=ErrorType.SYSTEM.value,
                 error_code=ErrorCode.UNSPECIFIED.value,
@@ -186,4 +190,7 @@ class ShipEngineClient:
         python_version: str = platform.python_version()
         python_implementation: str = platform.python_implementation()
 
-        return f"shipengine-python/{sdk_version} {platform_os}/{os_version} {python_implementation}/{python_version}"
+        return (
+            f"shipengine-python/{sdk_version} {platform_os}/{os_version} "
+            f"{python_implementation}/{python_version}"
+        )

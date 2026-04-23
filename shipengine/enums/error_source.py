@@ -1,4 +1,5 @@
 """Enumeration of error sources returned by ShipEngine API."""
+
 from enum import Enum
 
 

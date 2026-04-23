@@ -1,4 +1,5 @@
 """The entrypoint to the ShipEngine API SDK."""
+
 from typing import Any, Dict, List, Union
 
 from shipengine.enums import Endpoints
@@ -33,16 +34,18 @@ class ShipEngine:
         self, rate_id: str, params: Dict[str, Any], config: Union[str, Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
-        When retrieving rates for shipments using the /rates endpoint, the returned information contains a rateId
-        property that can be used to generate a label without having to refill in the shipment information repeatedly.
+        When retrieving rates for shipments using the /rates endpoint, the returned information
+        contains a rateId property that can be used to generate a label without having to refill
+        in the shipment information repeatedly.
         See: https://shipengine.github.io/shipengine-openapi/#operation/create_label_from_rate
 
         :param str rate_id: The rate_id you wish to create a shipping label for.
-        :param Dict[str, Any] params: A dictionary of label params that will dictate the label display and
-        level of verification.
-        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration to set new values
-        for properties of the global ShipEngineConfig object.
-        :returns Dict[str, Any]: A label that corresponds the to shipment details for the rate_id provided.
+        :param Dict[str, Any] params: A dictionary of label params that will dictate the label
+        display and level of verification.
+        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration
+        to set new values for properties of the global ShipEngineConfig object.
+        :returns Dict[str, Any]: A label that corresponds the to shipment details for the
+        rate_id provided.
         """
         config = self.config.merge(new_config=config)
         return self.client.post(endpoint=f"v1/labels/rates/{rate_id}", params=params, config=config)
@@ -55,8 +58,8 @@ class ShipEngine:
         See: https://shipengine.github.io/shipengine-openapi/#operation/create_label
 
         :param Dict[str, Any] shipment: A dictionary of shipment details for the label creation.
-        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration to set new values
-        for properties of the global ShipEngineConfig object.
+        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration
+        to set new values for properties of the global ShipEngineConfig object.
         :returns Dict[str, Any]: A label that corresponds the to shipment details provided.
         """
         config = self.config.merge(new_config=config)
@@ -73,8 +76,8 @@ class ShipEngine:
 
         :param Dict[str, Any] params: A dictionary of rate estimate params including carrier_ids,
         origin/destination postal codes and country codes, and package weight.
-        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration to set new values
-        for properties of the global ShipEngineConfig object.
+        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration
+        to set new values for properties of the global ShipEngineConfig object.
         :returns list[Dict[str, Any]]: A list of rate estimates from the specified carriers.
         """
         config = self.config.merge(new_config=config)
@@ -90,8 +93,8 @@ class ShipEngine:
         See: https://shipengine.github.io/shipengine-openapi/#operation/calculate_rates
 
         :param Dict[str, Any] shipment: A dictionary of shipment details for the label creation.
-        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration to set new values
-        for properties of the global ShipEngineConfig object.
+        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration
+        to set new values for properties of the global ShipEngineConfig object.
         :returns Dict[str, Any]: A label that corresponds the to shipment details provided.
         """
         config = self.config.merge(new_config=config)
@@ -103,8 +106,8 @@ class ShipEngine:
         """
         Fetch the carrier accounts connected to your ShipEngine Account.
 
-        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration to set new values
-        for properties of the global ShipEngineConfig object.
+        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration
+        to set new values for properties of the global ShipEngineConfig object.
         :returns Dict[str, Any]: The carrier accounts associated with a given ShipEngine Account.
         """
         config = self.config.merge(new_config=config)
@@ -119,8 +122,8 @@ class ShipEngine:
 
         :param str label_id: The label_id for a shipment you wish to get tracking information for.
         (Best option if you create labels via ShipEngine API)
-        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration to set new values
-        for properties of the global ShipEngineConfig object.
+        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration
+        to set new values for properties of the global ShipEngineConfig object.
         :returns Dict[str, Any]: Tracking information corresponding to the label_id provided.
         """
         config = self.config.merge(new_config=config)
@@ -134,9 +137,10 @@ class ShipEngine:
         See: https://shipengine.github.io/shipengine-openapi/#operation/get_tracking_log
 
         :param str carrier_code: The carrier_code for the carrier servicing the shipment.
-        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration to set new values
-        for properties of the global ShipEngineConfig object.
-        :returns Dict[str, Any]: Tracking information corresponding to the carrier_code and tracking_number provided.
+        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration
+        to set new values for properties of the global ShipEngineConfig object.
+        :returns Dict[str, Any]: Tracking information corresponding to the carrier_code and
+        tracking_number provided.
         """
         config = self.config.merge(new_config=config)
         return self.client.get(
@@ -148,15 +152,16 @@ class ShipEngine:
         self, address: List[Dict[str, Any]], config: Union[str, Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
-        Address validation ensures accurate addresses and can lead to reduced shipping costs by preventing address
-        correction surcharges. ShipEngine cross references multiple databases to validate addresses and identify
-        potential deliverability issues.
+        Address validation ensures accurate addresses and can lead to reduced shipping costs
+        by preventing address correction surcharges. ShipEngine cross references multiple
+        databases to validate addresses and identify potential deliverability issues.
         See: https://shipengine.github.io/shipengine-openapi/#operation/validate_address
 
         :param List[Dict[str, Any]] address: A list containing the address(es) to be validated.
-        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration to set new values
-        for properties of the global ShipEngineConfig object.
-        :returns: Dict[str, Any]: The response from ShipEngine API including the validated and normalized address.
+        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration
+        to set new values for properties of the global ShipEngineConfig object.
+        :returns: Dict[str, Any]: The response from ShipEngine API including the validated
+        and normalized address.
         """
         config = self.config.merge(new_config=config)
         return self.client.post(
@@ -171,10 +176,10 @@ class ShipEngine:
         See: https://shipengine.github.io/shipengine-openapi/#operation/void_label
 
         :param str label_id: The label_id of the label you wish to void.
-        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration to set new values
-        for properties of the global ShipEngineConfig object.
-        :returns Dict[str, Any]: The response from ShipEngine API confirming the label was successfully voided or
-        unable to be voided.
+        :param Union[str, Dict[str, Any], ShipEngineConfig] config: Method level configuration
+        to set new values for properties of the global ShipEngineConfig object.
+        :returns Dict[str, Any]: The response from ShipEngine API confirming the label was
+        successfully voided or unable to be voided.
         """
         config = self.config.merge(new_config=config)
         return self.client.put(endpoint=f"v1/labels/{label_id}/void", config=config)
@@ -186,8 +191,8 @@ class ShipEngine:
         Lists labels with the specified tracking_number
 
         :param str tracking_number: The tracking_number of the label(s) you wish to get.
-        :returns Dict[str, Any]: The response from ShipEngine API including the label(s) with the specified 
-        tracking_number.
+        :returns Dict[str, Any]: The response from ShipEngine API including the label(s) with
+        the specified tracking_number.
         """
         config = self.config.merge(new_config=config)
         return self.client.get(

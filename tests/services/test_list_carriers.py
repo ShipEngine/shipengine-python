@@ -1,4 +1,5 @@
 """Testing the list_carriers functionality in the ShipEngine SDK."""
+
 import json
 import unittest
 import urllib.parse as urlparse
@@ -173,7 +174,10 @@ class TestListCarriers(unittest.TestCase):
                                         "package_id": "None",
                                         "package_code": "non_rectangular",
                                         "name": "Non Rectangular Package",
-                                        "description": "Non-Rectangular package type that is cylindrical in shape.",
+                                        "description": (
+                                            "Non-Rectangular package type that is "
+                                            "cylindrical in shape."
+                                        ),
                                     },
                                     {
                                         "package_id": "None",
@@ -508,7 +512,9 @@ class TestListCarriers(unittest.TestCase):
                                     {
                                         "name": "shipper_release",
                                         "default_value": "False",
-                                        "description": "Driver may release package without signature",
+                                        "description": (
+                                            "Driver may release package without signature"
+                                        ),
                                     },
                                 ],
                             },

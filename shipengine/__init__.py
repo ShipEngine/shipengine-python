@@ -1,4 +1,5 @@
 """ShipEngine SDK."""
+
 __version__ = "2.0.5"
 
 import logging

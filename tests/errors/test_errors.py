@@ -1,4 +1,5 @@
 """Tests for the ShipEngine SDK Errors"""
+
 import pytest
 
 from shipengine.errors import (
