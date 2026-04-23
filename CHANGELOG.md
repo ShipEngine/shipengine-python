@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/ShipEngine/shipengine-python/compare/v2.0.5...v2.1.0) (2026-04-22)
+
+
+### Features
+
+* add get_rate_estimate method ([65c99cf](https://github.com/ShipEngine/shipengine-python/commit/65c99cf2f1bbd01732ee75521e621f8697a52a15))
+
 ## [2.0.5](https://github.com/ShipEngine/shipengine-python/compare/v2.0.4...v2.0.5) (2025-12-16)
 
 
