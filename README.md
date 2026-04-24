@@ -136,3 +136,24 @@ You can run the `linting environment` in **Tox** using this command:
 ```bash
 poetry tox -e lint
 ```
+
+## Commit Messages
+
+This project uses [release-please](https://github.com/googleapis/release-please) to automate releases. When a PR is merged, release-please reads the commit history to determine the next version and open a release PR. When that release PR is merged, the package is automatically published to [PyPI](https://pypi.org/project/shipengine/).
+
+**This only works if commit messages follow the [Conventional Commits](https://www.conventionalcommits.org/) format:**
+
+```
+<type>: <short description>
+```
+
+Common types and their effect on versioning:
+
+| Type | Version bump | Example |
+|------|-------------|---------|
+| `feat` | minor (`1.0.0` → `1.1.0`) | `feat: add label void endpoint` |
+| `fix` | patch (`1.0.0` → `1.0.1`) | `fix: correct timeout default` |
+| `chore`, `docs`, `refactor` | none (no release) | `chore: update dev tooling` |
+| `feat!` or `fix!` (breaking) | major (`1.0.0` → `2.0.0`) | `feat!: remove deprecated method` |
+
+PRs with non-conforming titles will cause release-please to skip that commit silently, potentially blocking future releases.
