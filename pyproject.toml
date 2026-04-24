@@ -36,7 +36,6 @@ files = ["*.py", "*/__init__.py", "*/__version__.py", "*/version.py"]
 python = "^3.10"
 aiohttp = "^3.9.0"
 requests = "^2.25.1"
-python-dotenv = "^0.15.0"
 dataclasses-json = "^0.5.3"
 fuuid = "^0.1.0"
 
