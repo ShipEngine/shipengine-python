@@ -59,9 +59,9 @@ Methods
 - [get_rates_from_shipment](./docs/get_rates_from_shipment_example.md) - Fetch rates from shipment details to shop the best shipping rate for your package.
 - [list_carriers](./docs/list_carriers_example.md) - Lists the carrier accounts connected to your ShipEngine account.
 - [track_package_by_label_id](./docs/track_package_by_label_id_example.md) - Track a package by `label_id`, the preferred way to track shipments if you create shipping labels using ShipEngine. This method returns
-the all tracking events for a given shipment.
+all tracking events for a given shipment.
 - [track_package_by_carrier_code_and_tracking_number](./docs/track_package_by_carrier_code_and_tracking_number_example.md) - Track a package by `carrier_code` and `tracking_number`. This method returns
-the all tracking events for a given shipment.
+all tracking events for a given shipment.
 - [void_label_by_label_id](./docs/void_label_by_label_id_example.md) - Void a shipping label you created using ShipEngine by its `label_id`. This method returns an object that indicates the status of the void label request.
 - [list_labels_by_tracking_number](./docs/list_labels_by_tracking_number.md) - List the labels associated with the given tracking number.
 
