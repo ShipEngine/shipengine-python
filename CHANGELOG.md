@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.1.1](https://github.com/ShipEngine/shipengine-python/compare/v2.0.5...v2.1.1) (2026-05-06)
+
+
+### Bug Fixes
+
+* remove unused python-dotenv dependency ([#63](https://github.com/ShipEngine/shipengine-python/issues/63)) ([df04ae7](https://github.com/ShipEngine/shipengine-python/commit/df04ae768d92f6e5a9d5f74743cb48babdc976ce))
+
+
+### Documentation
+
+* add conventional commits guidance to Contributing section ([9d03da0](https://github.com/ShipEngine/shipengine-python/commit/9d03da03d6fa3236a26f8a310d3ffe846c8e3610))
+* fix grammar in README tracking method descriptions ([83fc96f](https://github.com/ShipEngine/shipengine-python/commit/83fc96f2dd94093b0499a8fe5855fb8d39a58b0a))
+
 ## [2.1.0](https://github.com/ShipEngine/shipengine-python/compare/v2.0.5...v2.1.0) (2026-04-22)
 
 
